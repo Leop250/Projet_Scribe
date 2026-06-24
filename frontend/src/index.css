@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-page:    #0f0f12;
+  --color-bg:      #1a1a1f;
+  --color-surface: #232329;
+  --color-ink:     #f3f3f5;
+  --color-muted:   #9a9aa5;
+  --color-accent:  #ef4444;
+  --color-accent2: #f87171;
+  --font-display: "Space Grotesk", ui-sans-serif, sans-serif;
+}
+
+html, body, #root {
+  height: 100%;
+  background-color: #0f0f12;
+  font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+input, button { font-family: inherit; }
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0  rgba(239, 68, 68, 0.20); }
+  50%       { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
+}
+
+.animate-blink      { animation: blink 1.3s ease-in-out infinite; }
+.animate-pulse-ring { animation: pulse-ring 2.4s ease-in-out infinite; }
