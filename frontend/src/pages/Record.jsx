@@ -45,6 +45,7 @@ export default function Record() {
       recorder.onstop = async () => {
         stream.getTracks().forEach(t => t.stop())
         audioCtxRef.current?.close()
+        audioCtxRef.current = null
         clearInterval(timerRef.current)
         setProcessing(true)
 

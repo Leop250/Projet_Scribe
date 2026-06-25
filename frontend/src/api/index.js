@@ -28,3 +28,31 @@ export async function getRecap(id) {
   if (!res.ok) throw new Error(`Fetch recap failed (${res.status})`)
   return res.json()
 }
+
+/**
+ * GET /visio/providers
+ * Returns the list of available bot providers.
+ */
+export async function getVisioProviders() {
+  const res = await fetch(`${BASE_URL}/visio/providers`)
+  if (!res.ok) return []
+  return res.json()
+}
+
+/**
+ * POST /visio/start
+ * Send a bot to a Google Meet and return { native_meeting_id, platform, provider }.
+ */
+export async function startVisioBot(meeting_url, provider = 'vexa') {
+  const res = await fetch(`${BASE_URL}/visio/start`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ meeting_url, provider }),
+  })
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.detail ?? `Bot error (${res.status})`)
+  }
+  return res.json()
+}

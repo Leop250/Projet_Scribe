@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 import AppShell from '../components/AppShell'
+import { startVisioBot, getVisioProviders } from '../api'
 
-function VideoIcon() {
+function VideoIcon({ size = 14 }) {
   return (
-    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+    <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
       <polygon points="23 7 16 12 23 17 23 7"/>
       <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
     </svg>
@@ -27,6 +28,91 @@ function MoonIcon() {
     <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
     </svg>
+  )
+}
+
+function VisioCard({ navigate }) {
+  const [url, setUrl]           = useState('')
+  const [loading, setLoading]   = useState(false)
+  const [err, setErr]           = useState(null)
+  const [providers, setProviders] = useState([])
+  const [provider, setProvider]   = useState('vexa')
+
+  useEffect(() => {
+    getVisioProviders().then(list => {
+      setProviders(list)
+      if (list.length > 0) setProvider(list[0].id)
+    })
+  }, [])
+
+  async function handleStart() {
+    if (!url.trim()) return
+    setErr(null)
+    setLoading(true)
+    try {
+      const result = await startVisioBot(url.trim(), provider)
+      navigate('/visio-record', { state: result })
+    } catch (e) {
+      setErr(e.message)
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="bg-surface rounded-[18px] border border-[rgba(255,255,255,0.10)] shadow-[0_20px_50px_rgba(0,0,0,0.4)] p-[18px] md:p-8 flex flex-col gap-4">
+      <div className="flex flex-col items-center text-center">
+        <div className="w-[74px] h-[74px] rounded-full flex items-center justify-center mb-4 bg-[rgba(239,68,68,0.16)]">
+          <span className="text-accent"><VideoIcon size={28} /></span>
+        </div>
+        <h2 className="font-display text-[16px] font-bold tracking-[-0.02em] text-ink mb-1">
+          Réunion Google Meet
+        </h2>
+        <p className="text-[13px] text-muted leading-[1.5] max-w-[240px]">
+          Un bot rejoint la réunion et transcrit en temps réel.
+        </p>
+      </div>
+
+      {providers.length > 1 && (
+        <div className="flex bg-[rgba(255,255,255,0.04)] rounded-[10px] p-1 gap-1">
+          {providers.map(p => (
+            <button
+              key={p.id}
+              onClick={() => setProvider(p.id)}
+              className={`flex-1 h-7 rounded-[8px] text-[12px] font-semibold transition-all cursor-pointer border-none ${
+                provider === p.id
+                  ? 'bg-accent text-white'
+                  : 'bg-transparent text-muted hover:text-ink'
+              }`}
+            >
+              {p.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <input
+        type="url"
+        placeholder="https://meet.google.com/xxx-xxxx-xxx"
+        value={url}
+        onChange={e => setUrl(e.target.value)}
+        onKeyDown={e => e.key === 'Enter' && handleStart()}
+        className="w-full h-11 px-4 rounded-[11px] bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.10)] text-[13px] text-ink placeholder:text-muted focus:outline-none focus:border-accent transition-colors"
+      />
+
+      {err && <p className="text-[12px] text-accent text-center">{err}</p>}
+
+      <button
+        onClick={handleStart}
+        disabled={!url.trim() || loading}
+        className="w-full h-12 flex items-center justify-center gap-2 bg-accent rounded-[13px] text-white text-[14px] font-bold hover:opacity-90 transition-opacity cursor-pointer border-none disabled:opacity-40 disabled:cursor-not-allowed"
+      >
+        {loading ? (
+          <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+        ) : (
+          <><span className="text-base leading-none">●</span> Envoyer le bot</>
+        )}
+      </button>
+    </div>
   )
 }
 
@@ -91,11 +177,7 @@ export default function Home() {
             </button>
           </div>
         ) : (
-          <div className="bg-surface rounded-[18px] p-8 flex items-center justify-center border border-[rgba(255,255,255,0.10)]">
-            <p className="text-[13px] text-muted text-center">
-              La fonctionnalité Visio sera disponible prochainement.
-            </p>
-          </div>
+          <VisioCard navigate={navigate} />
         )}
       </div>
     </AppShell>
