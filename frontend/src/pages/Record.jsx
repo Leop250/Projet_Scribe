@@ -14,17 +14,28 @@ export default function Record() {
   const [error, setError]           = useState(null)
   const [analyser, setAnalyser]     = useState(null)
 
-  const timerRef    = useRef(null)
-  const recorderRef = useRef(null)
-  const streamRef   = useRef(null)
-  const audioCtxRef = useRef(null)
+  const timerRef      = useRef(null)
+  const recorderRef   = useRef(null)
+  const streamRef     = useRef(null)
+  const audioCtxRef   = useRef(null)
+  const handleStopRef = useRef(() => {})
 
   const { setRecap } = useRecap()
   const navigate     = useNavigate()
 
   useEffect(() => {
+    // Guards against the async getUserMedia() race: a React StrictMode
+    // double-invoke (or a fast unmount) can leave a stale start() resolving
+    // after this effect instance was already cleaned up.
+    let cancelled = false
+    let stopRequested = false
+
     async function start() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      if (cancelled) {
+        stream.getTracks().forEach(t => t.stop())
+        return
+      }
       streamRef.current = stream
 
       // Wire up Web Audio analyser for real-time waveform
@@ -44,16 +55,19 @@ export default function Record() {
 
       recorder.onstop = async () => {
         stream.getTracks().forEach(t => t.stop())
-        audioCtxRef.current?.close()
+        if (audioCtxRef.current?.state !== 'closed') audioCtxRef.current?.close()
         clearInterval(timerRef.current)
+        if (cancelled) return
         setProcessing(true)
 
         try {
           const blob = new Blob(chunks, { type: recorder.mimeType })
           const data = await uploadRecording(blob)
+          if (cancelled) return
           setRecap(data)
           navigate('/recap')
         } catch (err) {
+          if (cancelled) return
           setError(err.message)
           setProcessing(false)
         }
@@ -61,20 +75,33 @@ export default function Record() {
 
       recorder.start()
       timerRef.current = setInterval(() => setSeconds(s => s + 1), 1000)
+
+      // The user hit "Arrêter" before the recorder finished initializing —
+      // honor it now instead of leaving an unreachable recorder running.
+      if (stopRequested) recorder.stop()
     }
 
-    start().catch(err => setError(err.message))
+    handleStopRef.current = () => {
+      if (recorderRef.current) {
+        if (recorderRef.current.state !== 'inactive') recorderRef.current.stop()
+      } else {
+        stopRequested = true
+      }
+    }
+
+    start().catch(err => { if (!cancelled) setError(err.message) })
 
     return () => {
-      recorderRef.current?.stop()
+      cancelled = true
+      if (recorderRef.current?.state !== 'inactive') recorderRef.current?.stop()
       streamRef.current?.getTracks().forEach(t => t.stop())
-      audioCtxRef.current?.close()
+      if (audioCtxRef.current?.state !== 'closed') audioCtxRef.current?.close()
       clearInterval(timerRef.current)
     }
   }, [])
 
   function handleStop() {
-    recorderRef.current?.stop()
+    handleStopRef.current()
   }
 
   if (error) {
