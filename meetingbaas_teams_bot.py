@@ -205,6 +205,17 @@ def _normalize_segments(raw) -> list:
     return segments
 
 
+
+def load_transcription_if_needed(payload: dict) -> dict:
+    url = payload.get("transcription")
+    if isinstance(url,str) and url.startswith("http"):
+        try:
+            r=requests.get(url,timeout=30)
+            r.raise_for_status()
+            payload["transcription"]=r.json()
+        except Exception as e:
+            print(f"[WARN] Chargement transcription impossible: {e}")
+    return payload
 def extract_diarized_transcript(payload: dict) -> list:
     """Cherche parmi les noms de champs candidats et renvoie une liste de
     segments normalisés {speaker, start, end, text}, triés par ordre
@@ -429,6 +440,7 @@ def main():
         print(f"Durée (s)      : {result.get('duration_seconds', 'n/a')}")
 
         # Transcript diarisé (locuteur + texte), directement depuis Meeting BaaS
+        result = load_transcription_if_needed(result)
         segments = extract_diarized_transcript(result)
         print_diarized_transcript(segments)
 
