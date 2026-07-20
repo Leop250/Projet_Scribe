@@ -1,0 +1,49 @@
+from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
+import os
+import shutil
+from pathlib import Path
+from dotenv import load_dotenv
+from stt import callapi
+from llm import generate_report
+
+load_dotenv()
+
+app = FastAPI()
+
+origins = [
+    os.environ.get("FRONTEND_URL", "http://localhost:5173")
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/")
+async def root():
+    return {"message" : "Connected."}
+
+@app.post("/recap")
+async def recap():
+    return {"message" : "Audio received, not yet able to transcript it"}
+
+@app.post("/recordings")
+async def records(audio = File(...)):
+    
+    temp_path = Path("temp") / audio.filename
+    temp_path.parent.mkdir(exist_ok=True)
+
+    with open(temp_path, "wb") as f:
+        shutil.copyfileobj(audio.file, f)
+
+    transcript = callapi(temp_path)
+    report = generate_report(transcript)
+
+    temp_path.unlink()
+
+    print("Audio received successfully");
+    return {"status": "ok", "Compte-rendu" : report}
