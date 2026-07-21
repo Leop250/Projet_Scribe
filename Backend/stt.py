@@ -40,10 +40,10 @@ def callapi(file_path):
                             "type": "input_audio",
                             "input_audio": audio_base64,
                         },
-                        {
-                            "type": "text",
-                            "text": "What's in this file?"
-                        },
+                {
+                    "type": "text",
+                    "text": "Transcris fidèlement et intégralement ce fichier audio, mot pour mot, dans la langue originale parlée (ne traduis jamais dans une autre langue). Ne résume pas, ne décris pas le contenu. Réponds uniquement avec la transcription brute, dans la langue exacte utilisée par le locuteur."
+                }   
                     ]
                 }
             ],

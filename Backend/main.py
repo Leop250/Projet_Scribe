@@ -38,7 +38,6 @@ async def recap():
 
 @app.post("/recordings")
 async def records(audio = File(...)):
-    
     temp_path = Path("temp") / audio.filename
     temp_path.parent.mkdir(exist_ok=True)
 
@@ -46,9 +45,14 @@ async def records(audio = File(...)):
         shutil.copyfileobj(audio.file, f)
 
     transcript = callapi(temp_path)
+    print(transcript)    
     report = generate_report(transcript)
 
     temp_path.unlink()
 
-    print("Audio received successfully");
-    return {"status": "ok", "Compte-rendu" : report}
+    print("Audio received successfully")
+    return {
+    "status": "ok",
+    "Compte-rendu": report,
+    "transcription": transcript
+}
