@@ -11,8 +11,13 @@ load_dotenv()
 
 app = FastAPI()
 
+def normalize_url(url: str) -> str:
+    if not url:
+        return url
+    return url if url.startswith(("http://", "https://")) else f"https://{url}"
+
 origins = [
-    os.environ.get("FRONTEND_URL", "https://www.scribeapp.online")
+    normalize_url(os.environ.get("FRONTEND_URL", "https://www.scribeapp.online"))
 ]
 
 app.add_middleware(
