@@ -4,10 +4,11 @@ import os
 import shutil
 from pathlib import Path
 from dotenv import load_dotenv
-from stt import callapi
-from llm import generate_report
 
 load_dotenv()
+
+from stt import callapi
+from llm import generate_report
 
 app = FastAPI()
 

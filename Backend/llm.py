@@ -1,36 +1,31 @@
 import os
 import json
-from pathlib import Path
-from dotenv import load_dotenv
-from groq import Groq
+from together import Together
 
-load_dotenv(Path(__file__).resolve().parent.parent / ".env")
-print("GROQ_API_KEY vue par le serveur :", repr(os.environ.get("GROQ_API_KEY")))
-client = Groq(api_key=os.environ["GROQ_API_KEY"])
+client = Together()
 
 with open("agent_context.txt", "r") as f:
     context = f.read()
 
 def generate_report(transcript):
     analyze = client.chat.completions.create(
-        model="openai/gpt-oss-20b",
+        model="Qwen/Qwen3.7-Max",
         messages=[
-            {
-                "role": "system",
-                "content": context
-            },
-            {
-                "role": "user",
-                "content": transcript
-            }
+            {"role": "system", "content": context},
+            {"role": "user", "content": transcript}
         ],
         temperature=0,
-        max_completion_tokens=4096,
-        top_p=0.95,
-        stream=False,
-        response_format={"type": "json_object"},
-        reasoning_format="hidden",
-        reasoning_effort="medium"
+        max_tokens=4096,
+        stream=True,
+        response_format={"type": "json_object"}
     )
 
-    return json.loads(analyze.choices[0].message.content)
+    full_content = ""
+    for chunk in analyze:
+        if not chunk.choices:
+            continue
+        delta = chunk.choices[0].delta
+        if delta.content:
+            full_content += delta.content
+
+    return json.loads(full_content)
