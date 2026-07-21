@@ -12,7 +12,7 @@ load_dotenv()
 app = FastAPI()
 
 origins = [
-    os.environ.get("FRONTEND_URL", "http://localhost:5173")
+    os.environ.get("FRONTEND_URL", "https://www.scribeapp.online")
 ]
 
 app.add_middleware(
