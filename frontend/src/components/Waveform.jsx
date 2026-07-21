@@ -58,7 +58,7 @@ export default function Waveform({ active, analyser }) {
           key={i}
           ref={el => { barsRef.current[i] = el }}
           style={{
-            width: 3, borderRadius: 3, backgroundColor: 'white',
+            width: 4, backgroundColor: '#0a0a0a',
             height: 3, opacity: 0.25,
           }}
         />

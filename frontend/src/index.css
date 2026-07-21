@@ -1,36 +1,58 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-page:    #0f0f12;
-  --color-bg:      #1a1a1f;
-  --color-surface: #232329;
-  --color-ink:     #f3f3f5;
-  --color-muted:   #9a9aa5;
-  --color-accent:  #ef4444;
-  --color-accent2: #f87171;
-  --font-display: "Space Grotesk", ui-sans-serif, sans-serif;
+  --color-ink:      #0a0a0a;
+  --color-paper:    #ffffff;
+  --color-accent:   #ff2e00;
+  --color-muted:    #666666;
+  --color-dot-blue: #1a56ff;
+  --color-dot-olive: #8a8a00;
+  --font-display: "Archivo Black", "Archivo", sans-serif;
+  --font-serif:   "Playfair Display", serif;
+  --font-mono:    "Space Mono", monospace;
+  --font-body:    "Archivo", sans-serif;
 }
 
 html, body, #root {
   height: 100%;
-  background-color: #0f0f12;
-  font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  background-color: #ffffff;
+  color: #0a0a0a;
+  font-family: "Archivo", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 * { box-sizing: border-box; }
 input, button { font-family: inherit; }
+a { color: #0a0a0a; text-decoration: none; }
+::selection { background: #ff2e00; color: #0a0a0a; }
+input:focus { outline: none; }
+input::placeholder { color: #b8b8b8; }
 
+@keyframes slam {
+  0%   { transform: translate(-8px, -8px); opacity: 0; }
+  60%  { transform: translate(0, 0); opacity: 1; }
+  75%  { transform: translate(2px, 2px); }
+  100% { transform: translate(0, 0); opacity: 1; }
+}
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.2; }
+  0%, 49%  { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes bar {
+  0%, 100% { transform: scaleY(0.25); }
+  50%      { transform: scaleY(1); }
+}
+@keyframes pulse-brut {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(0.86); }
+}
+@keyframes marq {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
-@keyframes pulse-ring {
-  0%, 100% { box-shadow: 0 0 0 0  rgba(239, 68, 68, 0.20); }
-  50%       { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); }
-}
-
-.animate-blink      { animation: blink 1.3s ease-in-out infinite; }
-.animate-pulse-ring { animation: pulse-ring 2.4s ease-in-out infinite; }
+.animate-slam       { animation: slam .35s cubic-bezier(.2,.8,.2,1) both; }
+.animate-blink       { animation: blink 1.1s steps(1) infinite; }
+.animate-pulse-brut  { animation: pulse-brut 1.4s ease-in-out infinite; }
+.animate-marq        { animation: marq 18s linear infinite; }
