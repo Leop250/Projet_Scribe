@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&amp;family=Archivo:wght@400;500;600;700;800;900&amp;family=Playfair+Display:ital,wght@0,400..900;1,400..900&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #ffffff; }
+  a { color: #0a0a0a; text-decoration: none; }
+  a:hover { color: #0a0a0a; }
+  ::selection { background: #FF2E00; color: #0a0a0a; }
+  @keyframes marq { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @keyframes blink { 0%,49% { opacity: 1; } 50%,100% { opacity: 0; } }
+  @keyframes slam { 0% { transform: translate(-8px,-8px); opacity: 0; } 60% { transform: translate(0,0); opacity: 1; } 75% { transform: translate(2px,2px); } 100% { transform: translate(0,0); opacity: 1; } }
+  @keyframes bar { 0%,100% { transform: scaleY(0.25); } 50% { transform: scaleY(1); } }
+  @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(0.86); } }
+  input:focus { outline: none; }
+  input::placeholder { color: #b8b8b8; }
+</style>
+</helmet>
+
+<div style="font-family:'Archivo',sans-serif; color:#0a0a0a; background:#fff; min-height:100vh; position:relative; overflow-x:hidden;">
+
+  <!-- NAV -->
+  <div style="position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between; padding:0 20px; height:64px; background:#fff; border-bottom:4px solid #0a0a0a;">
+    <div onClick="{{ goHome }}" style="cursor: pointer; font-family: Raleway; font-weight: 900; font-size: 30px; letter-spacing: 0; display: flex; align-items: center; gap: 8px">
+      SCRIBE
+    </div>
+    <div style="display:flex; align-items:stretch; gap:0;">
+      <div style="display:none; align-items:center; padding:0 18px; border-left:4px solid #0a0a0a; font-family:'Space Mono',monospace; font-size:13px; text-transform:uppercase;" style-hover="display:flex"></div>
+      <div onClick="{{ openLogin }}" style="cursor:pointer; display:flex; align-items:center; padding:0 22px; margin:8px 8px 8px 0; background:#0a0a0a; color:#fff; font-family:'Space Mono',monospace; font-weight:700; font-size:13px; text-transform:uppercase; letter-spacing:1px; border:4px solid #0a0a0a; box-shadow:6px 6px 0 #FF2E00;" style-hover="box-shadow:2px 2px 0 #FF2E00; transform:translate(4px,4px);">
+        Se connecter →
+      </div>
+    </div>
+  </div><div key="{{ mountKey }}" style="animation:slam .35s cubic-bezier(.2,.8,.2,1) both;">
+
+    <!-- HERO -->
+    <div style="padding:64px 20px 0; max-width:1200px; margin:0 auto;">
+      <div style="font-family:'Space Mono',monospace; font-size:13px; text-transform:uppercase; letter-spacing:2px; border:3px solid #0a0a0a; display:inline-block; padding:6px 12px; margin-bottom:28px;">
+        ● Assistant de réunion — audio → compte-rendu
+      </div>
+      <h1 style="font-family:'Archivo Black',sans-serif; font-size:clamp(48px,9vw,128px); line-height:0.92; letter-spacing:-3px; margin:0; text-transform:uppercase;">
+        Parlez.<br>On écrit le<br>
+        <span style="background:#FF2E00; color:#fff; padding:0 10px; box-decoration-break:clone; -webkit-box-decoration-break:clone; border:4px solid #0a0a0a;">compte-rendu</span>
+      </h1>
+      <p style="font-family:'Space Mono',monospace; font-size:16px; max-width:520px; margin:32px 0 0; line-height:1.6;">
+        Scribe enregistre, transcrit et rédige. Résumé, décisions, actions — livrés à la fin de chaque réunion. Chiffré. Privé. Brut.
+      </p>
+      <div style="display:flex; gap:16px; margin-top:32px; flex-wrap:wrap;">
+        <div onClick="{{ openLogin }}" style="cursor:pointer; padding:18px 30px; background:#0a0a0a; color:#fff; font-family:'Space Mono',monospace; font-weight:700; text-transform:uppercase; letter-spacing:1px; border:4px solid #0a0a0a; box-shadow:8px 8px 0 #FF2E00;" style-hover="box-shadow:2px 2px 0 #FF2E00; transform:translate(6px,6px);">
+          Démarrer
+        </div>
+        <div onClick="{{ openLogin }}" style="cursor:pointer; padding:18px 30px; background:#0a0a0a; color:#fff; font-family:'Space Mono',monospace; font-weight:700; text-transform:uppercase; letter-spacing:1px; border:4px solid #0a0a0a; box-shadow:8px 8px 0 #FF2E00;" style-hover="box-shadow:2px 2px 0 #FF2E00; transform:translate(6px,6px);">
+          Voir une démo
+        </div>
+      </div>
+    </div>
+
+    <!-- MARQUEE -->
+    <div style="margin-top:56px; border-top:4px solid #0a0a0a; border-bottom:4px solid #0a0a0a; background:#0a0a0a; overflow:hidden; white-space:nowrap;">
+      <div style="display:inline-block; animation:marq 18s linear infinite; padding:12px 0;">
+        <span style="font-family:'Archivo Black',sans-serif; color:#fff; font-size:22px; text-transform:uppercase; letter-spacing:1px;">
+          PARLEZ ● ON ÉCRIT ● GOOGLE MEET ● ZOOM ● TEAMS ● DICTAPHONE ● RÉSUMÉ ● ACTIONS ● TRANSCRIPTION ● PARLEZ ● ON ÉCRIT ● GOOGLE MEET ● ZOOM ● TEAMS ● DICTAPHONE ● RÉSUMÉ ● ACTIONS ● TRANSCRIPTION ●&nbsp;
+        </span>
+      </div>
+    </div>
+
+    <!-- REC WIDGET -->
+    <div style="max-width:1200px; margin:64px auto 0; padding:0 20px;">
+      
+    </div>
+
+    <!-- FEATURES -->
+    <div style="max-width:1200px; margin:80px auto 0; padding:0 20px;">
+      <h2 style="font-family:'Archivo Black',sans-serif; font-size:clamp(32px,5vw,64px); text-transform:uppercase; letter-spacing:-2px; margin:0 0 32px; line-height:1;">Trois choses.<br>Rien de plus.</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:0; border:4px solid #0a0a0a;">
+        <sc-for list="{{ features }}" as="f" hint-placeholder-count="3">
+          <div style="padding:28px 24px; border-right:4px solid #0a0a0a;" style-hover="background:#FF2E00;color:#FFFFFF">
+            <div style="font-family: 'Archivo Black',sans-serif; font-size: 40px; -webkit-text-stroke: 2px currentColor; -webkit-text-fill-color: transparent;">{{ f.n }}</div>
+            <div style="font-family:'Archivo Black',sans-serif; font-size:22px; text-transform:uppercase; margin:12px 0 8px;">{{ f.t }}</div>
+            <div style="font-family:'Space Mono',monospace; font-size:14px; line-height:1.6;">{{ f.d }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- CTA STRIP -->
+    <div style="max-width:1200px; margin:64px auto 80px; padding:0 20px;">
+      <div onClick="{{ openLogin }}" style="cursor:pointer; border:4px solid #0a0a0a; background:#0a0a0a; color:#fff; padding:48px 32px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px;" style-hover="background:#FF2E00; color:#0a0a0a;">
+        <div style="font-family:'Archivo Black',sans-serif; font-size:clamp(28px,4vw,48px); text-transform:uppercase; letter-spacing:-1px;">PRET A ENREGISTRER ?</div>
+        <div onClick="{{ openLogin }}" style="cursor:pointer; font-family:'Space Mono',monospace; font-weight:700; font-size:18px; background:#fff; color:#0a0a0a; border:4px solid #0a0a0a; box-shadow:8px 8px 0 #FF2E00; padding:14px 22px; text-transform:uppercase;" style-hover="box-shadow:2px 2px 0 #FF2E00; transform:translate(6px,6px);">Se connecter →</div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="border-top:4px solid #0a0a0a; padding:24px 20px; display:flex; justify-content:space-between; font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px; flex-wrap:wrap; gap:8px;">
+      <span>SCRIBE© 2026</span>
+      <span>CHIFFRÉ · PRIVÉ</span>
+    </div>
+  </div>
+
+  <!-- ======== LANDING ======== -->
+  <sc-if value="{{ isLanding }}" hint-placeholder-val="{{ true }}">
+  
+  </sc-if>
+
+  <!-- ======== LOGIN ======== -->
+  <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
+  <div key="{{ mountKey }}" style="max-width:560px; margin:0 auto; padding:56px 20px; animation:slam .3s ease both;">
+    <div style="font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:2px; margin-bottom:14px; cursor:pointer;" onClick="{{ goHome }}">← Retour</div>
+    <h1 style="font-family:'Archivo Black',sans-serif; font-size:48px; text-transform:uppercase; letter-spacing:-2px; margin:0 0 4px;">{{ authTitle }}</h1>
+    <p style="font-family:'Space Mono',monospace; font-size:14px; margin:0 0 28px;">{{ authSub }}</p>
+
+    <div style="border:4px solid #0a0a0a; box-shadow:10px 10px 0 #0a0a0a; padding:28px 24px; background:#fff;">
+      <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+        <label style="font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Nom complet</label>
+        <input value="{{ name }}" onInput="{{ setName }}" placeholder="Jean Dupont" style="display:block; width:100%; margin:8px 0 20px; padding:14px; border:4px solid #0a0a0a; font-family:'Space Mono',monospace; font-size:15px; background:#fff;">
+      </sc-if>
+
+      <label style="font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">E-mail</label>
+      <input value="{{ email }}" onInput="{{ setEmail }}" placeholder="vous@entreprise.fr" style="display:block; width:100%; margin:8px 0 6px; padding:14px; border:4px solid {{ emailBorder }}; font-family:'Space Mono',monospace; font-size:15px; background:#fff;">
+      <div style="font-family:'Space Mono',monospace; font-size:11px; color:#FF2E00; min-height:16px; margin-bottom:14px;">{{ emailErr }}</div>
+
+      <label style="font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Mot de passe</label>
+      <input type="password" value="{{ pwd }}" onInput="{{ setPwd }}" placeholder="••••••••" style="display:block; width:100%; margin:8px 0 6px; padding:14px; border:4px solid {{ pwdBorder }}; font-family:'Space Mono',monospace; font-size:15px; background:#fff;">
+      <div style="font-family:'Space Mono',monospace; font-size:11px; color:#FF2E00; min-height:16px; margin-bottom:8px;">{{ pwdErr }}</div>
+
+      <div onClick="{{ submitAuth }}" style="cursor:pointer; margin-top:14px; text-align:center; padding:16px; background:#0a0a0a; color:#fff; font-family:'Space Mono',monospace; font-weight:700; text-transform:uppercase; letter-spacing:1px; border:4px solid #0a0a0a;" style-hover="background:#FF2E00; color:#0a0a0a;">{{ authCta }}</div>
+    </div>
+
+    <div onClick="{{ toggleSignup }}" style="cursor:pointer; margin-top:20px; font-family:'Space Mono',monospace; font-size:13px; text-align:center;">{{ toggleTxt }}</div>
+  </div>
+  </sc-if>
+
+  <!-- ======== TOKEN ======== -->
+  <sc-if value="{{ isToken }}" hint-placeholder-val="{{ false }}">
+  <div key="{{ mountKey }}" style="max-width:560px; margin:0 auto; padding:56px 20px; animation:slam .3s ease both;">
+    <div style="font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:2px; margin-bottom:14px; cursor:pointer;" onClick="{{ openLogin }}">← Retour</div>
+    <div style="display:inline-block; font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px; font-weight:700; background:#FF2E00; color:#fff; border:3px solid #0a0a0a; padding:6px 12px; margin-bottom:18px;">● Code envoyé</div>
+    <h1 style="font-family:'Archivo Black',sans-serif; font-size:44px; text-transform:uppercase; letter-spacing:-2px; margin:0 0 6px; line-height:1;">Vérification</h1>
+    <p style="font-family:'Space Mono',monospace; font-size:14px; margin:0 0 28px;">Code à 6 chiffres envoyé à {{ email }}</p>
+
+    <div style="display:flex; gap:10px;">
+      <sc-for list="{{ tokenCells }}" as="c" hint-placeholder-count="6">
+        <input value="{{ c.v }}" data-idx="{{ c.i }}" onInput="{{ onToken }}" maxLength="1" inputMode="numeric" style="width:100%; aspect-ratio:1; text-align:center; border:4px solid #0a0a0a; font-family:'Archivo Black',sans-serif; font-size:28px; background:#fff;" style-focus="background:#FF2E00;">
+      </sc-for>
+    </div>
+
+    <div onClick="{{ submitToken }}" style="cursor:pointer; margin-top:26px; text-align:center; padding:16px; background:#0a0a0a; color:#fff; font-family:'Space Mono',monospace; font-weight:700; text-transform:uppercase; letter-spacing:1px; border:4px solid #0a0a0a; box-shadow:8px 8px 0 #FF2E00;" style-hover="box-shadow:2px 2px 0 #FF2E00; transform:translate(6px,6px);">Valider →</div>
+    <div onClick="{{ resend }}" style="cursor:pointer; margin-top:18px; font-family:'Space Mono',monospace; font-size:13px; text-align:center; text-decoration:underline;">Réessayer / renvoyer le code</div>
+  </div>
+  </sc-if>
+
+  <!-- ======== CONSENT ======== -->
+  <sc-if value="{{ isConsent }}" hint-placeholder-val="{{ false }}">
+  <div key="{{ mountKey }}" style="max-width:620px; margin:0 auto; padding:56px 20px; animation:slam .3s ease both;">
+    <h1 style="font-family:'Archivo Black',sans-serif; font-size:44px; text-transform:uppercase; letter-spacing:-2px; margin:0 0 20px; line-height:1;">Consentement</h1>
+    <div style="border:4px solid #0a0a0a; padding:24px; font-family:'Space Mono',monospace; font-size:14px; line-height:1.7;">
+      <p style="margin:0 0 14px;">Scribe enregistre et transcrit vos réunions pour produire des comptes-rendus. Les données sont <b>chiffrées</b> et vous en gardez le contrôle total.</p>
+      <sc-for list="{{ consentPoints }}" as="p" hint-placeholder-count="3">
+        <div style="display:flex; gap:12px; padding:10px 0; border-top:3px solid #0a0a0a;">
+          <span style="font-family:'Archivo Black',sans-serif;">{{ p.n }}</span><span>{{ p.t }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <label style="display:flex; align-items:flex-start; gap:12px; margin-top:22px; cursor:pointer; font-family:'Space Mono',monospace; font-size:14px;" onClick="{{ toggleConsent }}">
+      <span style="flex:none; width:26px; height:26px; border:4px solid #0a0a0a; background:{{ consentBg }}; display:flex; align-items:center; justify-content:center; font-family:'Archivo Black',sans-serif; font-size:16px;">{{ consentMark }}</span>
+      <span>J'accepte l'enregistrement et le traitement de mes réunions par Scribe.</span>
+    </label>
+    <div onClick="{{ submitConsent }}" style="cursor:{{ consentCursor }}; opacity:{{ consentOpacity }}; margin-top:26px; text-align:center; padding:16px; background:#0a0a0a; color:#fff; font-family:'Space Mono',monospace; font-weight:700; text-transform:uppercase; letter-spacing:1px; border:4px solid #0a0a0a;" style-hover="background:#FF2E00; color:#0a0a0a;">Entrer dans Scribe →</div>
+  </div>
+  </sc-if>
+
+  <!-- ======== APP ======== -->
+  <sc-if value="{{ isApp }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex; min-height:calc(100vh - 64px);">
+    <!-- SIDEBAR -->
+    <div style="width:88px; flex:none; border-right:4px solid #0a0a0a; display:flex; flex-direction:column;">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+        <div onClick="{{ t.go }}" style="cursor:pointer; padding:22px 6px; border-bottom:4px solid #0a0a0a; text-align:center; background:{{ t.bg }}; color:{{ t.fg }};">
+          <div style="font-family:'Archivo Black',sans-serif; font-size:22px;">{{ t.ic }}</div>
+          <div style="font-family:'Space Mono',monospace; font-size:9px; text-transform:uppercase; letter-spacing:1px; margin-top:6px;">{{ t.l }}</div>
+        </div>
+      </sc-for>
+      <div onClick="{{ logout }}" style="margin-top:auto; padding:20px 6px; text-align:center; cursor:pointer; font-family:'Space Mono',monospace; font-size:9px; text-transform:uppercase;" style-hover="background:#FF2E00;">Quitter</div>
+    </div>
+
+    <!-- MAIN -->
+    <div style="flex:1; min-width:0;">
+
+      <!-- DICTAPHONE -->
+      <sc-if value="{{ tabRec }}" hint-placeholder-val="{{ true }}">
+      <div key="{{ appKey }}" style="padding:40px; animation:slam .3s ease both;">
+        <h2 style="font-family:'Archivo Black',sans-serif; font-size:40px; text-transform:uppercase; letter-spacing:-2px; margin:0 0 28px;">Dictaphone</h2>
+        <div style="display:flex; align-items:center; gap:32px; flex-wrap:wrap;">
+          <div onClick="{{ toggleRec }}" style="cursor:pointer; width:200px; height:200px; border:6px solid #0a0a0a; background:{{ recBtnBg }}; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:10px 10px 0 #0a0a0a; animation:{{ recAnim }};">
+            <div style="font-family:'Archivo Black',sans-serif; font-size:52px; color:{{ recBtnFg }};">{{ recBtnIcon }}</div>
+            <div style="font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px; margin-top:8px; color:{{ recBtnFg }};">{{ recBtnLabel }}</div>
+          </div>
+          <div>
+            <div style="font-family:'Space Mono',monospace; font-size:13px; text-transform:uppercase; letter-spacing:1px; color:#666;">Statut</div>
+            <div style="font-family:'Archivo Black',sans-serif; font-size:34px;">{{ recStatus }}</div>
+            <div style="font-family:'Space Mono',monospace; font-size:15px; margin-top:8px;">{{ recTimer }}</div>
+          </div>
+        </div>
+
+        <h3 style="font-family:'Archivo Black',sans-serif; font-size:22px; text-transform:uppercase; letter-spacing:-1px; margin:40px 0 14px;">Enregistrements récents</h3>
+        <div style="border:4px solid #0a0a0a;">
+          <sc-for list="{{ recaps }}" as="r" hint-placeholder-count="3">
+            <div onClick="{{ r.open }}" style="cursor:pointer; display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:4px solid #0a0a0a;" style-hover="background:#FF2E00;">
+              <div>
+                <div style="font-family:'Archivo',sans-serif; font-weight:800; font-size:17px;">{{ r.title }}</div>
+                <div style="font-family:'Space Mono',monospace; font-size:12px; color:#666;">{{ r.date }} · {{ r.dur }}</div>
+              </div>
+              <div style="font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; border:3px solid #0a0a0a; padding:4px 10px;">Ouvrir →</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- EN DIRECT -->
+      <sc-if value="{{ tabLive }}" hint-placeholder-val="{{ false }}">
+      <div key="{{ appKey }}" style="padding:40px; animation:slam .3s ease both;">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+          <h2 style="font-family:'Archivo Black',sans-serif; font-size:40px; text-transform:uppercase; letter-spacing:-2px; margin:0;">En direct</h2>
+          <div style="font-family:'Space Mono',monospace; font-weight:700; color:#fff; background:#FF2E00; border:4px solid #0a0a0a; padding:8px 16px; text-transform:uppercase; animation:blink 1.1s steps(1) infinite;">● REC {{ recTimer }}</div>
+        </div>
+        <div style="display:flex; gap:4px; align-items:flex-end; height:160px; margin:32px 0; border:4px solid #0a0a0a; padding:20px;">
+          <sc-for list="{{ liveBars }}" as="h" hint-placeholder-count="48">
+            <div style="flex:1; background:#0a0a0a; height:{{ h.h }}; animation:bar {{ h.d }} ease-in-out infinite;"></div>
+          </sc-for>
+        </div>
+        <h3 style="font-family:'Archivo Black',sans-serif; font-size:20px; text-transform:uppercase; margin:0 0 14px;">Intervenants</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:0; border:4px solid #0a0a0a;">
+          <sc-for list="{{ speakers }}" as="s" hint-placeholder-count="4">
+            <div style="padding:18px 20px; border-right:4px solid #0a0a0a; background:{{ s.bg }};">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="width:16px; height:16px; background:{{ s.dot }}; border:3px solid #0a0a0a;"></span>
+                <span style="font-family:'Archivo',sans-serif; font-weight:800; font-size:16px;">{{ s.name }}</span>
+              </div>
+              <div style="font-family:'Space Mono',monospace; font-size:12px; margin-top:8px; text-transform:uppercase;">{{ s.state }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- COMPTES-RENDUS -->
+      <sc-if value="{{ tabRecaps }}" hint-placeholder-val="{{ false }}">
+      <div key="{{ appKey }}" style="display:flex; min-height:calc(100vh - 64px); animation:slam .3s ease both;">
+        <div style="width:320px; flex:none; border-right:4px solid #0a0a0a;">
+          <div style="padding:20px; border-bottom:4px solid #0a0a0a; font-family:'Archivo Black',sans-serif; font-size:22px; text-transform:uppercase;">Comptes-rendus</div>
+          <sc-for list="{{ recaps }}" as="r" hint-placeholder-count="3">
+            <div onClick="{{ r.open }}" style="cursor:pointer; padding:16px 20px; border-bottom:4px solid #0a0a0a; background:{{ r.selBg }};">
+              <div style="font-family:'Archivo',sans-serif; font-weight:800; font-size:16px;">{{ r.title }}</div>
+              <div style="font-family:'Space Mono',monospace; font-size:11px; color:#666;">{{ r.date }} · {{ r.dur }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div key="{{ selKey }}" style="flex:1; min-width:0; padding:36px; animation:slam .25s ease both;">
+          <h2 style="font-family:'Archivo Black',sans-serif; font-size:34px; text-transform:uppercase; letter-spacing:-1px; margin:0 0 6px;">{{ sel.title }}</h2>
+          <div style="font-family:'Space Mono',monospace; font-size:13px; color:#666; margin-bottom:24px;">{{ sel.date }} · {{ sel.dur }} · {{ sel.count }} participants</div>
+
+          <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px;">
+            <sc-for list="{{ sel.parts }}" as="p" hint-placeholder-count="4">
+              <div style="display:flex; align-items:center; gap:8px; border:3px solid #0a0a0a; padding:6px 12px;">
+                <span style="width:12px; height:12px; background:{{ p.dot }}; border:2px solid #0a0a0a;"></span>
+                <span style="font-family:'Space Mono',monospace; font-size:13px;">{{ p.name }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="border:4px solid #0a0a0a; margin-bottom:20px;">
+            <div style="background:#0a0a0a; color:#fff; padding:10px 16px; font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Résumé</div>
+            <div style="padding:18px 16px; font-family:'Space Mono',monospace; font-size:14px; line-height:1.7;">{{ sel.summary }}</div>
+          </div>
+
+          <div style="border:4px solid #0a0a0a; margin-bottom:20px;">
+            <div style="background:#FF2E00; color:#fff; padding:10px 16px; font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Actions</div>
+            <sc-for list="{{ sel.actions }}" as="a" hint-placeholder-count="3">
+              <div style="display:flex; gap:12px; padding:14px 16px; border-top:3px solid #0a0a0a; font-family:'Space Mono',monospace; font-size:14px;">
+                <span style="font-family:'Archivo Black',sans-serif;">□</span>
+                <span><b>{{ a.who }}</b> — {{ a.what }}</span>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="border:4px solid #0a0a0a;">
+            <div style="background:#0a0a0a; color:#fff; padding:10px 16px; font-family:'Space Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:1px;">Transcription</div>
+            <sc-for list="{{ sel.transcript }}" as="l" hint-placeholder-count="4">
+              <div style="padding:12px 16px; border-top:3px solid #0a0a0a; font-family:'Space Mono',monospace; font-size:13px; line-height:1.6;">
+                <span style="font-weight:700; color:{{ l.color }};">{{ l.who }}</span> <span style="color:#999;">{{ l.t }}</span><br>{{ l.text }}
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+    </div>
+  </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;1280&quot;,&quot;height&quot;:&quot;860&quot;}}">
+class Component extends DCLogic {
+  state = {
+    screen: 'landing', signup: false,
+    name: '', email: '', pwd: '',
+    emailTouched: false, pwdTouched: false,
+    token: ['','','','','',''],
+    consent: false,
+    tab: 'rec', recording: false, secs: 0,
+    selIdx: 0, mountKey: 0, appKey: 0, selKey: 0,
+  };
+
+  componentWillUnmount() { clearInterval(this._t); }
+
+  bump(k) { this.setState(s => ({ [k]: s[k] + 1 })); }
+
+  nav(screen) { this.setState({ screen }, () => this.bump('mountKey')); }
+
+  go(tab) {
+    this.setState({ tab }, () => this.bump('appKey'));
+  }
+
+  toggleRec() {
+    const rec = !this.state.recording;
+    if (rec) {
+      this.setState({ recording: true, secs: 0, tab: 'live' }, () => this.bump('appKey'));
+      this._t = setInterval(() => this.setState(s => ({ secs: s.secs + 1 })), 1000);
+    } else {
+      clearInterval(this._t);
+      this.setState({ recording: false, tab: 'rec' }, () => this.bump('appKey'));
+    }
+  }
+
+  fmt(s) { const m = String(Math.floor(s/60)).padStart(2,'0'); const x = String(s%60).padStart(2,'0'); return m+':'+x; }
+
+  emailValid() { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.email); }
+  pwdValid() { const p = this.state.pwd; return p.length>=8 && /[A-Z]/.test(p) && /[^A-Za-z0-9]/.test(p); }
+
+  submitAuth() {
+    this.setState({ emailTouched: true, pwdTouched: true });
+    if (this.emailValid() && this.pwdValid()) this.nav('token');
+  }
+
+  onToken(e) {
+    const i = +e.target.dataset.idx;
+    const v = e.target.value.replace(/\D/g,'').slice(0,1);
+    const tk = [...this.state.token]; tk[i] = v;
+    this.setState({ token: tk });
+    if (v && i < 5) { const nx = e.target.parentNode.children[i+1]; if (nx) nx.focus(); }
+  }
+  submitToken() { this.nav('consent'); }
+  resend() { this.setState({ token: ['','','','','',''] }); }
+
+  submitConsent() { if (this.state.consent) this.setState({ screen: 'app', tab: 'rec' }, () => this.bump('appKey')); }
+
+  data() {
+    return [
+      { title: 'Sprint review — Produit', date: '18 juil.', dur: '42 min', count: 4,
+        parts: [{name:'Léa',dot:'#FF2E00'},{name:'Marc',dot:'#0a0a0a'},{name:'Sofia',dot:'#1a56ff'},{name:'Tom',dot:'#FF2E00'}],
+        summary: "L'équipe valide la sortie de la v2.1. Le blocage sur l'export PDF est levé. La refonte de l'onboarding passe en priorité haute pour le prochain sprint.",
+        actions: [{who:'Marc',what:"corriger le crash à l'import CSV avant vendredi"},{who:'Sofia',what:"maquetter le nouvel onboarding"},{who:'Léa',what:"planifier la démo client mardi"}],
+        transcript: [
+          {who:'Léa',color:'#FF2E00',t:'00:41',text:"On démarre par la review de la v2.1."},
+          {who:'Marc',color:'#0a0a0a',t:'02:10',text:"L'export PDF est réparé, je pousse ce soir."},
+          {who:'Sofia',color:'#1a56ff',t:'05:33',text:"Je prends l'onboarding, deux jours de maquettes."},
+          {who:'Tom',color:'#8a8a00',t:'08:02',text:"Attention à la charge côté serveur pendant la démo."},
+        ]},
+      { title: 'Point commercial Q3', date: '16 juil.', dur: '28 min', count: 3,
+        parts: [{name:'Nadia',dot:'#FF2E00'},{name:'Karim',dot:'#0a0a0a'},{name:'Alice',dot:'#1a56ff'}],
+        summary: "Pipeline en hausse de 18%. Deux comptes stratégiques passent en négociation. Décision de renforcer l'équipe SDR dès septembre.",
+        actions: [{who:'Karim',what:"envoyer la proposition à Delfina Corp"},{who:'Nadia',what:"préparer le forecast Q4"}],
+        transcript: [
+          {who:'Nadia',color:'#FF2E00',t:'00:20',text:"Le pipeline est à +18% ce trimestre."},
+          {who:'Karim',color:'#0a0a0a',t:'03:45',text:"Delfina veut une démo la semaine prochaine."},
+          {who:'Alice',color:'#1a56ff',t:'07:12',text:"On manque de SDR pour suivre le volume."},
+        ]},
+      { title: 'Kickoff refonte marque', date: '12 juil.', dur: '55 min', count: 4,
+        parts: [{name:'Hugo',dot:'#FF2E00'},{name:'Inès',dot:'#0a0a0a'},{name:'Paul',dot:'#1a56ff'},{name:'Yara',dot:'#FF2E00'}],
+        summary: "Direction artistique validée : néo-brutalisme, contraste fort, mono + display lourd. Palette réduite à noir/blanc + un accent acide. Livraison des premiers écrans sous 3 semaines.",
+        actions: [{who:'Inès',what:"livrer la charte typographique"},{who:'Paul',what:"cadrer le budget prod"},{who:'Yara',what:"benchmark 5 sites brutalistes"}],
+        transcript: [
+          {who:'Hugo',color:'#FF2E00',t:'01:05',text:"On assume le brut, zéro dégradé, zéro coin rond."},
+          {who:'Inès',color:'#0a0a0a',t:'04:20',text:"Un seul accent, l'acide, sinon noir et blanc."},
+          {who:'Paul',color:'#1a56ff',t:'09:48',text:"Budget prod à cadrer avant fin de semaine."},
+          {who:'Yara',color:'#8a8a00',t:'14:30',text:"Je ramène cinq refs pour lundi."},
+        ]},
+    ];
+  }
+
+  renderVals() {
+    const s = this.state;
+    const screen = s.screen;
+    const bars = (n, seed) => Array.from({length:n}, (_,i) => ({ h: (20 + Math.abs(Math.sin(i*seed))*80).toFixed(0)+'%', d: (0.6 + (i%5)*0.18).toFixed(2)+'s' }));
+
+    const recaps = this.data().map((r, i) => ({
+      ...r,
+      open: () => this.setState({ selIdx: i, tab: 'recaps' }, () => { this.bump('appKey'); this.bump('selKey'); }),
+      selBg: i === s.selIdx ? '#FF2E00' : '#fff',
+    }));
+    const sel = { ...this.data()[s.selIdx] };
+
+    const emailShowErr = s.emailTouched && !this.emailValid();
+    const pwdShowErr = s.pwdTouched && !this.pwdValid();
+
+    return {
+      // screen flags
+      isLanding: screen==='landing', isLogin: screen==='login', isToken: screen==='token',
+      isConsent: screen==='consent', isApp: screen==='app',
+      mountKey: s.mountKey, appKey: s.appKey, selKey: s.selKey,
+
+      goHome: () => this.nav('landing'),
+      openLogin: () => this.nav('login'),
+
+      heroBars: bars(40, 0.7),
+      liveBars: bars(48, 0.9),
+      features: [
+        { n:'01', t:'Enregistre', d:'Meet, Zoom, Teams ou dictaphone. Un clic, ça tourne. Aucune install côté invités.' },
+        { n:'02', t:'Transcrit', d:'Chaque intervenant identifié, horodaté. Transcription brute, fidèle, exportable.' },
+        { n:'03', t:'Rédige', d:'Résumé, décisions et actions générés à la fin. Livrés, pas résumés à moitié.' },
+      ],
+
+      // auth
+      isSignup: s.signup,
+      authTitle: s.signup ? 'Créer un compte' : 'Connexion',
+      authSub: s.signup ? 'Deux minutes, pas de carte bancaire.' : 'Content de vous revoir.',
+      authCta: s.signup ? "S'inscrire →" : 'Se connecter →',
+      toggleTxt: s.signup ? 'Déjà un compte ? Se connecter' : "Pas de compte ? S'inscrire",
+      toggleSignup: () => this.setState(st => ({ signup: !st.signup })),
+      name: s.name, email: s.email, pwd: s.pwd,
+      setName: (e) => this.setState({ name: e.target.value }),
+      setEmail: (e) => this.setState({ email: e.target.value, emailTouched: true }),
+      setPwd: (e) => this.setState({ pwd: e.target.value, pwdTouched: true }),
+      emailBorder: emailShowErr ? '#FF2E00' : '#0a0a0a',
+      pwdBorder: pwdShowErr ? '#FF2E00' : '#0a0a0a',
+      emailErr: emailShowErr ? 'E-mail invalide.' : '',
+      pwdErr: pwdShowErr ? '8+ caractères, 1 majuscule, 1 caractère spécial.' : '',
+      submitAuth: () => this.submitAuth(),
+
+      // token
+      tokenCells: s.token.map((v,i) => ({ v, i })),
+      onToken: (e) => this.onToken(e),
+      submitToken: () => this.submitToken(),
+      resend: () => this.resend(),
+
+      // consent
+      consentPoints: [
+        { n:'A.', t:'Vous décidez quelles réunions sont enregistrées.' },
+        { n:'B.', t:'Données chiffrées, supprimables à tout moment.' },
+        { n:'C.', t:'Aucun partage à des tiers, jamais.' },
+      ],
+      consent: s.consent,
+      consentBg: s.consent ? '#FF2E00' : '#fff',
+      consentMark: s.consent ? '✕' : '',
+      consentCursor: s.consent ? 'pointer' : 'not-allowed',
+      consentOpacity: s.consent ? 1 : 0.4,
+      toggleConsent: () => this.setState(st => ({ consent: !st.consent })),
+      submitConsent: () => this.submitConsent(),
+
+      // app tabs
+      tabs: [
+        { l:'Dicta', ic:'●', go:()=>this.go('rec'), bg: s.tab==='rec'?'#0a0a0a':'#fff', fg: s.tab==='rec'?'#fff':'#0a0a0a' },
+        ...(s.recording ? [{ l:'Direct', ic:'~', go:()=>this.go('live'), bg: s.tab==='live'?'#FF2E00':'#fff', fg: s.tab==='live'?'#fff':'#0a0a0a' }] : []),
+        { l:'Récaps', ic:'▤', go:()=>this.go('recaps'), bg: s.tab==='recaps'?'#0a0a0a':'#fff', fg: s.tab==='recaps'?'#fff':'#0a0a0a' },
+      ],
+      logout: () => this.nav('landing'),
+      tabRec: s.tab==='rec', tabLive: s.tab==='live', tabRecaps: s.tab==='recaps',
+
+      // dictaphone
+      toggleRec: () => this.toggleRec(),
+      recBtnBg: s.recording ? '#FF2E00' : '#FF2E00',
+      recBtnFg: s.recording ? '#fff' : '#0a0a0a',
+      recBtnIcon: s.recording ? '■' : '●',
+      recBtnLabel: s.recording ? 'Stop' : 'Rec',
+      recAnim: s.recording ? 'pulse 1.4s ease-in-out infinite' : 'none',
+      recStatus: s.recording ? 'EN COURS' : 'PRÊT',
+      recTimer: this.fmt(s.secs),
+
+      // live
+      speakers: [
+        { name:'Léa', dot:'#FF2E00', state: s.secs%8<4 ? 'Parle' : 'Silence', bg: s.secs%8<4 ? '#FF2E00' : '#fff' },
+        { name:'Marc', dot:'#0a0a0a', state: s.secs%8>=4 ? 'Parle' : 'Silence', bg: s.secs%8>=4 ? '#FF2E00' : '#fff' },
+        { name:'Sofia', dot:'#1a56ff', state:'Silence', bg:'#fff' },
+        { name:'Tom', dot:'#8a8a00', state:'Silence', bg:'#fff' },
+      ],
+
+      recaps, sel,
+    };
+  }
+}
+</script>
+</body>
+</html>
