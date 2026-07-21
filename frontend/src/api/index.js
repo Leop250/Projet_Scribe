@@ -7,7 +7,7 @@ const BASE_URL = normalizeBaseUrl(import.meta.env.VITE_API_URL)
 
 export async function uploadRecording(blob) {
   const body = new FormData()
-  body.append('audio', blob, 'recording.flac')
+  body.append('audio', blob, 'recording.wav')
 
   const res = await fetch(`${BASE_URL}/recordings`, {
     method: 'POST',
