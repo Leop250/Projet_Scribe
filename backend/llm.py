@@ -9,7 +9,7 @@ with open("agent_context.txt", "r") as f:
 
 def generate_report(transcript):
     analyze = client.chat.completions.create(
-        model="Qwen/Qwen3.7-Max",
+        model="Qwen/Qwen3.6-Plus",
         messages=[
             {"role": "system", "content": context},
             {"role": "user", "content": transcript}
@@ -17,7 +17,8 @@ def generate_report(transcript):
         temperature=0,
         max_tokens=4096,
         stream=True,
-        response_format={"type": "json_object"}
+        response_format={"type": "json_object"},
+        reasoning={"enabled": False}
     )
 
     full_content = ""
