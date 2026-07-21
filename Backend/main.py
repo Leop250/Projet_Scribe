@@ -17,7 +17,7 @@ def normalize_url(url: str) -> str:
     return url if url.startswith(("http://", "https://")) else f"https://{url}"
 
 origins = [
-    normalize_url(os.environ.get("FRONTEND_URL", "https://www.scribeapp.online"))
+    normalize_url(os.environ.get("FRONTEND_URL", "https://www.scribeapp.online", "http://localhost:5173"))
 ]
 
 app.add_middleware(
