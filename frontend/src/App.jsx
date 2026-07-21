@@ -1,5 +1,7 @@
 import { Routes, Route } from "react-router"
+import Landing from "./pages/Landing"
 import Auth from "./pages/Auth"
+import Token from "./pages/Token"
 import Consent from "./pages/Consent"
 import Home from "./pages/Home"
 import Record from "./pages/Record"
@@ -10,7 +12,9 @@ import Dashboard from "./pages/Dashboard"
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<Auth />} />
+      <Route path="/" element={<Landing />} />
+      <Route path="/login" element={<Auth />} />
+      <Route path="/token" element={<Token />} />
       <Route path="/consent" element={<Consent />} />
       <Route path="/home" element={<Home />} />
       <Route path="/record" element={<Record />} />

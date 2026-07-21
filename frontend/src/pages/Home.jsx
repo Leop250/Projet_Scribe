@@ -1,100 +1,83 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import AppShell from '../components/AppShell'
+import { useRecap } from '../context/RecapContext'
 
-function VideoIcon() {
+function Chip({ active, children, onClick }) {
   return (
-    <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-      <polygon points="23 7 16 12 23 17 23 7"/>
-      <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-    </svg>
-  )
-}
-
-function MicIcon({ size = 20 }) {
-  return (
-    <svg width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-      <line x1="12" y1="19" x2="12" y2="23"/>
-      <line x1="8" y1="23" x2="16" y2="23"/>
-    </svg>
-  )
-}
-
-function MoonIcon() {
-  return (
-    <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-    </svg>
+    <button
+      onClick={onClick}
+      className="cursor-pointer border-4 border-ink px-4 py-2 font-mono text-xs font-bold uppercase tracking-[1px] -ml-1 first:ml-0"
+      style={{ background: active ? '#0a0a0a' : '#ffffff', color: active ? '#ffffff' : '#0a0a0a' }}
+    >
+      {children}
+    </button>
   )
 }
 
 export default function Home() {
   const [tab, setTab] = useState('dictaphone')
   const navigate = useNavigate()
+  const { recap } = useRecap()
 
   return (
     <AppShell>
-      <div className="px-[18px] md:px-10 py-6 md:py-8 max-w-[700px]">
+      <div className="p-6 md:p-10 max-w-[820px]">
+        <h2 className="font-display text-[40px] uppercase tracking-[-2px] m-0 mb-7 leading-none">
+          Dictaphone
+        </h2>
 
-        {/* Mobile header (hidden on desktop — AppShell topbar takes over) */}
-        <div className="flex items-start justify-between pb-6 md:hidden">
-          <div>
-            <h1 className="font-display text-[22px] font-bold tracking-[-0.02em] text-ink">
-              Bonjour, Alex
-            </h1>
-            <p className="text-[13px] text-muted mt-0.5">Prêt à enregistrer une réunion ?</p>
-          </div>
-          <button className="w-9 h-9 rounded-full bg-surface flex items-center justify-center text-muted hover:bg-[rgba(255,255,255,0.08)] transition-colors cursor-pointer border-none mt-1">
-            <MoonIcon />
-          </button>
+        <div className="flex gap-2 mb-7">
+          <Chip active={tab === 'dictaphone'} onClick={() => setTab('dictaphone')}>Dictaphone</Chip>
+          <Chip active={tab === 'visio'} onClick={() => setTab('visio')}>Visio</Chip>
         </div>
 
-        {/* Segmented control */}
-        <div className="flex bg-surface rounded-[12px] p-1 mb-4 md:max-w-[320px]">
-          {[
-            { id: 'visio',      label: 'Visio',      Icon: () => <VideoIcon /> },
-            { id: 'dictaphone', label: 'Dictaphone', Icon: () => <MicIcon size={14} /> },
-          ].map(({ id, label, Icon }) => (
-            <button
-              key={id}
-              onClick={() => setTab(id)}
-              className={`flex-1 flex items-center justify-center gap-2 h-8 rounded-[10px] text-[13px] font-bold transition-all cursor-pointer border-none ${
-                tab === id ? 'bg-bg text-accent shadow-sm' : 'bg-transparent text-muted'
-              }`}
-            >
-              <Icon />
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* Card */}
         {tab === 'dictaphone' ? (
-          <div className="bg-surface rounded-[18px] border border-[rgba(255,255,255,0.10)] shadow-[0_20px_50px_rgba(0,0,0,0.4)] p-[18px] md:p-8 flex flex-col items-center text-center">
-            <div className="w-[74px] h-[74px] rounded-full flex items-center justify-center mb-4 animate-pulse-ring bg-[rgba(239,68,68,0.16)]">
-              <span className="text-accent"><MicIcon size={28} /></span>
+          <>
+            <div className="flex items-center gap-8 flex-wrap">
+              <button
+                onClick={() => navigate('/record')}
+                className="cursor-pointer w-[200px] h-[200px] border-[6px] border-ink bg-accent flex flex-col items-center justify-center shadow-[10px_10px_0_#0a0a0a]"
+              >
+                <div className="font-display text-[52px] text-ink leading-none">●</div>
+                <div className="font-mono text-xs uppercase tracking-[1px] mt-2 text-ink">Rec</div>
+              </button>
+              <div>
+                <div className="font-mono text-[13px] uppercase tracking-[1px] text-muted">Statut</div>
+                <div className="font-display text-[34px]">PRÊT</div>
+                <div className="font-mono text-[15px] mt-2">00:00</div>
+              </div>
             </div>
-            <h2 className="font-display text-[16px] font-bold tracking-[-0.02em] text-ink mb-2">
-              Enregistrement présentiel
-            </h2>
-            <p className="text-[13px] text-muted leading-[1.5] mb-5 max-w-[220px]">
-              Micro local chiffré. Idéal pour les réunions en salle, sans visio.
-            </p>
-            <button
-              onClick={() => navigate('/record')}
-              className="w-full md:max-w-[280px] h-12 flex items-center justify-center gap-2 bg-accent rounded-[13px] text-white text-[14px] font-bold hover:opacity-90 transition-opacity cursor-pointer border-none"
-            >
-              <span className="text-base leading-none">●</span>
-              Démarrer l'enregistrement
-            </button>
-          </div>
+
+            <h3 className="font-display text-[22px] uppercase tracking-[-1px] mt-10 mb-3.5">
+              Enregistrements récents
+            </h3>
+            <div className="border-4 border-ink">
+              {recap ? (
+                <div
+                  onClick={() => navigate('/recap')}
+                  className="cursor-pointer flex items-center justify-between px-5 py-4 hover:bg-accent hover:text-white transition-none"
+                >
+                  <div>
+                    <div className="font-body font-extrabold text-[17px]">
+                      {recap.title || 'Dernier enregistrement'}
+                    </div>
+                    <div className="font-mono text-xs text-muted">
+                      {recap.speaker_count ? `${recap.speaker_count} participants` : 'Analyse disponible'}
+                    </div>
+                  </div>
+                  <div className="font-mono text-xs uppercase border-[3px] border-ink px-2.5 py-1">Ouvrir →</div>
+                </div>
+              ) : (
+                <div className="px-5 py-6 font-mono text-[13px] text-muted">
+                  Aucun enregistrement pour le moment.
+                </div>
+              )}
+            </div>
+          </>
         ) : (
-          <div className="bg-surface rounded-[18px] p-8 flex items-center justify-center border border-[rgba(255,255,255,0.10)]">
-            <p className="text-[13px] text-muted text-center">
-              La fonctionnalité Visio sera disponible prochainement.
-            </p>
+          <div className="border-4 border-ink px-6 py-10 text-center font-mono text-sm">
+            La fonctionnalité Visio sera disponible prochainement.
           </div>
         )}
       </div>
