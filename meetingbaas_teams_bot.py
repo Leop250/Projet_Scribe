@@ -23,7 +23,7 @@ def print_history(bots: list, raw: bool = False) -> None:
         print("[INFO] Aucun bot trouvé dans l'historique.")
         return
 
-    print(f"\n=== Historique des réunions ({len(bots)} bot(s)) ===")
+    print(f"\n=== Historique des réunions ({len(bots)} bot(s))")
     for i, bot in enumerate(bots, start=1):
         bot_id = bot.get("bot_id") or bot.get("id", "n/a")
         bot_name = bot.get("bot_name", "n/a")

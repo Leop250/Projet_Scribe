@@ -36,15 +36,15 @@ def save_meeting(bot_result: dict, bot_name: str) -> dict:
         transcript_text = build_transcript_text(segments)
         speakers_list = build_speakers_list(segments)
     else:
-        raw_transcription = bot_result.get("transcription")
-        if isinstance(raw_transcription, str) and raw_transcription.strip():
-            transcript_text = raw_transcription
-        elif isinstance(raw_transcription, dict):
-            transcript_text = json.dumps(raw_transcription, ensure_ascii=False)
+        transcription = bot_result.get("transcription")
+        if isinstance(transcription, str) and transcription.strip():
+            transcript_text = transcription
+        elif transcription:
+            transcript_text = json.dumps(transcription, ensure_ascii=False)
         else:
             transcript_text = "(aucune transcription disponible)"
         speakers_list = build_speakers_from_participants(participants)
-        print("[WARN] Aucun segment diarisé, utilisation des participants pour les speakers.")
+        print("Aucun segment diarisé, utilisation des participants pour les speakers.")
 
     meeting_name = build_meeting_name(
         participants,
