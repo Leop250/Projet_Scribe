@@ -1,0 +1,64 @@
+"""
+save_meeting.py
+----------------
+Point d'entrée unique : transforme le résultat d'un bot Meeting BaaS terminé
+en compte-rendu (transcript diarisé + génération LLM) et l'enregistre en base.
+"""
+
+import json
+
+from llm import generate_report
+from db import save_recap
+from transcript import (
+    load_transcription_if_needed,
+    extract_diarized_transcript,
+    build_transcript_text,
+    build_speakers_list,
+    build_speakers_from_participants,
+    build_meeting_name,
+)
+
+
+def save_meeting(bot_result: dict, bot_name: str) -> dict:
+    """
+    bot_result : réponse brute de l'API Meeting BaaS pour un bot terminé (GET /bots/{id}).
+    bot_name   : nom donné au bot à sa création (ex: "Scribe"), exclu des participants humains.
+
+    Télécharge/parse le transcript, génère le compte-rendu via le LLM, et enregistre
+    le tout en base (user_id=None en attendant l'authentification).
+    Retourne {"id", "created_at"}.
+    """
+    bot_result = load_transcription_if_needed(bot_result)
+    segments = extract_diarized_transcript(bot_result)
+    participants = bot_result.get("participants") or []
+
+    if segments:
+        transcript_text = build_transcript_text(segments)
+        speakers_list = build_speakers_list(segments)
+    else:
+        raw_transcription = bot_result.get("transcription")
+        if isinstance(raw_transcription, str) and raw_transcription.strip():
+            transcript_text = raw_transcription
+        elif isinstance(raw_transcription, dict):
+            transcript_text = json.dumps(raw_transcription, ensure_ascii=False)
+        else:
+            transcript_text = "(aucune transcription disponible)"
+        speakers_list = build_speakers_from_participants(participants)
+        print("[WARN] Aucun segment diarisé, utilisation des participants pour les speakers.")
+
+    meeting_name = build_meeting_name(
+        participants,
+        bot_name=bot_name,
+        fallback_name=bot_result.get("bot_name", bot_name),
+    )
+
+    report = generate_report(transcript_text)
+    report["speakers"] = speakers_list
+
+    return save_recap(
+        user_id=None,  # TODO: brancher le vrai user_id une fois l'auth en place
+        name=meeting_name,
+        source="visio",
+        transcription=transcript_text,
+        reporting=report,
+    )

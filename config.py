@@ -51,3 +51,10 @@ def get_meeting_baas_api_key() -> str:
 
 def get_gladia_api_key() -> str:
     return get_api_key("GLADIA_API_KEY")
+
+def get_together_api_key() -> str:
+    return get_api_key("TOGETHER_API_KEY")
+
+
+def get_database_url() -> str:
+    return get_api_key("DATABASE_URL")

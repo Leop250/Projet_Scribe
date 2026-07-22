@@ -1,3 +1,6 @@
+# Dumps de debug (transcriptions/diarization téléchargées pour inspection)
+debug_dumps/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -216,3 +219,4 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+frontend/node_modules/
