@@ -8,14 +8,6 @@ except ImportError:
 
 
 def get_api_key(env_var: str) -> str:
-    """Récupère une variable d'environnement (clé API, modèle, url...).
-
-    Args:
-        env_var: nom de la variable d'environnement (ex: "VEXA_API_KEY").
-
-    Raises:
-        EnvironmentError si la variable n'est pas définie.
-    """
     api_key = os.environ.get(env_var)
     if not api_key:
         raise EnvironmentError(

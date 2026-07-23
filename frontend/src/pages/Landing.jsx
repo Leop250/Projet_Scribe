@@ -1,0 +1,111 @@
+import { useNavigate } from 'react-router'
+import TopNav from '../components/TopNav'
+
+const FEATURES = [
+  { n: '01', t: 'Enregistre', d: "Meet, Zoom, Teams ou dictaphone. Un clic, ça tourne. Aucune install côté invités." },
+  { n: '02', t: 'Transcrit', d: 'Chaque intervenant identifié, horodaté. Transcription brute, fidèle, exportable.' },
+  { n: '03', t: 'Rédige', d: 'Résumé, décisions et actions générés à la fin. Livrés, pas résumés à moitié.' },
+]
+
+const MARQUEE_TEXT = 'PARLEZ ● ON ÉCRIT ● GOOGLE MEET ● ZOOM ● TEAMS ● DICTAPHONE ● RÉSUMÉ ● ACTIONS ● TRANSCRIPTION ● '
+
+function CtaButton({ children, onClick, className = '' }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`cursor-pointer px-[30px] py-[18px] bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink shadow-[8px_8px_0_#ff2e00] hover:shadow-[2px_2px_0_#ff2e00] hover:translate-x-1.5 hover:translate-y-1.5 transition-none ${className}`}
+    >
+      {children}
+    </button>
+  )
+}
+
+export default function Landing() {
+  const navigate = useNavigate()
+  const go = () => navigate('/login')
+
+  return (
+    <div className="min-h-screen bg-paper text-ink font-body">
+      <TopNav />
+
+      <div className="animate-slam">
+        {/* HERO */}
+        <div className="pt-16 px-5 max-w-[1200px] mx-auto">
+          <div className="font-mono text-[13px] uppercase tracking-[2px] border-[3px] border-ink inline-block px-3 py-1.5 mb-7">
+            ● Assistant de réunion — audio → compte-rendu
+          </div>
+          <h1 className="font-display text-[clamp(48px,9vw,128px)] leading-[0.92] tracking-[-3px] uppercase m-0">
+            Parlez.<br />On écrit le<br />
+            <span className="bg-accent text-white px-2.5 border-4 border-ink [box-decoration-break:clone] [-webkit-box-decoration-break:clone]">
+              compte-rendu
+            </span>
+          </h1>
+          <p className="font-mono text-base max-w-[520px] mt-8 leading-[1.6]">
+            Scribe enregistre, transcrit et rédige. Résumé, décisions, actions — livrés à la fin de chaque réunion. Chiffré. Privé. Brut.
+          </p>
+          <div className="flex gap-4 mt-8 flex-wrap">
+            <CtaButton onClick={go}>Démarrer</CtaButton>
+            <CtaButton onClick={go}>Voir une démo</CtaButton>
+          </div>
+        </div>
+
+        {/* MARQUEE */}
+        <div className="mt-14 border-t-4 border-b-4 border-ink bg-ink overflow-hidden whitespace-nowrap">
+          <div className="inline-block animate-marq py-3">
+            <span className="font-display text-white text-[22px] uppercase tracking-[1px]">
+              {MARQUEE_TEXT}{MARQUEE_TEXT}
+            </span>
+          </div>
+        </div>
+
+        {/* FEATURES */}
+        <div className="max-w-[1200px] mx-auto mt-20 px-5">
+          <h2 className="font-display text-[clamp(32px,5vw,64px)] uppercase tracking-[-2px] m-0 mb-8 leading-[1]">
+            Trois choses.<br />Rien de plus.
+          </h2>
+          <div className="grid gap-0 border-4 border-ink" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+            {FEATURES.map((f, i) => (
+              <div
+                key={f.n}
+                className={`group p-7 px-6 hover:bg-accent hover:text-white ${i < FEATURES.length - 1 ? 'border-r-4 border-ink' : ''}`}
+              >
+                <div
+                  className="font-display text-[40px] text-ink group-hover:text-white"
+                  style={{ WebkitTextStroke: '2px currentColor', WebkitTextFillColor: 'transparent' }}
+                >
+                  {f.n}
+                </div>
+                <div className="font-display text-[22px] uppercase mt-3 mb-2">{f.t}</div>
+                <div className="font-mono text-sm leading-[1.6]">{f.d}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA STRIP */}
+        <div className="max-w-[1200px] mx-auto mt-16 mb-20 px-5">
+          <button
+            onClick={go}
+            className="cursor-pointer w-full text-left border-4 border-ink bg-ink text-white hover:bg-accent hover:text-ink px-8 py-12 flex items-center justify-between flex-wrap gap-5"
+          >
+            <div className="font-display text-[clamp(28px,4vw,48px)] uppercase tracking-[-1px]">
+              PRET A ENREGISTRER ?
+            </div>
+            <span
+              onClick={(e) => { e.stopPropagation(); go() }}
+              className="cursor-pointer font-mono font-bold text-lg bg-white text-ink border-4 border-ink shadow-[8px_8px_0_#ff2e00] hover:shadow-[2px_2px_0_#ff2e00] hover:translate-x-1.5 hover:translate-y-1.5 transition-none px-[22px] py-3.5 uppercase"
+            >
+              Se connecter →
+            </span>
+          </button>
+        </div>
+
+        {/* FOOTER */}
+        <div className="border-t-4 border-ink px-5 py-6 flex justify-between font-mono text-xs uppercase tracking-[1px] flex-wrap gap-2">
+          <span>Scribe© 2026</span>
+          <span>Chiffré · Privé · Sans bla-bla</span>
+        </div>
+      </div>
+    </div>
+  )
+}
