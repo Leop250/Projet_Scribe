@@ -8,7 +8,8 @@ en compte-rendu (transcript diarisé + génération LLM) et l'enregistre en base
 import json
 
 from llm import generate_report
-from db import save_recap
+from db import SessionLocal
+from models import Recap
 from transcript import (
     load_transcription_if_needed,
     extract_diarized_transcript,
@@ -55,10 +56,20 @@ def save_meeting(bot_result: dict, bot_name: str) -> dict:
     report = generate_report(transcript_text)
     report["speakers"] = speakers_list
 
-    return save_recap(
+    recap = Recap(
         user_id=None,  # TODO: brancher le vrai user_id une fois l'auth en place
         name=meeting_name,
         source="visio",
         transcription=transcript_text,
         reporting=report,
     )
+
+    db = SessionLocal()
+    try:
+        db.add(recap)
+        db.commit()
+        db.refresh(recap)
+    finally:
+        db.close()
+
+    return {"id": recap.id, "created_at": recap.created_at}
