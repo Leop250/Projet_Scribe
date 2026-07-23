@@ -6,6 +6,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from stt import callapi
 from llm import generate_report
+from calendar_bots.main import router as calendar_router
 
 load_dotenv()
 
@@ -22,6 +23,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(calendar_router, prefix="/calendar")
 
 @app.get("/")
 async def root():

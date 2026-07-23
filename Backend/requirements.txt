@@ -3,3 +3,5 @@ uvicorn[standard]==0.51.0
 python-multipart==0.0.32
 python-dotenv==1.2.2
 groq==1.5.0
+httpx==0.28.1
+svix==1.98.0

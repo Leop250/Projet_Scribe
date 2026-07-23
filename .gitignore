@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Scribe: stockage temporaire du module calendar_bots (contient un refresh token)
+calendar_store.json
