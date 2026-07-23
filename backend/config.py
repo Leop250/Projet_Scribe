@@ -1,18 +1,3 @@
-"""
-config.py
----------
-Charge les clés API du projet depuis les variables d'environnement.
-
-Toutes les clés doivent être définies soit :
-  - dans un vrai fichier .env à la racine du projet (voir .env.example) :
-        VEXA_API_KEY=vx_sk_...
-        MEETING_BAAS_API_KEY=...
-        GLADIA_API_KEY=...
-  - soit exportées manuellement dans le shell.
-
-Le fichier .env est ignoré par git (voir .gitignore) : ne jamais y toucher.
-"""
-
 import os
 
 try:
@@ -23,14 +8,6 @@ except ImportError:
 
 
 def get_api_key(env_var: str) -> str:
-    """Récupère une clé API depuis les variables d'environnement.
-
-    Args:
-        env_var: nom de la variable d'environnement (ex: "VEXA_API_KEY").
-
-    Raises:
-        EnvironmentError si la clé n'est pas définie.
-    """
     api_key = os.environ.get(env_var)
     if not api_key:
         raise EnvironmentError(

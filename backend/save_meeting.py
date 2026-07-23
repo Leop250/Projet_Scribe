@@ -1,10 +1,3 @@
-"""
-save_meeting.py
-----------------
-Point d'entrée unique : transforme le résultat d'un bot Meeting BaaS terminé
-en compte-rendu (transcript diarisé + génération LLM) et l'enregistre en base.
-"""
-
 import json
 
 from llm import generate_report

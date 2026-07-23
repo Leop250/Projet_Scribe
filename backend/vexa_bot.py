@@ -1,20 +1,4 @@
 #!/usr/bin/env python3
-"""
-vexa_bot.py
------------
-Envoie le bot "Scribe" (Vexa AI) dans une réunion Google Meet ou Microsoft
-Teams à partir d'un simple lien (ou du texte d'invitation Teams collé tel
-quel), puis récupère le transcript.
-
-Utilisation :
-    python3 vexa_bot.py "https://meet.google.com/abc-defg-hij"
-    python3 vexa_bot.py "https://teams.microsoft.com/l/meetup-join/...  Conference ID: 938 716 746#  Passcode: qxJanYOcdjN4d6UlGa"
-
-Prérequis :
-    pip install requests --break-system-packages
-    Ajouter dans .env : VEXA_API_KEY=vx_sk_...
-"""
-
 import re
 import sys
 import time

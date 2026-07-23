@@ -1,11 +1,3 @@
-"""
-meetingbaas_client.py
-----------------------
-Client HTTP pour l'API Meeting BaaS v2 : création, suivi et suppression de bots.
-Ne contient aucune logique de parsing de transcript ni d'enregistrement en base
-(voir transcript.py et save_meeting.py).
-"""
-
 import time
 
 import requests
