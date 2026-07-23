@@ -32,7 +32,7 @@ def print_history(bots: list, raw: bool = False) -> None:
         created_at = bot.get("created_at", "n/a")
         duration = bot.get("duration_seconds", "n/a")
 
-        print(f"\n{i}. bot_id        : {bot_id}")
+        print(f"{i}. bot_id        : {bot_id}")
         print(f"   Nom            : {bot_name}")
         print(f"   URL réunion    : {meeting_url}")
         print(f"   Statut         : {status}")
