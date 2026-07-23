@@ -44,7 +44,7 @@ async def root():
     return {"message": "Connected."}
 
 @app.post("/recordings")
-async def records(audio = File(...), user_id: str = Form(...), db: Session = Depends(get_db)):
+async def records(audio = File(...), user_id: str = Form(None), db: Session = Depends(get_db)):
     temp_path = Path("temp") / audio.filename
     temp_path.parent.mkdir(exist_ok=True)
 
