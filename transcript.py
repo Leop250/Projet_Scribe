@@ -1,18 +1,3 @@
-"""
-transcript.py
--------------
-Téléchargement et parsing du transcript diarisé renvoyé par Meeting BaaS.
-
-La réponse d'un bot terminé contient une URL S3 présignée dans le champ
-"transcription" plutôt que le contenu direct. Ce module télécharge ce
-fichier et le transforme en une liste de segments {speaker, start, end,
-text} exploitable par le reste de l'application.
-
-Format réel observé : {"bot_id", "provider", "result": {"utterances": [
-    {"text", "start", "end", "speaker"}, ...
-]}}. `speaker` vaut parfois "Unknown" quand Gladia n'a pas su l'identifier.
-"""
-
 import requests
 
 UNRESOLVED_SPEAKER_LABELS = ("", "unknown", "inconnu")

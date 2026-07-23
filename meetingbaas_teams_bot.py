@@ -23,7 +23,7 @@ def print_history(bots: list, raw: bool = False) -> None:
         print("[INFO] Aucun bot trouvé dans l'historique.")
         return
 
-    print(f"\n=== Historique des réunions ({len(bots)} bot(s))")
+    print(f"Historique des réunions ({len(bots)} bot(s))")
     for i, bot in enumerate(bots, start=1):
         bot_id = bot.get("bot_id") or bot.get("id", "n/a")
         bot_name = bot.get("bot_name", "n/a")
@@ -33,18 +33,18 @@ def print_history(bots: list, raw: bool = False) -> None:
         duration = bot.get("duration_seconds", "n/a")
 
         print(f"\n{i}. bot_id        : {bot_id}")
-        print(f"   Nom            : {bot_name}")
-        print(f"   URL réunion    : {meeting_url}")
-        print(f"   Statut         : {status}")
-        print(f"   Créé le        : {created_at}")
-        print(f"   Durée (s)      : {duration}")
+        print(f"Nom            : {bot_name}")
+        print(f"URL réunion    : {meeting_url}")
+        print(f"Statut         : {status}")
+        print(f"Créé le        : {created_at}")
+        print(f"Durée (s)      : {duration}")
 
         participants = bot.get("participants")
         if participants:
-            print(f"   Participants   : {participants}")
+            print(f"Participants   : {participants}")
 
         if raw:
-            print(f"   JSON brut      : {json.dumps(bot, ensure_ascii=False)}")
+            print(f"JSON brut      : {json.dumps(bot, ensure_ascii=False)}")
 
 
 def main():
@@ -62,7 +62,6 @@ def main():
         choices=["audio_only", "speaker_view", "gallery_view"],
     )
     args = parser.parse_args()
-
     try:
         api_key = get_meeting_baas_api_key()
     except EnvironmentError as exc:

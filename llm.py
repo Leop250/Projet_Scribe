@@ -2,24 +2,21 @@ import json
 from pathlib import Path
 from together import Together
 
-from config import get_together_api_key
-
+from config import get_together_api_key, get_together_model
 client = Together(api_key=get_together_api_key())
-
+TOGETHER_MODEL = get_together_model()
 CONTEXT_PATH = Path(__file__).resolve().parent / "agent_context.txt"
+
 
 with open(CONTEXT_PATH, "r", encoding="utf-8") as f:
     context = f.read()
 
 
+
+
 def generate_report(transcript: str) -> dict:
-    """
-    Envoie le transcript au LLM et retourne un dict avec au minimum :
-    { "summary": "...", "themes": [...], "actions": [...] }
-    (les "speakers" sont ajoutés séparément à partir de la diarisation Meeting BaaS)
-    """
     analyze = client.chat.completions.create(
-        model="Qwen/Qwen3.7-Max",
+        model=TOGETHER_MODEL,
         messages=[
             {"role": "system", "content": context},
             {"role": "user", "content": transcript},
