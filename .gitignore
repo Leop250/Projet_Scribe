@@ -220,7 +220,3 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 frontend/node_modules/
-
-# Dossiers non utilisés sur cette branche (restes d'autres branches)
-Backend/
-frontend/
