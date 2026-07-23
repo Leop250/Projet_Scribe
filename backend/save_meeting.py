@@ -19,7 +19,7 @@ def save_meeting(bot_result: dict, bot_name: str) -> dict:
     bot_name   : nom donné au bot à sa création (ex: "Scribe"), exclu des participants humains.
 
     Télécharge/parse le transcript, génère le compte-rendu via le LLM, et enregistre
-    le tout en base (user_id=None en attendant l'authentification).
+    le tout en base.
     Retourne {"id", "created_at"}.
     """
     bot_result = load_transcription_if_needed(bot_result)
@@ -50,7 +50,6 @@ def save_meeting(bot_result: dict, bot_name: str) -> dict:
     report["speakers"] = speakers_list
 
     recap = Recap(
-        user_id=None,  # TODO: brancher le vrai user_id une fois l'auth en place
         name=meeting_name,
         source="visio",
         transcription=transcript_text,
@@ -65,4 +64,4 @@ def save_meeting(bot_result: dict, bot_name: str) -> dict:
     finally:
         db.close()
 
-    return {"id": recap.id, "created_at": recap.created_at}
+    return {"id": recap.recap_id, "created_at": recap.created_at}
