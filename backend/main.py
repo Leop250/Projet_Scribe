@@ -85,7 +85,7 @@ async def records(audio = File(...), emails: str = Form(None), db: Session = Dep
 
     return {
         "status": "ok",
-        "id": str(recap.id),
+        "id": str(recap.recap_id),
         "Compte-rendu": report,
         "transcription": transcript,
     }
