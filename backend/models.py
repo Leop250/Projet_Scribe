@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DateTime, Integer
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from db import Base
@@ -10,7 +10,7 @@ from db import Base
 class Recap(Base):
     __tablename__ = "recaps"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(Integer, primary_key=True)
     user_id = Column(UUID(as_uuid=True), nullable=True)
     name = Column(String, nullable=False)
     source = Column(String, nullable=False)  # "dictaphone" | "meeting_bot"
