@@ -2,24 +2,24 @@ import os
 
 try:
     from dotenv import load_dotenv
-    load_dotenv()  
+    load_dotenv()
 except ImportError:
     pass
 
 
 def get_api_key(env_var: str) -> str:
-    """Récupère une clé API depuis les variables d'environnement.
+    """Récupère une variable d'environnement (clé API, modèle, url...).
 
     Args:
         env_var: nom de la variable d'environnement (ex: "VEXA_API_KEY").
 
     Raises:
-        EnvironmentError si la clé n'est pas définie.
+        EnvironmentError si la variable n'est pas définie.
     """
     api_key = os.environ.get(env_var)
     if not api_key:
         raise EnvironmentError(
-            f"La clé API {env_var} n'est pas définie. "
+            f"La variable {env_var} n'est pas définie. "
             f"Ajoute-la dans ton fichier .env (voir .env.example) "
             f"ou exporte-la manuellement : export {env_var}=\"...\""
         )
@@ -35,12 +35,23 @@ def get_meeting_baas_api_key() -> str:
 def get_gladia_api_key() -> str:
     return get_api_key("GLADIA_API_KEY")
 
+def get_groq_api_key() -> str:
+    return get_api_key("GROQ_API_KEY")
+
+def get_mistral_api_key() -> str:
+    return get_api_key("MISTRAL_API_KEY")
+
+def get_mistral_model() -> str:
+    return get_api_key("MISTRAL_MODEL")
+
 def get_together_api_key() -> str:
     return get_api_key("TOGETHER_API_KEY")
 
-
 def get_together_model() -> str:
-    return os.environ.get("TOGETHER_MODEL", "Qwen/Qwen3.7-Max")
+    return get_api_key("TOGETHER_MODEL")
 
 def get_database_url() -> str:
     return get_api_key("DATABASE_URL")
+
+def get_frontend_url() -> str:
+    return get_api_key("FRONTEND_URL")
