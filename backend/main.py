@@ -11,7 +11,7 @@ load_dotenv()
 from stt import callapi
 from llm import generate_report
 from db import SessionLocal
-from models import Recap
+from models import Recap, User
 
 app = FastAPI()
 
@@ -26,6 +26,11 @@ def normalize_url(url: str) -> str:
     if not url:
         return url
     return url if url.startswith(("http://", "https://")) else f"https://{url}"
+
+def append_recap_id(participants: list, recap_id: int) -> list:
+    for participant in participants:
+        participant["recap_id"] = recap_id
+    return participants
 
 origins = [
     normalize_url(os.environ.get("FRONTEND_URL", "http://localhost:5173"))
@@ -44,7 +49,7 @@ async def root():
     return {"message": "Connected."}
 
 @app.post("/recordings")
-async def records(audio = File(...), user_id: str = Form(None), db: Session = Depends(get_db)):
+async def records(audio = File(...), emails: str = Form(None), db: Session = Depends(get_db)):
     temp_path = Path("temp") / audio.filename
     temp_path.parent.mkdir(exist_ok=True)
 
@@ -57,15 +62,24 @@ async def records(audio = File(...), user_id: str = Form(None), db: Session = De
     temp_path.unlink()
 
     recap = Recap(
-        user_id=user_id,
+        emails=emails,
         name=audio.filename,
         source="dictaphone",
         transcription=transcript,
         reporting=report,
     )
+
     db.add(recap)
     db.commit()
     db.refresh(recap)
+
+    for email in (emails.split(",") if emails else []):
+        email = email.strip()
+        user = db.query(User).filter(User.email == email).first()
+        if user:
+            user.participants_list_of_recaps = append_recap_id(user.participants_list_of_recaps, recap.recap_id)
+
+    db.commit()
 
     print("Audio received successfully")
 
