@@ -14,14 +14,7 @@ from transcript import (
 
 
 def save_meeting(bot_result: dict, bot_name: str) -> dict:
-    """
-    bot_result : réponse brute de l'API Meeting BaaS pour un bot terminé (GET /bots/{id}).
-    bot_name   : nom donné au bot à sa création (ex: "Scribe"), exclu des participants humains.
 
-    Télécharge/parse le transcript, génère le compte-rendu via le LLM, et enregistre
-    le tout en base.
-    Retourne {"id", "created_at"}.
-    """
     bot_result = load_transcription_if_needed(bot_result)
     segments = extract_diarized_transcript(bot_result)
     participants = bot_result.get("participants") or []
