@@ -15,11 +15,7 @@ with open(CONTEXT_PATH, "r", encoding="utf-8") as f:
 
 
 def generate_report(transcript: str) -> dict:
-    """
-    Envoie le transcript au LLM et retourne un dict avec au minimum :
-    { "summary": "...", "themes": [...], "actions": [...] }
-    (les "speakers" sont ajoutés séparément à partir de la diarisation Meeting BaaS)
-    """
+
     analyze = client.chat.completions.create(
         model=TOGETHER_MODEL,
         messages=[
