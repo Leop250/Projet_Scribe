@@ -80,8 +80,6 @@ async def records(audio = File(...), emails: str = Form(None), db: Session = Dep
 
     db.commit()
 
-    print("Audio received successfully")
-
     return {
         "status": "ok",
         "id": str(recap.recap_id),
