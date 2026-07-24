@@ -44,12 +44,11 @@ async def records(audio = File(...)):
 
     with open(temp_path, "wb") as f:
         shutil.copyfileobj(audio.file, f)
-
-    transcript = call_speech_to_text_agent(temp_path)
-    print(transcript)    
-    report = call_classifier(transcript)
-
-    temp_path.unlink()
+    try:
+        transcript = call_speech_to_text_agent(temp_path)
+        report = call_classifier(transcript)
+    finally:
+        temp_path.unlink()
 
     print("Audio received successfully")
     return {
