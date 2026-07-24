@@ -74,7 +74,6 @@ async def records(audio = File(...), emails: str = Form(None), db: Session = Dep
     db.refresh(recap)
 
     for email in (emails.split(",") if emails else []):
-        email = email.strip()
         user = db.query(User).filter(User.email == email).first()
         if user:
             user.participants_list_of_recaps = append_recap_id(user.participants_list_of_recaps, recap.recap_id)
