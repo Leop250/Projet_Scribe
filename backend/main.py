@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from stt import callapi
-from llm import generate_report
+from speech_to_text import call_speech_to_text_agent
+from classifier import call_classifier
 
 app = FastAPI()
 
@@ -45,9 +45,9 @@ async def records(audio = File(...)):
     with open(temp_path, "wb") as f:
         shutil.copyfileobj(audio.file, f)
 
-    transcript = callapi(temp_path)
+    transcript = call_speech_to_text_agent(temp_path)
     print(transcript)    
-    report = generate_report(transcript)
+    report = call_classifier(transcript)
 
     temp_path.unlink()
 
