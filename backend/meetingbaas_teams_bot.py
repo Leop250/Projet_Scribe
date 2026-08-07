@@ -62,7 +62,6 @@ def main():
         choices=["audio_only", "speaker_view", "gallery_view"],
     )
     args = parser.parse_args()
-
     try:
         api_key = get_meeting_baas_api_key()
     except EnvironmentError as exc:
@@ -106,7 +105,7 @@ def main():
             print("\n=== Réponse JSON brute ===")
             print(json.dumps(result, indent=2, ensure_ascii=False))
 
-        print("\n=== Résultat ===")
+        print("Résultat: ")
         print(f"Bot ID         : {bot_id}")
         print(f"Nom du bot     : {result.get('bot_name', 'n/a')}")
         print(f"URL réunion    : {result.get('meeting_url', 'n/a')}")
