@@ -1,10 +1,13 @@
 """Wrapper fin autour de l'API v2 MeetingBaaS (Calendar API)."""
 
 import os
+import time
 
 import httpx
 
 BASE_URL = "https://api.meetingbaas.com/v2"
+POLL_INTERVAL_SECONDS = 15
+POLL_TIMEOUT_SECONDS = 20 * 60
 
 
 def _headers():
@@ -55,5 +58,28 @@ def schedule_bot(calendar_id, event_id, series_id, bot_name="Scribe Notetaker"):
         "series_id": series_id,
         "all_occurrences": False,
         "bot_name": bot_name,
-        "recording_mode": "speaker_view",
+        "recording_mode": "audio_only",
+        "transcription_enabled": True,
+        "transcription_config": {"provider": "gladia"},
     })
+
+
+def get_bot_status(bot_id):
+    """Récupère l'état/le résultat complet d'un bot (transcription, participants, ...),
+    utilisé une fois la réunion terminée pour sauvegarder le recap."""
+    return _call("GET", f"/bots/{bot_id}")
+
+
+def wait_for_transcription(bot_id):
+    """Poll le bot jusqu'à ce que la transcription soit prête. MeetingBaaS n'envoie
+    pas de webhook dédié à la fin de la transcription (observé : les bot.status_change
+    s'arrêtent à "transcribing"), donc on interroge nous-mêmes GET /bots/{id}."""
+    start = time.time()
+    while time.time() - start < POLL_TIMEOUT_SECONDS:
+        status = get_bot_status(bot_id)
+        if status.get("transcription"):
+            return status
+        if status.get("error_code") or status.get("status") in ("failed", "error"):
+            raise RuntimeError(f"Le bot a échoué : {status}")
+        time.sleep(POLL_INTERVAL_SECONDS)
+    raise TimeoutError(f"Transcription indisponible après {POLL_TIMEOUT_SECONDS}s pour le bot {bot_id}")

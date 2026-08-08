@@ -7,10 +7,14 @@ from dotenv import load_dotenv
 from stt import callapi
 from llm import generate_report
 from calendar_bots.main import router as calendar_router
+from db import Base, engine
+import models  # noqa: F401 - importé pour enregistrer Recap sur Base.metadata
 
 load_dotenv()
 
 app = FastAPI()
+
+Base.metadata.create_all(bind=engine)
 
 origins = [
     os.environ.get("FRONTEND_URL", "http://localhost:5173")

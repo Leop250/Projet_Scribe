@@ -9,7 +9,7 @@ from pathlib import Path
 
 STORE_PATH = Path(__file__).parent / "calendar_store.json"
 
-_DEFAULT = {"connection": None, "scheduled_events": []}
+_DEFAULT = {"connection": None, "scheduled_events": [], "saved_bots": [], "processing_bots": []}
 
 
 def _load():
@@ -45,4 +45,28 @@ def mark_event_scheduled(event_id):
     data = _load()
     if event_id not in data["scheduled_events"]:
         data["scheduled_events"].append(event_id)
+        _save(data)
+
+
+def is_bot_saved(bot_id):
+    return bot_id in _load().get("saved_bots", [])
+
+
+def mark_bot_saved(bot_id):
+    data = _load()
+    data.setdefault("saved_bots", [])
+    if bot_id not in data["saved_bots"]:
+        data["saved_bots"].append(bot_id)
+        _save(data)
+
+
+def is_bot_processing(bot_id):
+    return bot_id in _load().get("processing_bots", [])
+
+
+def mark_bot_processing(bot_id):
+    data = _load()
+    data.setdefault("processing_bots", [])
+    if bot_id not in data["processing_bots"]:
+        data["processing_bots"].append(bot_id)
         _save(data)
