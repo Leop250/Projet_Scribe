@@ -8,12 +8,7 @@ from mistralai.client import Mistral
 
 load_dotenv("../.env")
 
-api_key = os.environ["MISTRAL_API_KEY"]
-model = "voxtral-small-latest"
-
-client = Mistral(api_key=api_key)
-
-
+client = Mistral(api_key=os.environ["MISTRAL_API_KEY"])
 
 def convert_to_wav(input_path):
     wav_path = input_path.with_suffix(".wav")
@@ -30,7 +25,7 @@ def convert_to_wav(input_path):
     )
     return wav_path
 
-def callapi(file_path):
+def call_speech_to_text_agent(file_path):
     wav_path = convert_to_wav(file_path)
     try:
         with open(wav_path, "rb") as f:
@@ -38,7 +33,7 @@ def callapi(file_path):
         audio_base64 = base64.b64encode(content).decode("utf-8")
 
         chat_response = client.chat.complete(
-            model=model,
+            model=os.environ["SPEECH_TO_TEXT_MODEL"],
             messages=[
                 {
                     "role": "user",
