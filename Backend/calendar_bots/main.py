@@ -23,7 +23,7 @@ def _process_completed_bot(bot_id: str) -> None:
 
     try:
         result = client.wait_for_transcription(bot_id)
-        saved = save_meeting(result, bot_name=DEFAULT_BOT_NAME, source="calendar")
+        saved = save_meeting(result, bot_name=DEFAULT_BOT_NAME, source="visio")
         store.mark_bot_saved(bot_id)
         print(f"[webhook] recap enregistré en base pour bot {bot_id} (id={saved['id']}).")
     except Exception as exc:

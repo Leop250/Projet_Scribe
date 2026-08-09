@@ -13,7 +13,7 @@ from transcript import (
 )
 
 
-def save_meeting(bot_result: dict, bot_name: str, source: str = "calendar") -> dict:
+def save_meeting(bot_result: dict, bot_name: str, source: str = "visio") -> dict:
 
     bot_result = load_transcription_if_needed(bot_result)
     segments = extract_diarized_transcript(bot_result)
