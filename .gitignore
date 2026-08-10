@@ -218,3 +218,8 @@ __marimo__/
 .streamlit/secrets.toml
 *.zip
 backend/exemple_file_audio/
+
+# macOS
+.DS_Store
+
+backend/temp/
