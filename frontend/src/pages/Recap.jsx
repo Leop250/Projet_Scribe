@@ -7,10 +7,6 @@ function dotFor(i) {
   return DOT_PALETTE[i % DOT_PALETTE.length]
 }
 
-function SkeletonLine({ className = '' }) {
-  return <div className={`h-3 bg-black/10 animate-pulse ${className}`} />
-}
-
 function ParticipantChips({ speakers }) {
   if (!speakers?.length) return null
   return (
@@ -91,33 +87,11 @@ function RecapContent({ recap }) {
   )
 }
 
-function RecapSkeleton() {
+function EmptyRecap() {
   return (
-    <>
-      <div className="border-4 border-ink mb-5">
-        <div className="bg-ink text-white px-4 py-2.5 font-mono text-xs uppercase tracking-[1px]">Résumé</div>
-        <div className="px-4 py-4.5 flex flex-col gap-2">
-          <SkeletonLine />
-          <SkeletonLine className="w-5/6" />
-          <SkeletonLine className="w-4/5" />
-        </div>
-      </div>
-      <div className="border-4 border-ink mb-5">
-        <div className="bg-accent text-white px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-[1px]">Actions</div>
-        <div className="px-4 py-4 flex flex-col gap-3">
-          <SkeletonLine className="w-2/3" />
-          <SkeletonLine className="w-1/2" />
-        </div>
-      </div>
-      <div className="border-4 border-ink">
-        <div className="bg-ink text-white px-4 py-2.5 font-mono text-xs uppercase tracking-[1px]">Transcription</div>
-        <div className="px-4 py-4 flex flex-col gap-3">
-          <SkeletonLine className="w-1/3" />
-          <SkeletonLine />
-          <SkeletonLine className="w-3/4" />
-        </div>
-      </div>
-    </>
+    <div className="border-4 border-ink px-6 py-10 text-center font-mono text-sm text-muted">
+      Aucun compte-rendu pour le moment.
+    </div>
   )
 }
 
@@ -126,15 +100,15 @@ export default function Recap() {
 
   return (
     <AppShell>
-      <div className="p-6 md:p-10 max-w-[820px]">
+      <div className="p-6 md:p-10 max-w-[820px] mx-auto">
         <h2 className="font-display text-[34px] uppercase tracking-[-1px] m-0 mb-1.5 leading-none">
           Comptes-rendus
         </h2>
         <div className="font-mono text-[13px] text-muted mb-6">
-          {recap ? 'Analyse terminée' : "En attente de l'analyse…"}
+          {recap ? 'Analyse terminée' : '0 compte-rendu'}
         </div>
 
-        {recap ? <RecapContent recap={recap} /> : <RecapSkeleton />}
+        {recap ? <RecapContent recap={recap} /> : <EmptyRecap />}
       </div>
     </AppShell>
   )

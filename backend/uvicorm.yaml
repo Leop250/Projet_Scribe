@@ -1,5 +1,0 @@
-reload: true
-reload_dirs:
-  - "."
-reload_excludes:
-  - "venv"

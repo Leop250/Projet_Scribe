@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router'
 import Waveform from '../components/Waveform'
 import { useRecap } from '../context/RecapContext'
+import { useAuth } from '../context/AuthContext'
 import { uploadRecording } from '../api'
 
 function fmt(secs) {
@@ -21,7 +22,19 @@ export default function Record() {
   const handleStopRef = useRef(() => {})
 
   const { setRecap } = useRecap()
+  const { token }    = useAuth()
   const navigate     = useNavigate()
+
+  // L'effet ci-dessous ne doit tourner qu'une fois (il ouvre le micro et le
+  // MediaRecorder pour toute la durée de l'enregistrement — le relancer à
+  // chaque changement de token couperait l'enregistrement en cours). Le
+  // upload en fin d'enregistrement doit pourtant utiliser le token le plus
+  // récent, pas celui capturé au montage : on le lit via une ref tenue à
+  // jour, sur le même principe que handleStopRef juste au-dessus.
+  const tokenRef = useRef(token)
+  useEffect(() => {
+    tokenRef.current = token
+  }, [token])
 
   useEffect(() => {
     // Guards against the async getUserMedia() race: a React StrictMode
@@ -62,7 +75,7 @@ export default function Record() {
 
         try {
           const blob = new Blob(chunks, { type: recorder.mimeType })
-          const data = await uploadRecording(blob)
+          const data = await uploadRecording(blob, tokenRef.current)
           if (cancelled) return
           setRecap(data)
           navigate('/recap')
@@ -98,6 +111,9 @@ export default function Record() {
       if (audioCtxRef.current?.state !== 'closed') audioCtxRef.current?.close()
       clearInterval(timerRef.current)
     }
+    // navigate (react-router) et setRecap (setter useState) sont stables à
+    // vie — token n'a plus besoin d'être ici puisqu'il est lu via tokenRef.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function handleStop() {
