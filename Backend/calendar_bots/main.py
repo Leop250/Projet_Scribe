@@ -13,7 +13,7 @@ router = APIRouter()
 DEFAULT_BOT_NAME = "Scribe Notetaker"
 
 
-def _process_completed_bot(bot_id: str) -> None:
+def _process_completed_bot(bot_id: str, event_id: str | None = None) -> None:
     """Attend la transcription puis enregistre le recap en base (tâche de fond,
     déclenchée dès que le bot a quitté l'appel)."""
     if not bot_id or store.is_bot_saved(bot_id) or store.is_bot_processing(bot_id):
@@ -23,7 +23,8 @@ def _process_completed_bot(bot_id: str) -> None:
 
     try:
         result = client.wait_for_transcription(bot_id)
-        saved = save_meeting(result, bot_name=DEFAULT_BOT_NAME, source="visio")
+        emails = store.get_event_emails(event_id)
+        saved = save_meeting(result, bot_name=DEFAULT_BOT_NAME, source="visio", emails=emails)
         store.mark_bot_saved(bot_id)
         print(f"[webhook] recap enregistré en base pour bot {bot_id} (id={saved['id']}).")
     except Exception as exc:
@@ -90,19 +91,25 @@ async def webhook(request: Request, background_tasks: BackgroundTasks):
             if joins:
                 client.schedule_bot(calendar_id, event_id, series_id, bot_name=DEFAULT_BOT_NAME)
                 store.mark_event_scheduled(event_id)
+
+                attendees = calendar_event.get("attendees") or []
+                emails = [a.get("email") for a in attendees if a.get("email")]
+                store.save_event_emails(event_id, emails)
+
                 print(f"[webhook] bot programmé pour event {event_id}")
 
         return {"status": "ok"}
 
     if event == "bot.status_change":
         bot_id = data.get("bot_id")
+        event_id = data.get("event_id")
         status = (data.get("status") or {}).get("code")
         print(f"[webhook] bot {bot_id} -> status={status}")
         if status == "call_ended":
             # MeetingBaaS n'envoie pas de webhook dédié à la fin de la transcription
             # (observé : les status_change s'arrêtent à "transcribing") : on la
             # poll nous-mêmes en tâche de fond dès que le bot a quitté l'appel.
-            background_tasks.add_task(_process_completed_bot, bot_id)
+            background_tasks.add_task(_process_completed_bot, bot_id, event_id)
         return {"status": "ok"}
 
     return {"status": "ignored"}

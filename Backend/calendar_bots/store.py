@@ -9,7 +9,7 @@ from pathlib import Path
 
 STORE_PATH = Path(__file__).parent / "calendar_store.json"
 
-_DEFAULT = {"connection": None, "scheduled_events": [], "saved_bots": [], "processing_bots": []}
+_DEFAULT = {"connection": None, "scheduled_events": [], "saved_bots": [], "processing_bots": [], "event_emails": {}}
 
 
 def _load():
@@ -70,3 +70,23 @@ def mark_bot_processing(bot_id):
     if bot_id not in data["processing_bots"]:
         data["processing_bots"].append(bot_id)
         _save(data)
+
+
+def save_event_emails(event_id, emails):
+    """Associe les emails des attendees Google Calendar à l'event programmé (connus
+    seulement à la programmation, à réutiliser plus tard pour peupler Recap.emails).
+
+    Indexé par event_id et non par bot_id : POST /calendars/{id}/bots ne renvoie
+    pas le bot_id créé (seulement l'event_id programmé), donc bot_id est indisponible
+    à cet instant. event_id, lui, est aussi présent dans le payload du webhook
+    bot.status_change, ce qui permet de refaire le lien une fois la réunion terminée."""
+    if not event_id or not emails:
+        return
+    data = _load()
+    data.setdefault("event_emails", {})
+    data["event_emails"][event_id] = emails
+    _save(data)
+
+
+def get_event_emails(event_id):
+    return _load().get("event_emails", {}).get(event_id, [])

@@ -53,7 +53,7 @@ def get_event(calendar_id, event_id):
 
 
 def schedule_bot(calendar_id, event_id, series_id, bot_name="Scribe Notetaker"):
-    return _call("POST", f"/calendars/{calendar_id}/bots", json={
+    data = _call("POST", f"/calendars/{calendar_id}/bots", json={
         "event_id": event_id,
         "series_id": series_id,
         "all_occurrences": False,
@@ -62,12 +62,39 @@ def schedule_bot(calendar_id, event_id, series_id, bot_name="Scribe Notetaker"):
         "transcription_enabled": True,
         "transcription_config": {"provider": "gladia"},
     })
+    # MeetingBaaS renvoie une liste de bots (un par occurrence programmée),
+    # même pour all_occurrences=False : on ne prend que le premier.
+    if isinstance(data, list):
+        if not data:
+            raise RuntimeError(f"MeetingBaaS n'a programmé aucun bot pour l'event {event_id}")
+        data = data[0]
+    return data
 
 
 def get_bot_status(bot_id):
     """Récupère l'état/le résultat complet d'un bot (transcription, participants, ...),
     utilisé une fois la réunion terminée pour sauvegarder le recap."""
     return _call("GET", f"/bots/{bot_id}")
+
+
+# Statuts terminaux (enum "status" de GET /bots/{id}) qui signifient que le bot
+# ne produira jamais de transcription : pas seulement "failed" (valeur qui
+# n'existe même pas dans l'enum réel, "transcription_failed" si).
+FAILURE_STATUSES = {
+    "failed",
+    "transcription_failed",
+    "recording_failed",
+    "bot_rejected",
+    "bot_removed",
+    "bot_removed_too_early",
+    "waiting_room_timeout",
+    "invalid_meeting_url",
+    "meeting_error",
+    "MEET_LOGIN_UNAVAILABLE",
+    "MEET_LOGIN_REQUIRED",
+    "MEET_LOGIN_FAILED_SAML_REJECTED",
+    "MEET_LOGIN_FAILED_TIMEOUT",
+}
 
 
 def wait_for_transcription(bot_id):
@@ -77,9 +104,11 @@ def wait_for_transcription(bot_id):
     start = time.time()
     while time.time() - start < POLL_TIMEOUT_SECONDS:
         status = get_bot_status(bot_id)
+        code = status.get("status")
+        print(f"[calendar_bots] poll bot {bot_id} -> status={code}, transcription={'prête' if status.get('transcription') else 'en attente'}")
         if status.get("transcription"):
             return status
-        if status.get("error_code") or status.get("status") in ("failed", "error"):
+        if status.get("error_code") or code in FAILURE_STATUSES:
             raise RuntimeError(f"Le bot a échoué : {status}")
         time.sleep(POLL_INTERVAL_SECONDS)
     raise TimeoutError(f"Transcription indisponible après {POLL_TIMEOUT_SECONDS}s pour le bot {bot_id}")

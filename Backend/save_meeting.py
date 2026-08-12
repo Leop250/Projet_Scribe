@@ -13,7 +13,7 @@ from transcript import (
 )
 
 
-def save_meeting(bot_result: dict, bot_name: str, source: str = "visio") -> dict:
+def save_meeting(bot_result: dict, bot_name: str, source: str = "visio", emails: list | None = None) -> dict:
 
     bot_result = load_transcription_if_needed(bot_result)
     segments = extract_diarized_transcript(bot_result)
@@ -47,6 +47,7 @@ def save_meeting(bot_result: dict, bot_name: str, source: str = "visio") -> dict
         source=source,
         transcription=transcript_text,
         reporting=report,
+        emails=emails or None,
     )
 
     db = SessionLocal()
