@@ -1,8 +1,10 @@
 import json
 
+from sqlalchemy import func
+
 from llm import generate_report
 from db import SessionLocal
-from models import Recap
+from models import Recap, User
 from transcript import (
     load_transcription_if_needed,
     extract_diarized_transcript,
@@ -55,7 +57,15 @@ def save_meeting(bot_result: dict, bot_name: str, source: str = "visio", emails:
         db.add(recap)
         db.commit()
         db.refresh(recap)
+        recap_id, created_at = recap.recap_id, recap.created_at
+
+        if emails:
+            matched_users = db.query(User).filter(func.lower(User.email).in_([e.lower() for e in emails])).all()
+            for user in matched_users:
+                if recap_id not in (user.participants_list_of_recaps or []):
+                    user.participants_list_of_recaps = (user.participants_list_of_recaps or []) + [recap_id]
+            db.commit()
     finally:
         db.close()
 
-    return {"id": recap.recap_id, "created_at": recap.created_at}
+    return {"id": recap_id, "created_at": created_at}
