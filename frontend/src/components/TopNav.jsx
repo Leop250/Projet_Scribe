@@ -13,7 +13,7 @@ export default function TopNav() {
         <Logo size={26} />
       </button>
       <button
-        onClick={() => navigate('/login')}
+        onClick={() => navigate('/')}
         className="cursor-pointer flex items-center px-[22px] h-10 bg-ink text-white font-mono font-bold text-[13px] uppercase tracking-[1px] border-4 border-ink shadow-[6px_6px_0_#ff2e00] hover:shadow-[2px_2px_0_#ff2e00] hover:translate-x-1 hover:translate-y-1 transition-none"
       >
         Se connecter →
