@@ -2,7 +2,7 @@ from passlib.context import CryptContext
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.orm import Session
 
-from .database import Base
+from database import Base
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

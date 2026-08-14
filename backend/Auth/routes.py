@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from .authentification import create_access_token
 from .config import settings
-from .database import get_db
+from database import get_db
 from .dependencies import get_current_user
 from .email_services import send_password_reset_email_async, send_verification_code_email_async
 from .schemas import (
