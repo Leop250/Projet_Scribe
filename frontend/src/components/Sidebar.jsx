@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router'
 import Logo from './Logo'
+import { useAuth } from '../context/AuthContext'
 
 function tabs(pathname) {
   return [
@@ -13,6 +14,7 @@ function tabs(pathname) {
 export default function Sidebar() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
+  const { logout } = useAuth()
 
   return (
     <aside className="hidden md:flex flex-col w-[88px] shrink-0 h-[100dvh] sticky top-0 border-r-4 border-ink bg-paper">
@@ -39,7 +41,7 @@ export default function Sidebar() {
       })}
 
       <button
-        onClick={() => navigate('/')}
+        onClick={() => { logout(); navigate('/') }}
         className="cursor-pointer border-none mt-auto py-5 px-1.5 text-center font-mono text-[9px] uppercase bg-transparent hover:bg-accent hover:text-white transition-none"
       >
         Quitter

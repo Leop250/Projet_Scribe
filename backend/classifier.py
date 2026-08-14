@@ -1,15 +1,18 @@
 import os
 import json
 from together import Together
+from dotenv import load_dotenv
+
+load_dotenv("../.env")
 
 client = Together()
 
 with open("agent_context.txt", "r") as f:
     context = f.read()
 
-def generate_report(transcript):
+def call_classifier(transcript):
     analyze = client.chat.completions.create(
-        model="Qwen/Qwen3.6-Plus",
+        model=os.environ["CLASSIFIER_MODEL"],
         messages=[
             {"role": "system", "content": context},
             {"role": "user", "content": transcript}

@@ -43,7 +43,7 @@ export default function Consent() {
           >
             {consent ? '✕' : ''}
           </span>
-          <span>J'accepte l'enregistrement et le traitement de mes réunions par Scribe.</span>
+          <span>J&apos;accepte l&apos;enregistrement et le traitement de mes réunions par Scribe.</span>
         </label>
 
         <button
