@@ -1,0 +1,753 @@
+{"speaker":"de Terline Leopold","start_time":2.341,"end_time":4.983,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":4.983,"end_time":5.032,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.032,"end_time":5.033,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.033,"end_time":5.033,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.033,"end_time":5.033,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.033,"end_time":5.033,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.033,"end_time":5.034,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.034,"end_time":5.078,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.078,"end_time":5.078,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.078,"end_time":5.079,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.079,"end_time":5.079,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.079,"end_time":5.079,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.079,"end_time":5.079,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.079,"end_time":5.079,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.079,"end_time":5.079,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.079,"end_time":5.125,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.125,"end_time":5.128,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.128,"end_time":5.128,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.128,"end_time":5.128,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.128,"end_time":5.128,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.128,"end_time":5.128,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.128,"end_time":5.129,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.129,"end_time":5.172,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.172,"end_time":5.172,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.172,"end_time":5.172,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.172,"end_time":5.173,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.173,"end_time":5.173,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.173,"end_time":5.173,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.173,"end_time":5.173,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.173,"end_time":5.347,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.347,"end_time":5.348,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.348,"end_time":5.352,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.352,"end_time":5.353,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.353,"end_time":5.353,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.353,"end_time":5.354,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.354,"end_time":5.354,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.354,"end_time":5.354,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.354,"end_time":5.354,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.354,"end_time":5.354,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.354,"end_time":5.354,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.354,"end_time":5.354,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.354,"end_time":5.355,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.355,"end_time":5.355,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.355,"end_time":5.355,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.355,"end_time":5.355,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.355,"end_time":5.355,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.355,"end_time":5.356,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.356,"end_time":5.357,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.357,"end_time":5.357,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.357,"end_time":5.358,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.358,"end_time":5.358,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.358,"end_time":5.358,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.358,"end_time":5.358,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.358,"end_time":5.36,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.36,"end_time":5.355,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.355,"end_time":5.361,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.361,"end_time":5.361,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.361,"end_time":5.404,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.404,"end_time":5.405,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.405,"end_time":5.405,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.405,"end_time":5.405,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.405,"end_time":5.406,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.406,"end_time":5.406,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.406,"end_time":5.405,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.405,"end_time":5.451,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.451,"end_time":5.45,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.45,"end_time":5.451,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.451,"end_time":5.451,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.451,"end_time":5.453,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.453,"end_time":5.455,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.455,"end_time":5.456,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.456,"end_time":5.496,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.496,"end_time":5.497,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.497,"end_time":5.497,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.497,"end_time":5.497,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.497,"end_time":5.498,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.498,"end_time":5.498,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.498,"end_time":5.498,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.498,"end_time":5.498,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":5.498,"end_time":5.766,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":5.766,"end_time":7.632,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":7.632,"end_time":11.203,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":11.203,"end_time":14.17,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":14.17,"end_time":16.363,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":16.363,"end_time":17.245,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":17.245,"end_time":18.568,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":18.568,"end_time":23.747,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":23.747,"end_time":26.724,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":26.724,"end_time":28.159,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":28.159,"end_time":30.944,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":30.944,"end_time":36.758,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":36.758,"end_time":38.051,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":38.051,"end_time":46.165,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":46.165,"end_time":53.745,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":53.745,"end_time":57.245,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":57.245,"end_time":59.229,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":59.229,"end_time":64.241,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":64.241,"end_time":70.14,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":70.14,"end_time":72.136,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":72.136,"end_time":76.234,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":76.234,"end_time":97.331,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":97.331,"end_time":100.087,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":100.087,"end_time":100.742,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":100.742,"end_time":104.041,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":104.041,"end_time":110.83,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":110.83,"end_time":118.434,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":118.434,"end_time":121.93,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":121.93,"end_time":124.332,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":124.332,"end_time":128.047,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":128.047,"end_time":130.648,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":130.648,"end_time":136.36,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":136.36,"end_time":143.204,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":143.204,"end_time":146.159,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":146.159,"end_time":147.701,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":147.701,"end_time":150.56,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":150.56,"end_time":155.539,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":155.539,"end_time":157.065,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":157.065,"end_time":157.875,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":157.875,"end_time":161.367,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":161.367,"end_time":163.886,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":163.886,"end_time":166.73,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":166.73,"end_time":171.56,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":171.56,"end_time":182.272,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":182.272,"end_time":184.934,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":184.934,"end_time":198.136,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":198.136,"end_time":201.953,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":201.953,"end_time":209.225,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":209.225,"end_time":213.645,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":213.645,"end_time":223.757,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":223.757,"end_time":223.757,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":223.757,"end_time":223.757,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":223.757,"end_time":223.758,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":223.758,"end_time":223.758,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":223.758,"end_time":223.758,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":223.758,"end_time":223.758,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":223.758,"end_time":223.758,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":223.758,"end_time":223.758,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":223.758,"end_time":223.758,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":223.758,"end_time":223.803,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":223.803,"end_time":223.804,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":223.804,"end_time":223.804,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":223.804,"end_time":223.804,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":223.804,"end_time":223.804,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":223.804,"end_time":223.804,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":223.804,"end_time":223.972,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":223.972,"end_time":224.546,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":224.546,"end_time":233.741,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":233.741,"end_time":234.122,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":234.122,"end_time":237.131,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":237.131,"end_time":237.642,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":237.642,"end_time":245.729,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":245.729,"end_time":251.627,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":251.627,"end_time":257.528,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":257.528,"end_time":259.702,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":259.702,"end_time":260.983,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":260.983,"end_time":262.44,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":262.44,"end_time":265.644,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":265.644,"end_time":273.725,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":273.725,"end_time":275.954,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":275.954,"end_time":277.254,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":277.254,"end_time":288.353,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":288.353,"end_time":291.928,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":291.928,"end_time":297.324,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":297.324,"end_time":300.045,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":300.045,"end_time":300.241,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":300.241,"end_time":300.241,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":300.241,"end_time":300.241,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":300.241,"end_time":300.241,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":300.241,"end_time":300.241,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":300.241,"end_time":300.242,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":300.242,"end_time":300.288,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":300.288,"end_time":300.288,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":300.288,"end_time":300.288,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":300.288,"end_time":300.289,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":300.289,"end_time":300.289,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":300.289,"end_time":300.29,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":300.29,"end_time":300.29,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":300.29,"end_time":300.29,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":300.29,"end_time":300.335,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":300.335,"end_time":301.703,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":301.703,"end_time":303.437,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":303.437,"end_time":305.722,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":305.722,"end_time":320.859,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":320.859,"end_time":321.045,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.045,"end_time":321.244,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.244,"end_time":321.244,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.244,"end_time":321.248,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.248,"end_time":321.248,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.248,"end_time":321.249,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.249,"end_time":321.25,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.25,"end_time":321.252,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.252,"end_time":321.253,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.253,"end_time":321.253,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.253,"end_time":321.253,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.253,"end_time":321.254,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.254,"end_time":321.255,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.255,"end_time":321.255,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.255,"end_time":321.255,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.255,"end_time":321.255,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.255,"end_time":321.255,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.255,"end_time":321.255,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.255,"end_time":321.256,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.256,"end_time":321.256,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.256,"end_time":321.256,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.256,"end_time":321.277,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.277,"end_time":321.278,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.278,"end_time":321.278,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.278,"end_time":321.278,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.278,"end_time":321.279,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.279,"end_time":321.279,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.279,"end_time":321.279,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.279,"end_time":321.279,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.279,"end_time":321.324,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.324,"end_time":321.464,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":321.464,"end_time":321.669,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":321.669,"end_time":325.168,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":325.168,"end_time":338.135,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":338.135,"end_time":339.01,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":339.01,"end_time":343.243,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":343.243,"end_time":348.026,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":348.026,"end_time":351.045,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":351.045,"end_time":353.553,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":353.553,"end_time":361.468,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":361.468,"end_time":363.957,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":363.957,"end_time":366.528,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":366.528,"end_time":371.182,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":371.182,"end_time":381.662,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":381.662,"end_time":381.663,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":381.663,"end_time":381.664,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":381.664,"end_time":381.663,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":381.663,"end_time":381.664,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":381.664,"end_time":381.664,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":381.664,"end_time":381.664,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":381.664,"end_time":381.694,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":381.694,"end_time":381.694,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":381.694,"end_time":381.695,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":381.695,"end_time":381.695,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":381.695,"end_time":381.695,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":381.695,"end_time":381.695,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":381.695,"end_time":381.695,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":381.695,"end_time":381.695,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":381.695,"end_time":381.695,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":381.695,"end_time":381.696,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":381.696,"end_time":381.74,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":381.74,"end_time":382.064,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.064,"end_time":382.067,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.067,"end_time":382.067,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.067,"end_time":382.067,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.067,"end_time":382.068,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.068,"end_time":382.068,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.068,"end_time":382.068,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.068,"end_time":382.068,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.068,"end_time":382.068,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.068,"end_time":382.068,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.068,"end_time":382.068,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.068,"end_time":382.069,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.069,"end_time":382.069,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.069,"end_time":382.069,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.069,"end_time":382.069,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.069,"end_time":382.069,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.069,"end_time":382.069,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.069,"end_time":382.07,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.07,"end_time":382.07,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.07,"end_time":382.07,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.07,"end_time":382.07,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.07,"end_time":382.113,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.113,"end_time":382.113,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.113,"end_time":382.114,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.114,"end_time":382.124,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.124,"end_time":382.126,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":382.126,"end_time":382.251,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":382.251,"end_time":383.738,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":383.738,"end_time":384.475,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":384.475,"end_time":391.976,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":391.976,"end_time":394.011,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":394.011,"end_time":396.833,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":396.833,"end_time":397.398,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":397.398,"end_time":408.411,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":408.411,"end_time":409.325,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":409.325,"end_time":409.464,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":409.464,"end_time":409.842,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":409.842,"end_time":415.522,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":415.522,"end_time":418.426,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":418.426,"end_time":423.024,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.024,"end_time":423.024,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.024,"end_time":423.025,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.025,"end_time":423.025,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.025,"end_time":423.025,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.025,"end_time":423.03,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.03,"end_time":423.03,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.03,"end_time":423.03,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.03,"end_time":423.03,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.03,"end_time":423.03,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.03,"end_time":423.073,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.073,"end_time":423.073,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.073,"end_time":423.074,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.074,"end_time":423.074,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.074,"end_time":423.074,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.074,"end_time":423.074,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.074,"end_time":423.074,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.074,"end_time":423.074,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.074,"end_time":423.074,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.074,"end_time":423.075,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.075,"end_time":423.117,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.117,"end_time":423.117,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.117,"end_time":423.117,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.117,"end_time":423.118,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.118,"end_time":423.118,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":423.118,"end_time":423.118,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":423.118,"end_time":425.857,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":425.857,"end_time":428.327,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":428.327,"end_time":431.523,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":431.523,"end_time":434.455,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":434.455,"end_time":435.238,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":435.238,"end_time":435.492,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":435.492,"end_time":435.752,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":435.752,"end_time":443.749,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":443.749,"end_time":447.262,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":447.262,"end_time":457.158,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":457.158,"end_time":461.968,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":461.968,"end_time":465.425,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":465.425,"end_time":466.63,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":466.63,"end_time":468.535,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":468.535,"end_time":473.419,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":473.419,"end_time":480.655,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":480.655,"end_time":484.822,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":484.822,"end_time":486.968,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":486.968,"end_time":488.469,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":488.469,"end_time":491.432,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":491.432,"end_time":493.361,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":493.361,"end_time":496.122,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":496.122,"end_time":501.737,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":501.737,"end_time":508.139,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":508.139,"end_time":515.564,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":515.564,"end_time":521.334,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.334,"end_time":521.335,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.335,"end_time":521.335,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.335,"end_time":521.335,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.335,"end_time":521.335,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.335,"end_time":521.336,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.336,"end_time":521.336,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.336,"end_time":521.336,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.336,"end_time":521.407,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.407,"end_time":521.407,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.407,"end_time":521.407,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.407,"end_time":521.408,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.408,"end_time":521.409,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.409,"end_time":521.409,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.409,"end_time":521.409,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.409,"end_time":521.409,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.409,"end_time":521.409,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.409,"end_time":521.409,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.409,"end_time":521.435,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.435,"end_time":521.436,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.436,"end_time":521.439,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.439,"end_time":521.44,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.44,"end_time":521.44,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.44,"end_time":521.44,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.44,"end_time":521.441,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.441,"end_time":521.444,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.444,"end_time":521.445,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.445,"end_time":521.445,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.445,"end_time":521.474,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.474,"end_time":521.474,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.474,"end_time":521.474,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.474,"end_time":521.474,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.474,"end_time":521.474,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.474,"end_time":521.475,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.475,"end_time":521.475,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":521.475,"end_time":521.475,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":521.475,"end_time":524.353,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":524.353,"end_time":525.56,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":525.56,"end_time":528.03,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":528.03,"end_time":533.106,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":533.106,"end_time":539.03,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":539.03,"end_time":553.332,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":553.332,"end_time":556.592,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":556.592,"end_time":562.944,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":562.944,"end_time":566.522,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":566.522,"end_time":576.235,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":576.235,"end_time":589.68,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":589.68,"end_time":593.454,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":593.454,"end_time":597.853,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":597.853,"end_time":613.236,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":613.236,"end_time":615.97,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":615.97,"end_time":620.165,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.165,"end_time":620.596,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.596,"end_time":620.597,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.597,"end_time":620.597,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.597,"end_time":620.598,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.598,"end_time":620.598,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.598,"end_time":620.598,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.598,"end_time":620.598,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.598,"end_time":620.599,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.599,"end_time":620.599,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.599,"end_time":620.599,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.599,"end_time":620.599,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.599,"end_time":620.6,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.6,"end_time":620.6,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.6,"end_time":620.6,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.6,"end_time":620.6,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.6,"end_time":620.601,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.601,"end_time":620.601,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.601,"end_time":620.602,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.602,"end_time":620.602,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.602,"end_time":620.622,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.622,"end_time":620.623,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.623,"end_time":620.623,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.623,"end_time":620.623,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.623,"end_time":620.624,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.624,"end_time":620.624,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.624,"end_time":620.666,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.666,"end_time":620.666,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.666,"end_time":620.666,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.666,"end_time":620.667,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.667,"end_time":620.667,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.667,"end_time":620.667,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.667,"end_time":620.667,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.667,"end_time":620.668,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.668,"end_time":620.668,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.668,"end_time":620.67,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.67,"end_time":620.713,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.713,"end_time":620.713,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.713,"end_time":620.713,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.713,"end_time":620.714,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.714,"end_time":620.715,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.715,"end_time":620.716,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.716,"end_time":620.716,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.716,"end_time":620.716,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.716,"end_time":620.716,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.716,"end_time":620.716,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.716,"end_time":620.76,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.76,"end_time":620.761,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.761,"end_time":620.761,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.761,"end_time":620.761,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.761,"end_time":620.761,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.761,"end_time":620.761,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.761,"end_time":620.761,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.761,"end_time":620.761,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.761,"end_time":620.807,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.807,"end_time":620.807,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.807,"end_time":620.808,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.808,"end_time":620.808,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.808,"end_time":620.809,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.809,"end_time":620.809,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.809,"end_time":620.809,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.809,"end_time":620.809,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.809,"end_time":620.81,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.81,"end_time":620.81,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":620.81,"end_time":620.984,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":620.984,"end_time":626.364,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":626.364,"end_time":626.364,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":626.364,"end_time":626.365,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":626.365,"end_time":626.365,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":626.365,"end_time":626.365,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":626.365,"end_time":626.365,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":626.365,"end_time":626.365,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":626.365,"end_time":626.365,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":626.365,"end_time":626.365,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":626.365,"end_time":626.365,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":626.365,"end_time":626.366,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":626.366,"end_time":626.366,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":626.366,"end_time":626.366,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":626.366,"end_time":626.367,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":626.367,"end_time":626.367,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":626.367,"end_time":626.37,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":626.37,"end_time":626.37,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":626.37,"end_time":626.38,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":626.38,"end_time":626.38,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":626.38,"end_time":626.381,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":626.381,"end_time":626.381,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":626.381,"end_time":626.523,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":626.523,"end_time":627.174,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":627.174,"end_time":631.327,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":631.327,"end_time":633.53,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":633.53,"end_time":635.233,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":635.233,"end_time":641.426,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":641.426,"end_time":646.563,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":646.563,"end_time":650.944,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":650.944,"end_time":663.436,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":663.436,"end_time":663.953,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":663.953,"end_time":666.129,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":666.129,"end_time":666.129,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":666.129,"end_time":666.129,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":666.129,"end_time":666.13,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":666.13,"end_time":666.13,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":666.13,"end_time":666.13,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":666.13,"end_time":666.179,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":666.179,"end_time":666.18,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":666.18,"end_time":666.18,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":666.18,"end_time":666.18,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":666.18,"end_time":666.18,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":666.18,"end_time":666.18,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":666.18,"end_time":666.181,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":666.181,"end_time":666.181,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":666.181,"end_time":666.189,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":666.189,"end_time":666.19,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":666.19,"end_time":667.558,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":667.558,"end_time":668.637,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":668.637,"end_time":672.249,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":672.249,"end_time":675.561,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":675.561,"end_time":677.136,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":677.136,"end_time":682.656,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":682.656,"end_time":685.262,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":685.262,"end_time":691.121,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":691.121,"end_time":693.76,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":693.76,"end_time":693.76,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":693.76,"end_time":693.76,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":693.76,"end_time":693.761,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":693.761,"end_time":693.761,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":693.761,"end_time":693.761,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":693.761,"end_time":693.761,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":693.761,"end_time":693.761,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":693.761,"end_time":693.915,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":693.915,"end_time":694.225,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":694.225,"end_time":696.221,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":696.221,"end_time":697.429,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":697.429,"end_time":700.708,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":700.708,"end_time":703.963,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":703.963,"end_time":704.162,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":704.162,"end_time":712.846,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":712.846,"end_time":717.398,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":717.398,"end_time":718.422,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":718.422,"end_time":721.345,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":721.345,"end_time":724.925,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":724.925,"end_time":727.253,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":727.253,"end_time":730.96,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":730.96,"end_time":734.149,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":734.149,"end_time":734.351,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":734.351,"end_time":734.667,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":734.667,"end_time":742.242,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":742.242,"end_time":750.74,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":750.74,"end_time":752.04,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":752.04,"end_time":757.662,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":757.662,"end_time":761.953,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":761.953,"end_time":769.548,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.548,"end_time":769.548,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.548,"end_time":769.548,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.548,"end_time":769.549,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.549,"end_time":769.549,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.549,"end_time":769.549,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.549,"end_time":769.55,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.55,"end_time":769.55,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.55,"end_time":769.55,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.55,"end_time":769.551,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.551,"end_time":769.596,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.596,"end_time":769.596,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.596,"end_time":769.597,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.597,"end_time":769.597,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.597,"end_time":769.597,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.597,"end_time":769.597,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.597,"end_time":769.641,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.641,"end_time":769.641,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.641,"end_time":769.642,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.642,"end_time":769.642,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.642,"end_time":769.642,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.642,"end_time":769.642,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.642,"end_time":769.643,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.643,"end_time":769.643,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.643,"end_time":769.644,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.644,"end_time":769.644,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.644,"end_time":769.688,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.688,"end_time":769.688,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.688,"end_time":769.688,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.688,"end_time":769.689,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.689,"end_time":769.689,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.689,"end_time":769.689,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.689,"end_time":769.689,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.689,"end_time":769.69,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.69,"end_time":769.733,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.733,"end_time":769.734,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.734,"end_time":769.734,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.734,"end_time":769.734,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.734,"end_time":769.735,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.735,"end_time":769.735,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.735,"end_time":769.735,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":769.735,"end_time":769.735,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":769.735,"end_time":770.022,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":770.022,"end_time":770.022,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":770.022,"end_time":770.059,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":770.059,"end_time":770.059,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":770.059,"end_time":770.059,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":770.059,"end_time":770.059,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":770.059,"end_time":770.06,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":770.06,"end_time":770.06,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":770.06,"end_time":770.06,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":770.06,"end_time":770.06,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":770.06,"end_time":770.105,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":770.105,"end_time":770.105,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":770.105,"end_time":770.106,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":770.106,"end_time":770.106,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":770.106,"end_time":770.106,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":770.106,"end_time":770.106,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":770.106,"end_time":771.732,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":771.732,"end_time":771.732,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":771.732,"end_time":771.733,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":771.733,"end_time":771.733,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":771.733,"end_time":771.733,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":771.733,"end_time":771.733,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":771.733,"end_time":771.733,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":771.733,"end_time":771.733,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":771.733,"end_time":771.734,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":771.734,"end_time":771.734,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":771.734,"end_time":771.893,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":771.893,"end_time":772.335,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":772.335,"end_time":781.157,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":781.157,"end_time":784.826,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":784.826,"end_time":784.923,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":784.923,"end_time":784.924,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":784.924,"end_time":784.924,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":784.924,"end_time":784.924,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":784.924,"end_time":784.924,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":784.924,"end_time":784.926,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":784.926,"end_time":784.926,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":784.926,"end_time":784.926,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":784.926,"end_time":784.927,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":784.927,"end_time":784.965,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":784.965,"end_time":784.966,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":784.966,"end_time":784.966,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":784.966,"end_time":784.966,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":784.966,"end_time":784.966,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":784.966,"end_time":784.966,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":784.966,"end_time":784.966,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":784.966,"end_time":784.967,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":784.967,"end_time":786.833,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":786.833,"end_time":789.423,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":789.423,"end_time":790.623,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":790.623,"end_time":790.863,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":790.863,"end_time":791.029,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":791.029,"end_time":793.058,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":793.058,"end_time":798.946,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":798.946,"end_time":800.245,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":800.245,"end_time":800.527,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":800.527,"end_time":800.528,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":800.528,"end_time":800.528,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":800.528,"end_time":800.528,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":800.528,"end_time":800.529,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":800.529,"end_time":800.529,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":800.529,"end_time":800.529,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":800.529,"end_time":800.529,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":800.529,"end_time":800.53,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":800.53,"end_time":800.53,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":800.53,"end_time":800.569,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":800.569,"end_time":800.569,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":800.569,"end_time":800.57,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":800.57,"end_time":800.571,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":800.571,"end_time":800.571,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":800.571,"end_time":800.571,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":800.571,"end_time":800.571,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":800.571,"end_time":800.571,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":800.571,"end_time":800.618,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":800.618,"end_time":800.619,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":800.619,"end_time":800.625,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":800.625,"end_time":800.824,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":800.824,"end_time":803.824,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":803.824,"end_time":815.429,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":815.429,"end_time":817.529,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":817.529,"end_time":821.544,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":821.544,"end_time":822.954,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":822.954,"end_time":823.834,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":823.834,"end_time":825.831,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":825.831,"end_time":827.944,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":827.944,"end_time":830.428,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":830.428,"end_time":832.022,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":832.022,"end_time":832.147,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":832.147,"end_time":832.147,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":832.147,"end_time":832.148,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":832.148,"end_time":832.148,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":832.148,"end_time":832.148,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":832.148,"end_time":832.148,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":832.148,"end_time":836.09,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":836.09,"end_time":837.534,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":837.534,"end_time":839.137,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":839.137,"end_time":843.603,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":843.603,"end_time":845.754,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":845.754,"end_time":851.389,"user_id":3}
+{"speaker":"Kylian Jeannet","start_time":851.389,"end_time":851.39,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":851.39,"end_time":851.39,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":851.39,"end_time":851.395,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":851.395,"end_time":851.395,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":851.395,"end_time":851.395,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":851.395,"end_time":851.395,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":851.395,"end_time":851.395,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":851.395,"end_time":851.396,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":851.396,"end_time":851.396,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":851.396,"end_time":851.396,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":851.396,"end_time":851.396,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":851.396,"end_time":851.396,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":851.396,"end_time":851.397,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":851.397,"end_time":851.397,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":851.397,"end_time":851.419,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":851.419,"end_time":855.999,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":855.999,"end_time":862.332,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":862.332,"end_time":865.915,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":865.915,"end_time":869.055,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.055,"end_time":869.436,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.436,"end_time":869.625,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.625,"end_time":869.624,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.624,"end_time":869.629,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.629,"end_time":869.629,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.629,"end_time":869.629,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.629,"end_time":869.629,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.629,"end_time":869.63,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.63,"end_time":869.63,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.63,"end_time":869.63,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.63,"end_time":869.63,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.63,"end_time":869.63,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.63,"end_time":869.631,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.631,"end_time":869.631,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.631,"end_time":869.631,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.631,"end_time":869.631,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.631,"end_time":869.631,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.631,"end_time":869.631,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.631,"end_time":869.631,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.631,"end_time":869.632,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.632,"end_time":869.669,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.669,"end_time":869.669,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.669,"end_time":869.669,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.669,"end_time":869.67,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.67,"end_time":869.67,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.67,"end_time":869.67,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.67,"end_time":869.67,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.67,"end_time":869.67,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.67,"end_time":869.67,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.67,"end_time":869.67,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.67,"end_time":869.716,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.716,"end_time":869.716,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.716,"end_time":869.716,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.716,"end_time":869.716,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.716,"end_time":869.716,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.716,"end_time":869.716,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.716,"end_time":869.717,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.717,"end_time":869.717,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.717,"end_time":869.717,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.717,"end_time":869.717,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":869.717,"end_time":869.855,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":869.855,"end_time":876.96,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":876.96,"end_time":878.028,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":878.028,"end_time":882.022,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":882.022,"end_time":887.362,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":887.362,"end_time":889.162,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":889.162,"end_time":889.574,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":889.574,"end_time":893.72,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":893.72,"end_time":896.232,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":896.232,"end_time":899.098,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":899.098,"end_time":901.249,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":901.249,"end_time":908.994,"user_id":2}
+{"speaker":"de Terline Leopold","start_time":908.994,"end_time":912.034,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":912.034,"end_time":912.346,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":912.346,"end_time":914.947,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":914.947,"end_time":916.944,"user_id":3}
+{"speaker":"de Terline Leopold","start_time":916.944,"end_time":918.86,"user_id":2}
+{"speaker":"Kylian Jeannet","start_time":918.86,"end_time":921.358,"user_id":3}

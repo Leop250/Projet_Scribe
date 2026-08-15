@@ -73,27 +73,27 @@ async def webhook(request: Request, background_tasks: BackgroundTasks):
     payload = await request.json()
     event = payload.get("event")
     print(f"[webhook] reçu: {event}")
-    data = payload.get("data", {})
+    event_data = payload.get("data", {})
 
     if event in ("calendar.event_created", "calendar.event_updated"):
-        calendar_id = data.get("calendar_id")
-        series_id = data.get("series_id")
+        calendar_id = event_data.get("calendar_id")
+        series_id = event_data.get("series_id")
 
-        for instance in data.get("instances", []):
+        for instance in event_data.get("instances", []):
             event_id = instance.get("event_id")
             if not event_id or store.is_event_scheduled(event_id):
                 print(f"[webhook] event {event_id} ignoré (déjà programmé ou sans id)")
                 continue
 
             calendar_event = client.get_event(calendar_id, event_id)
-            joins = rules.should_join(calendar_event)
-            print(f"[webhook] event {event_id} '{calendar_event.get('title')}' -> should_join={joins}")
-            if joins:
+            should_bot_join = rules.should_join(calendar_event)
+            print(f"[webhook] event {event_id} '{calendar_event.get('title')}' -> should_join={should_bot_join}")
+            if should_bot_join:
                 client.schedule_bot(calendar_id, event_id, series_id, bot_name=DEFAULT_BOT_NAME)
                 store.mark_event_scheduled(event_id)
 
                 attendees = calendar_event.get("attendees") or []
-                emails = [a.get("email") for a in attendees if a.get("email")]
+                emails = [attendee.get("email") for attendee in attendees if attendee.get("email")]
                 store.save_event_emails(event_id, emails)
 
                 print(f"[webhook] bot programmé pour event {event_id}")
@@ -101,11 +101,11 @@ async def webhook(request: Request, background_tasks: BackgroundTasks):
         return {"status": "ok"}
 
     if event == "bot.status_change":
-        bot_id = data.get("bot_id")
-        event_id = data.get("event_id")
-        status = (data.get("status") or {}).get("code")
-        print(f"[webhook] bot {bot_id} -> status={status}")
-        if status == "call_ended":
+        bot_id = event_data.get("bot_id")
+        event_id = event_data.get("event_id")
+        status_code = (event_data.get("status") or {}).get("code")
+        print(f"[webhook] bot {bot_id} -> status={status_code}")
+        if status_code == "call_ended":
             # MeetingBaaS n'envoie pas de webhook dédié à la fin de la transcription
             # (observé : les status_change s'arrêtent à "transcribing") : on la
             # poll nous-mêmes en tâche de fond dès que le bot a quitté l'appel.

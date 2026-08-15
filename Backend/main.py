@@ -4,7 +4,7 @@ import os
 import shutil
 from pathlib import Path
 from dotenv import load_dotenv
-from stt import callapi
+from stt import transcribe_audio
 from llm import generate_report
 from calendar_bots.main import router as calendar_router
 from db import Base, engine
@@ -39,15 +39,15 @@ async def recap():
     return {"message" : "Audio received, not yet able to transcript it"}
 
 @app.post("/recordings")
-async def records(audio = File(...)):
-    
+async def upload_recording(audio = File(...)):
+
     temp_path = Path("temp") / audio.filename
     temp_path.parent.mkdir(exist_ok=True)
 
-    with open(temp_path, "wb") as f:
-        shutil.copyfileobj(audio.file, f)
+    with open(temp_path, "wb") as destination_file:
+        shutil.copyfileobj(audio.file, destination_file)
 
-    transcript = callapi(temp_path)
+    transcript = transcribe_audio(temp_path)
     report = generate_report(transcript)
 
     temp_path.unlink()

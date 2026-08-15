@@ -40,14 +40,14 @@ def extract_diarized_transcript(payload: dict) -> list:
 
 def group_by_speaker(segments: list) -> dict:
     grouped = {}
-    for seg in segments:
-        grouped.setdefault(seg["speaker"], []).append(seg["text"])
+    for segment in segments:
+        grouped.setdefault(segment["speaker"], []).append(segment["text"])
     return {speaker: " ".join(texts) for speaker, texts in grouped.items()}
 
 
 def build_transcript_text(segments: list) -> str:
     """Construit un texte brut 'speaker: texte' à partir des segments diarisés."""
-    return "\n".join(f"{seg['speaker']}: {seg['text']}" for seg in segments)
+    return "\n".join(f"{segment['speaker']}: {segment['text']}" for segment in segments)
 
 
 def build_speakers_list(segments: list) -> list:
@@ -60,18 +60,18 @@ def build_speakers_from_participants(participants: list) -> list:
     """Construit la liste des speakers à partir des vraies infos participants Meeting BaaS
     (utilisé en secours quand aucun segment diarisé n'est disponible)."""
     speakers = []
-    for i, p in enumerate(participants):
-        name = p.get("name") or p.get("display_name") or "Inconnu"
-        speakers.append({"id": i, "names": name, "user_id": None})
+    for index, participant in enumerate(participants):
+        name = participant.get("name") or participant.get("display_name") or "Inconnu"
+        speakers.append({"id": index, "names": name, "user_id": None})
     return speakers
 
 
 def build_meeting_name(participants: list, bot_name: str, fallback_name: str) -> str:
     """Construit le nom du recap à partir des participants humains (hors bot)."""
     human_names = [
-        p.get("name") or p.get("display_name") or "Inconnu"
-        for p in participants
-        if (p.get("name") or p.get("display_name")) != bot_name
+        participant.get("name") or participant.get("display_name") or "Inconnu"
+        for participant in participants
+        if (participant.get("name") or participant.get("display_name")) != bot_name
     ]
     return ", ".join(human_names) if human_names else fallback_name
 
@@ -82,9 +82,9 @@ def print_diarized_transcript(segments: list) -> None:
         return
 
     print(f"\nTranscript ({len(segments)} segment(s)) :")
-    for seg in segments:
-        ts = f"[{seg['start']}s - {seg['end']}s]" if seg["start"] is not None else ""
-        print(f"{ts} {seg['speaker']} : {seg['text']}")
+    for segment in segments:
+        timestamp_label = f"[{segment['start']}s - {segment['end']}s]" if segment["start"] is not None else ""
+        print(f"{timestamp_label} {segment['speaker']} : {segment['text']}")
 
     print("\nPar intervenant :")
     for speaker, text in group_by_speaker(segments).items():

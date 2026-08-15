@@ -9,4 +9,4 @@ def should_join(event: dict) -> bool:
         return False
 
     attendees = event.get("attendees") or []
-    return any((a.get("email") or "").lower() == bot_email for a in attendees)
+    return any((attendee.get("email") or "").lower() == bot_email for attendee in attendees)

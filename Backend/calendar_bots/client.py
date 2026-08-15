@@ -29,7 +29,7 @@ def _call(method, path, **kwargs):
 
 def register_calendar(refresh_token, google_calendar_id="primary"):
     try:
-        data = _call("POST", "/calendars", json={
+        calendar_data = _call("POST", "/calendars", json={
             "calendar_platform": "google",
             "oauth_client_id": os.environ["GOOGLE_OAUTH_CLIENT_ID"],
             "oauth_client_secret": os.environ["GOOGLE_OAUTH_CLIENT_SECRET"],
@@ -41,11 +41,11 @@ def register_calendar(refresh_token, google_calendar_id="primary"):
             raise
         # Mono-utilisateur pour l'instant (voir store.py) : une seule connexion
         # possible, donc on récupère celle qui existe déjà plutôt que d'échouer.
-        data = _call("GET", "/calendars")[0]
+        calendar_data = _call("GET", "/calendars")[0]
 
-    if not isinstance(data, dict) or "calendar_id" not in data:
-        raise RuntimeError(f"Réponse MeetingBaaS inattendue (pas de champ 'calendar_id'): {data}")
-    return data["calendar_id"]
+    if not isinstance(calendar_data, dict) or "calendar_id" not in calendar_data:
+        raise RuntimeError(f"Réponse MeetingBaaS inattendue (pas de champ 'calendar_id'): {calendar_data}")
+    return calendar_data["calendar_id"]
 
 
 def get_event(calendar_id, event_id):
@@ -53,7 +53,7 @@ def get_event(calendar_id, event_id):
 
 
 def schedule_bot(calendar_id, event_id, series_id, bot_name="Scribe Notetaker"):
-    data = _call("POST", f"/calendars/{calendar_id}/bots", json={
+    bot_data = _call("POST", f"/calendars/{calendar_id}/bots", json={
         "event_id": event_id,
         "series_id": series_id,
         "all_occurrences": False,
@@ -64,11 +64,11 @@ def schedule_bot(calendar_id, event_id, series_id, bot_name="Scribe Notetaker"):
     })
     # MeetingBaaS renvoie une liste de bots (un par occurrence programmée),
     # même pour all_occurrences=False : on ne prend que le premier.
-    if isinstance(data, list):
-        if not data:
+    if isinstance(bot_data, list):
+        if not bot_data:
             raise RuntimeError(f"MeetingBaaS n'a programmé aucun bot pour l'event {event_id}")
-        data = data[0]
-    return data
+        bot_data = bot_data[0]
+    return bot_data
 
 
 def get_bot_status(bot_id):
@@ -103,12 +103,12 @@ def wait_for_transcription(bot_id):
     s'arrêtent à "transcribing"), donc on interroge nous-mêmes GET /bots/{id}."""
     start = time.time()
     while time.time() - start < POLL_TIMEOUT_SECONDS:
-        status = get_bot_status(bot_id)
-        code = status.get("status")
-        print(f"[calendar_bots] poll bot {bot_id} -> status={code}, transcription={'prête' if status.get('transcription') else 'en attente'}")
-        if status.get("transcription"):
-            return status
-        if status.get("error_code") or code in FAILURE_STATUSES:
-            raise RuntimeError(f"Le bot a échoué : {status}")
+        bot_status = get_bot_status(bot_id)
+        status_code = bot_status.get("status")
+        print(f"[calendar_bots] poll bot {bot_id} -> status={status_code}, transcription={'prête' if bot_status.get('transcription') else 'en attente'}")
+        if bot_status.get("transcription"):
+            return bot_status
+        if bot_status.get("error_code") or status_code in FAILURE_STATUSES:
+            raise RuntimeError(f"Le bot a échoué : {bot_status}")
         time.sleep(POLL_INTERVAL_SECONDS)
     raise TimeoutError(f"Transcription indisponible après {POLL_TIMEOUT_SECONDS}s pour le bot {bot_id}")
