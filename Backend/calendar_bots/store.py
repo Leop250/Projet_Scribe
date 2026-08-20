@@ -5,11 +5,12 @@ cohérent avec le reste du backend qui n'a pas encore de notion de compte/sessio
 """
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 STORE_PATH = Path(__file__).parent / "calendar_store.json"
 
-_DEFAULT = {"connection": None, "scheduled_events": []}
+_DEFAULT = {"connection": None, "scheduled_events": [], "consent_records": []}
 
 
 def _load():
@@ -24,11 +25,12 @@ def _save(data):
         json.dump(data, f, indent=2)
 
 
-def save_connection(meetingbaas_calendar_uuid, google_calendar_id):
+def save_connection(meetingbaas_calendar_uuid, google_calendar_id, refresh_token):
     data = _load()
     data["connection"] = {
         "meetingbaas_calendar_uuid": meetingbaas_calendar_uuid,
         "google_calendar_id": google_calendar_id,
+        "refresh_token": refresh_token,
     }
     _save(data)
 
@@ -46,3 +48,16 @@ def mark_event_scheduled(event_id):
     if event_id not in data["scheduled_events"]:
         data["scheduled_events"].append(event_id)
         _save(data)
+
+
+def record_consent(event_id, accepted, email, ip, user_agent):
+    data = _load()
+    data.setdefault("consent_records", []).append({
+        "event_id": event_id,
+        "accepted": accepted,
+        "email": email,
+        "ip": ip,
+        "user_agent": user_agent,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    })
+    _save(data)
