@@ -32,7 +32,15 @@ def upgrade() -> None:
         sa.Column("reporting", postgresql.JSONB(), nullable=False),
         sa.Column("emails", sa.String(), nullable=False),
     )
-    op.add_column("users", sa.Column("participants_list_of_recaps", postgresql.JSONB(), nullable=True))
+    op.add_column(
+        "users",
+        sa.Column(
+            "participants_list_of_recaps",
+            sa.ARRAY(sa.Integer()),
+            nullable=False,
+            server_default="{}",
+        ),
+    )
 
 
 def downgrade() -> None:

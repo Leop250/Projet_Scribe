@@ -1,6 +1,5 @@
 from passlib.context import CryptContext
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy import ARRAY, Boolean, Column, DateTime, Integer, String
 from sqlalchemy.orm import Session
 
 from database import Base
@@ -19,7 +18,7 @@ class UserModel(Base):
     is_verified = Column(Boolean, nullable=False, default=False, server_default="false")
     verification_code = Column(String, nullable=True)
     verification_code_expires_at = Column(DateTime(timezone=True), nullable=True)
-    participants_list_of_recaps = Column(JSONB, nullable=True, default=list)
+    participants_list_of_recaps = Column(ARRAY(Integer), nullable=False, default=list, server_default="{}")
     reset_code = Column(String, nullable=True)
     reset_code_expires_at = Column(DateTime(timezone=True), nullable=True)
 
