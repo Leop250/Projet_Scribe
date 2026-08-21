@@ -15,7 +15,7 @@ export default function Home() {
 
         <div className="flex items-center gap-8 flex-wrap">
           <button
-            onClick={() => navigate('/record')}
+            onClick={() => navigate('/attendance')}
             className="cursor-pointer w-[200px] h-[200px] border-[6px] border-ink bg-accent flex flex-col items-center justify-center shadow-[10px_10px_0_#0a0a0a]"
           >
             <div className="font-display text-[52px] text-ink leading-none">●</div>

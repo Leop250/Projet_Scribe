@@ -32,9 +32,10 @@ async function requestJson(url, options, fallbackMessage) {
   return data
 }
 
-export async function uploadRecording(blob, token) {
+export async function uploadRecording(blob, token, sessionToken) {
   const body = new FormData()
   body.append('audio', blob, 'recording.webm')
+  if (sessionToken) body.append('session_token', sessionToken)
 
   const res = await fetch(`${BASE_URL}/recordings`, {
     method: 'POST',
@@ -119,4 +120,52 @@ export async function resetPassword(email, code, newPassword) {
     'Réinitialisation refusée',
   )
   return data // { access_token, token_type }
+}
+
+// -- Présence par QR code --
+export async function createAttendanceSession(headcount, token) {
+  return requestJson(
+    `${BASE_URL}/attendance/sessions`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ headcount }),
+    },
+    'Création de la session impossible',
+  )
+  // { session_token, sign_url, headcount }
+}
+
+export async function getAttendanceSessionStatus(sessionToken, token) {
+  return requestJson(
+    `${BASE_URL}/attendance/sessions/${sessionToken}`,
+    { headers: { Authorization: `Bearer ${token}` } },
+    'Statut indisponible',
+  )
+  // { headcount, confirmed_count, ready }
+}
+
+export async function startAttendanceSession(sessionToken, token) {
+  return requestJson(
+    `${BASE_URL}/attendance/sessions/${sessionToken}/start`,
+    { method: 'POST', headers: { Authorization: `Bearer ${token}` } },
+    "Démarrage refusé",
+  )
+}
+
+export async function getPublicAttendanceSession(sessionToken) {
+  return requestJson(
+    `${BASE_URL}/attendance/sessions/${sessionToken}/public`,
+    {},
+    'Session introuvable',
+  )
+  // { headcount, confirmed_count, status }
+}
+
+export async function signAttendance(sessionToken, nom, image) {
+  return requestJson(
+    `${BASE_URL}/attendance/sessions/${sessionToken}/sign`,
+    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nom, image }) },
+    'Signature refusée',
+  )
 }

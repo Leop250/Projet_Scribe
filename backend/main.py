@@ -3,18 +3,20 @@ import shutil
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, File
+from fastapi import Depends, FastAPI, File, Form
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
 
-# Les imports ci-dessous doivent rester après load_dotenv() : Auth.config lit
-# des variables d'environnement (SECRET_KEY, etc.) au chargement du module.
 load_dotenv()
 
-from Auth.dependencies import get_current_user  # noqa: E402
-from Auth.routes import router as auth_router  # noqa: E402
-from Auth.users import UserModel  # noqa: E402
-from classifier import call_classifier  # noqa: E402
-from speech_to_text import call_speech_to_text_agent  # noqa: E402
+from Attendance.models import RecordingSession
+from Attendance.routes import router as attendance_router
+from Auth.dependencies import get_current_user  
+from Auth.routes import router as auth_router  
+from Auth.users import UserModel  
+from classifier import call_classifier 
+from database import get_db
+from speech_to_text import call_speech_to_text_agent 
 
 app = FastAPI()
 
@@ -46,7 +48,12 @@ async def recap(current_user: UserModel = Depends(get_current_user)):
 
 
 @app.post("/recordings")
-async def records(audio=File(...), current_user: UserModel = Depends(get_current_user)):
+async def records(
+    audio=File(...), 
+    session_token: str | None = Form(None),
+    current_user: UserModel = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
     temp_path = Path("temp") / audio.filename
     temp_path.parent.mkdir(exist_ok=True)
 
@@ -58,8 +65,15 @@ async def records(audio=File(...), current_user: UserModel = Depends(get_current
     finally:
         temp_path.unlink()
 
+    if session_token:
+        session = db.query(RecordingSession).filter(RecordingSession.token == session_token).first()
+        if session and session.status == "pending":
+            session.status = "started"
+            db.commit()
+
     print("Audio received successfully")
     return {"status": "ok", "Compte-rendu": report, "transcription": transcript}
 
 
 app.include_router(auth_router)
+app.include_router(attendance_router)
