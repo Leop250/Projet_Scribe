@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 import Logo from '../components/Logo'
 import { getPublicAttendanceSession, signAttendance } from '../api'
 
 export default function Sign() {
   const { sessionToken } = useParams()
+  const navigate = useNavigate()
   const [status, setStatus]   = useState('loading') // 'loading' | 'ready' | 'notfound' | 'done'
   const [session, setSession] = useState(null)
   const [nom, setNom]         = useState('')
@@ -193,11 +194,15 @@ export default function Sign() {
 
         {status === 'done' && (
           <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center">
-            <span className="w-14 h-14 border-4 border-ink flex items-center justify-center font-display text-2xl bg-accent text-white">
-              ✕
-            </span>
             <p className="font-mono text-sm font-bold uppercase tracking-[1px]">Présence enregistrée</p>
             <p className="font-mono text-[13px] text-muted">Tu peux fermer cette page.</p>
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="cursor-pointer mt-3 px-6 py-3 bg-[#00c853] text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:bg-ink transition-none"
+            >
+              Quitter
+            </button>
           </div>
         )}
       </div>
