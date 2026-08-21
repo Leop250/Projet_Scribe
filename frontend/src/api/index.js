@@ -38,14 +38,11 @@ export async function uploadRecording(blob, token, sessionToken, emails) {
   body.append('emails', emails)
   if (sessionToken) body.append('session_token', sessionToken)
 
-  const res = await fetch(`${BASE_URL}/recordings`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
-    body,
-  })
-
-  if (!res.ok) throw new Error(`Upload failed (${res.status})`)
-  const data = await res.json()
+  const data = await requestJson(
+    `${BASE_URL}/recordings`,
+    { method: 'POST', headers: { Authorization: `Bearer ${token}` }, body },
+    'Envoi échoué',
+  )
   return data['Compte-rendu']
 }
 

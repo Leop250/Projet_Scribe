@@ -3,7 +3,7 @@ import binascii
 import io
 from typing import Annotated
 
-from PIL import Image, UnidentifiedImageError
+from PIL import Image
 from pydantic import BaseModel, Field, field_validator
 
 MAX_NOM_LENGTH = 100
@@ -51,7 +51,7 @@ class SignRequest(BaseModel):
     def validate_image(cls, v: str) -> str:
         if not v.startswith(IMAGE_DATA_URL_PREFIX):
             raise ValueError("Format d'image invalide.")
-        payload = v[len(IMAGE_DATA_URL_PREFIX):]
+        payload = v[len(IMAGE_DATA_URL_PREFIX) :]
         if len(payload) > MAX_IMAGE_BASE64_CHARS:
             raise ValueError("Image trop volumineuse.")
         try:
@@ -60,6 +60,6 @@ class SignRequest(BaseModel):
             raise ValueError("Image invalide.")
         try:
             Image.open(io.BytesIO(decoded)).verify()
-        except UnidentifiedImageError:
+        except Exception:
             raise ValueError("Image invalide.")
         return v
