@@ -108,7 +108,10 @@ def get_session_status(
     session = _get_owned_session(db, session_token, current_user)
     confirmed = _count_confirmed(db, session.id)
     return SessionStatusResponse(
-        confirmed_count=confirmed, headcount=session.headcount, ready=confirmed >= session.headcount
+        confirmed_count=confirmed,
+        headcount=session.headcount,
+        ready=confirmed >= session.headcount,
+        recap_id=session.recap_id,
     )
 
 

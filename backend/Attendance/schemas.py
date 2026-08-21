@@ -26,6 +26,7 @@ class SessionStatusResponse(BaseModel):
     confirmed_count: int
     headcount: int
     ready: bool
+    recap_id: int | None
 
 
 class PublicSessionResponse(BaseModel):

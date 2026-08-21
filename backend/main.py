@@ -89,6 +89,7 @@ async def records(
         session = db.query(RecordingSession).filter(RecordingSession.token == session_token).first()
         if session and session.status == "pending":
             session.status = "started"
+            session.recap_id = recap.recap_id
             db.commit()
 
     print("Audio received successfully")

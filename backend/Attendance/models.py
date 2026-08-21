@@ -11,6 +11,7 @@ class RecordingSession(Base):
     organizer_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     headcount = Column(Integer, nullable=False)
     status = Column(String, nullable=False, default="pending")  # "pending" | "started"
+    recap_id = Column(Integer, ForeignKey("recaps.recap_id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 
