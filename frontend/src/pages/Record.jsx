@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import Waveform from '../components/Waveform'
 import { useRecap } from '../context/RecapContext'
 import { useAuth } from '../context/AuthContext'
-import { uploadRecording } from '../api'
+import { getSession, uploadRecording } from '../api'
 
 function fmt(secs) {
   return `${String(Math.floor(secs / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`
@@ -24,6 +24,8 @@ export default function Record() {
   const { setRecap } = useRecap()
   const { token }    = useAuth()
   const navigate     = useNavigate()
+  const location     = useLocation()
+  const sessionToken = location.state?.sessionToken
 
   // L'effet ci-dessous ne doit tourner qu'une fois (il ouvre le micro et le
   // MediaRecorder pour toute la durée de l'enregistrement — le relancer à
@@ -75,7 +77,8 @@ export default function Record() {
 
         try {
           const blob = new Blob(chunks, { type: recorder.mimeType })
-          const data = await uploadRecording(blob, tokenRef.current)
+          const { email } = await getSession(tokenRef.current)
+          const data = await uploadRecording(blob, tokenRef.current, sessionToken, email)
           if (cancelled) return
           setRecap(data)
           navigate('/recap')

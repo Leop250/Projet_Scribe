@@ -7,10 +7,10 @@ from fastapi import Depends, FastAPI, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-# Les imports ci-dessous doivent rester après load_dotenv() : Auth.config lit
-# des variables d'environnement (SECRET_KEY, etc.) au chargement du module.
 load_dotenv()
 
+from Attendance.models import RecordingSession
+from Attendance.routes import router as attendance_router
 from Auth.dependencies import get_current_user  # noqa: E402
 from Auth.routes import router as auth_router  # noqa: E402
 from Auth.users import UserModel  # noqa: E402
@@ -51,6 +51,7 @@ async def root():
 async def records(
     audio=File(...),
     emails: str = Form(...),
+    session_token: str | None = Form(None),
     current_user: UserModel = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
@@ -84,6 +85,12 @@ async def records(
 
     db.commit()
 
+    if session_token:
+        session = db.query(RecordingSession).filter(RecordingSession.token == session_token).first()
+        if session and session.status == "pending":
+            session.status = "started"
+            db.commit()
+
     print("Audio received successfully")
     return {
         "status": "ok",
@@ -94,3 +101,4 @@ async def records(
 
 
 app.include_router(auth_router)
+app.include_router(attendance_router)
