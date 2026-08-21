@@ -143,7 +143,9 @@ def get_public_session(session_token: str, request: Request, db: Session = Depen
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Session introuvable.")
 
     confirmed = _count_confirmed(db, session.id)
-    return PublicSessionResponse(headcount=session.headcount, confirmed_count=confirmed, status=session.status)
+    return PublicSessionResponse(
+        headcount=session.headcount, confirmed_count=confirmed, status=session.status
+    )
 
 
 @router.post("/sessions/{session_token}/sign")

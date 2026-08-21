@@ -9,8 +9,8 @@ from sqlalchemy.orm import Session
 
 load_dotenv()
 
-from Attendance.models import RecordingSession
-from Attendance.routes import router as attendance_router
+from Attendance.models import RecordingSession  # noqa: E402
+from Attendance.routes import router as attendance_router  # noqa: E402
 from Auth.dependencies import get_current_user  # noqa: E402
 from Auth.routes import router as auth_router  # noqa: E402
 from Auth.users import UserModel  # noqa: E402

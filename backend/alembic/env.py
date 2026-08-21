@@ -10,7 +10,7 @@ from alembic import context
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"))
 
-from Attendance import models as attendance_models  # noqa: E402,F401  # enregistre RecordingSession/Signature sur Base.metadata
+from Attendance import models as attendance_models  # noqa: E402,F401  # enregistre Attendance models
 from Auth import users  # noqa: E402,F401  # enregistre UserModel sur Base.metadata
 from database import Base  # noqa: E402
 

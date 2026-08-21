@@ -124,7 +124,7 @@ export default function Sign() {
         {status === 'notfound' && (
           <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center">
             <p className="font-mono text-sm font-bold uppercase tracking-[1px]">Session introuvable</p>
-            <p className="font-mono text-[13px] text-muted">Ce lien n'est plus valide.</p>
+            <p className="font-mono text-[13px] text-muted">Ce lien n&apos;est plus valide.</p>
           </div>
         )}
 
@@ -132,7 +132,7 @@ export default function Sign() {
           <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center">
             <p className="font-mono text-sm font-bold uppercase tracking-[1px]">Session clôturée</p>
             <p className="font-mono text-[13px] text-muted">
-              L'enregistrement a déjà démarré, la présence n'est plus modifiable.
+              L&apos;enregistrement a déjà démarré, la présence n&apos;est plus modifiable.
             </p>
           </div>
         )}

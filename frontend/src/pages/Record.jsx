@@ -143,7 +143,7 @@ export default function Record() {
       <div className="h-[100dvh] flex flex-col items-center justify-center bg-paper text-ink gap-5 font-body">
         <div className="w-12 h-12 border-4 border-ink border-t-accent animate-spin" />
         <div className="text-center">
-          <p className="font-mono text-sm font-bold uppercase tracking-[1px] mb-1">Envoi de l'enregistrement…</p>
+          <p className="font-mono text-sm font-bold uppercase tracking-[1px] mb-1">Envoi de l&apos;enregistrement…</p>
           <p className="font-mono text-[13px] text-muted">En attente de la réponse du serveur</p>
         </div>
       </div>

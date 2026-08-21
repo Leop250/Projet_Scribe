@@ -41,7 +41,7 @@ export default function Landing() {
             </span>
           </h1>
           <p className="font-mono text-base max-w-[520px] mt-8 leading-[1.6]">
-            What's On Meeting enregistre, transcrit et rédige. Résumé, décisions, actions — livrés à la fin de chaque réunion. Chiffré. Privé. Brut.
+            What&apos;s On Meeting enregistre, transcrit et rédige. Résumé, décisions, actions — livrés à la fin de chaque réunion. Chiffré. Privé. Brut.
           </p>
           <div className="flex gap-4 mt-8 flex-wrap">
             <CtaButton onClick={go}>Démarrer</CtaButton>
@@ -102,7 +102,7 @@ export default function Landing() {
 
         {/* FOOTER */}
         <div className="border-t-4 border-ink px-5 py-6 flex justify-between font-mono text-xs uppercase tracking-[1px] flex-wrap gap-2">
-          <span>What's On Meeting© 2026</span>
+          <span>What&apos;s On Meeting© 2026</span>
           <span>Chiffré · Privé · Sans bla-bla</span>
         </div>
       </div>
