@@ -1,7 +1,7 @@
 export default function Logo({ size = 26 }) {
   return (
     <span className="text-ink uppercase" style={{ fontFamily: "'Chewy', cursive", fontSize: size }}>
-      Scribe<span className="text-accent">.</span>
+      What's On Meeting<span className="text-accent">.</span>
     </span>
   )
 }

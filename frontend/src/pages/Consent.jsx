@@ -22,7 +22,7 @@ export default function Consent() {
 
         <div className="border-4 border-ink p-6 font-mono text-sm leading-[1.7]">
           <p className="m-0 mb-3.5">
-            Scribe enregistre et transcrit vos réunions pour produire des comptes-rendus.
+            What's On Meeting enregistre et transcrit vos réunions pour produire des comptes-rendus.
             Les données sont <b>chiffrées</b> et vous en gardez le contrôle total.
           </p>
           {POINTS.map(p => (
@@ -43,7 +43,7 @@ export default function Consent() {
           >
             {consent ? '✕' : ''}
           </span>
-          <span>J&apos;accepte l&apos;enregistrement et le traitement de mes réunions par Scribe.</span>
+          <span>J&apos;accepte l&apos;enregistrement et le traitement de mes réunions par What's On Meeting.</span>
         </label>
 
         <button
@@ -52,7 +52,7 @@ export default function Consent() {
           style={{ opacity: consent ? 1 : 0.4, cursor: consent ? 'pointer' : 'not-allowed' }}
           className="w-full mt-[26px] text-center py-4 bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:enabled:bg-accent hover:enabled:text-ink transition-none"
         >
-          Entrer dans Scribe →
+          Entrer dans What's On Meeting →
         </button>
       </div>
     </div>

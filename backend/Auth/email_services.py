@@ -9,7 +9,7 @@ _BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(_BASE_DIR.parent / ".env")
 
 resend.api_key = os.environ["RESEND_API_KEY"]
-EMAIL = os.environ.get("EMAIL", "Scribe <login@tondomaine.com>")
+EMAIL = os.environ.get("EMAIL", "What's On Meeting <login@tondomaine.com>")
 
 _jinja_env = Environment(loader=FileSystemLoader(_BASE_DIR), autoescape=True)
 _template = _jinja_env.get_template("scribe-login-email.html")
@@ -24,7 +24,7 @@ def render_password_reset_email(code: str) -> str:
         code=code,
         badge="Réinitialisation du mot de passe",
         title="Réinitialise<br>ton mot de passe",
-        intro="Recopie ce code sur Scribe pour choisir un nouveau mot de passe :",
+        intro="Recopie ce code sur What's On Meeting pour choisir un nouveau mot de passe :",
     )
 
 
@@ -40,9 +40,9 @@ async def _send_email_async(to: str, subject: str, html: str) -> dict:
 
 async def send_verification_code_email_async(to: str, code: str) -> dict:
     html = render_verification_email(code)
-    return await _send_email_async(to, "Ton code de vérification — Scribe", html)
+    return await _send_email_async(to, "Ton code de vérification — What's On Meeting", html)
 
 
 async def send_password_reset_email_async(to: str, code: str) -> dict:
     html = render_password_reset_email(code)
-    return await _send_email_async(to, "Réinitialise ton mot de passe — Scribe", html)
+    return await _send_email_async(to, "Réinitialise ton mot de passe — What's On Meeting", html)
