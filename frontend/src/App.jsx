@@ -7,6 +7,7 @@ import Sign from "./pages/Sign"
 import Confidentialite from "./pages/Confidentialite"
 import Record from "./pages/Record"
 import Recap from "./pages/Recap"
+import RecapDetail from "./pages/RecapDetail"
 import Settings from "./pages/Settings"
 import Dashboard from "./pages/Dashboard"
 import RequireAuth from "./components/RequireAuth"
@@ -23,6 +24,7 @@ export default function App() {
       <Route path="/confidentialite" element={<Confidentialite />} />
       <Route path="/record" element={<RequireAuth><Record /></RequireAuth>} />
       <Route path="/recap" element={<RequireAuth><Recap /></RequireAuth>} />
+      <Route path="/recap/:id" element={<RequireAuth><RecapDetail /></RequireAuth>} />
       <Route path="/settings" element={<RequireAuth><Settings /></RequireAuth>} />
       <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
     </Routes>

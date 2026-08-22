@@ -46,11 +46,20 @@ export async function uploadRecording(blob, token, sessionToken, emails) {
   return data['Compte-rendu']
 }
 
-export async function getRecap(id) {
-  const res = await fetch(`${BASE_URL}/recaps/${id}`)
+export async function getRecap(id, token) {
+  return requestJson(
+    `${BASE_URL}/recaps/${id}`,
+    { headers: { Authorization: `Bearer ${token}` } },
+    'Compte-rendu introuvable',
+  )
+}
 
-  if (!res.ok) throw new Error(`Fetch recap failed (${res.status})`)
-  return res.json()
+export async function getMyRecaps(token) {
+  return requestJson(
+    `${BASE_URL}/recaps/mine`,
+    { headers: { Authorization: `Bearer ${token}` } },
+    'Impossible de charger les récaps',
+  )
 }
 
 // -- Auth (OAuth2 Password Grant + Bearer JWT) --
