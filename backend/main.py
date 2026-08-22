@@ -3,8 +3,9 @@ import shutil
 from pathlib import Path
 
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, File, Form
+from fastapi import Depends, FastAPI, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 load_dotenv()
@@ -30,6 +31,29 @@ def normalize_url(url: str) -> str:
 
 def add_recap_to_user(user: UserModel, recap_id: int) -> None:
     user.participants_list_of_recaps = (user.participants_list_of_recaps or []) + [recap_id]
+
+
+class RecapSummary(BaseModel):
+    id: int
+    name: str
+    source: str
+    created_at: str
+    summary: str | None = None
+    themes: list[str] = []
+    speaker_count: int | None = None
+
+
+class RecapDetailResponse(BaseModel):
+    id: int
+    name: str
+    source: str
+    created_at: str
+    summary: str | None = None
+    speaker_count: int | None = None
+    speakers: list = []
+    themes: list[str] = []
+    actions: list = []
+    transcript: list = []
 
 
 origins = [normalize_url(os.environ.get("FRONTEND_URL", "http://localhost:5173"))]
@@ -99,6 +123,55 @@ async def records(
         "Compte-rendu": report,
         "transcription": transcript,
     }
+
+
+@app.get("/recaps/mine", response_model=list[RecapSummary])
+async def list_my_recaps(
+    current_user: UserModel = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    recap_ids = current_user.participants_list_of_recaps or []
+    recaps = db.query(Recap).filter(Recap.recap_id.in_(recap_ids)).order_by(Recap.created_at.desc()).all()
+    return [
+        RecapSummary(
+            id=r.recap_id,
+            name=r.name,
+            source=r.source,
+            created_at=r.created_at,
+            summary=(r.reporting or {}).get("summary"),
+            themes=(r.reporting or {}).get("themes") or [],
+            speaker_count=(r.reporting or {}).get("speaker_count"),
+        )
+        for r in recaps
+    ]
+
+
+@app.get("/recaps/{recap_id}", response_model=RecapDetailResponse)
+async def get_recap_detail(
+    recap_id: int,
+    current_user: UserModel = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if recap_id not in (current_user.participants_list_of_recaps or []):
+        raise HTTPException(status_code=404, detail="Compte-rendu introuvable.")
+
+    recap = db.query(Recap).filter(Recap.recap_id == recap_id).first()
+    if recap is None:
+        raise HTTPException(status_code=404, detail="Compte-rendu introuvable.")
+
+    reporting = recap.reporting or {}
+    return RecapDetailResponse(
+        id=recap.recap_id,
+        name=recap.name,
+        source=recap.source,
+        created_at=recap.created_at,
+        summary=reporting.get("summary"),
+        speaker_count=reporting.get("speaker_count"),
+        speakers=reporting.get("speakers") or [],
+        themes=reporting.get("themes") or [],
+        actions=reporting.get("actions") or [],
+        transcript=reporting.get("transcript") or [],
+    )
 
 
 app.include_router(auth_router)

@@ -1,114 +1,350 @@
+import { useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router'
 import AppShell from '../components/AppShell'
-import { useRecap } from '../context/RecapContext'
+import { useAuth } from '../context/AuthContext'
+import { getMyRecaps } from '../api'
 
-const DOT_PALETTE = ['#ff2e00', '#0a0a0a', '#1a56ff', '#8a8a00']
+const SOURCES = [
+  { value: 'all', label: 'Tous', color: '#0a0a0a' },
+  { value: 'dictaphone', label: 'Dictaphone', icon: '●', color: '#ff2e00' },
+  { value: 'visio', label: 'Visio', icon: '◆', color: '#1a56ff' },
+]
 
-function dotFor(i) {
-  return DOT_PALETTE[i % DOT_PALETTE.length]
+const SOURCE_ICON = { dictaphone: '●', visio: '◆' }
+const SOURCE_LABEL = { dictaphone: 'Dictaphone', visio: 'Visio' }
+const SOURCE_COLOR = { dictaphone: '#ff2e00', visio: '#1a56ff' }
+
+// La visio programmée automatiquement par le bot calendrier (source "calendar")
+// reste de la visio du point de vue de l'utilisateur — une seule catégorie affichée.
+function displaySource(source) {
+  return source === 'calendar' ? 'visio' : source
 }
 
-function ParticipantChips({ speakers }) {
-  if (!speakers?.length) return null
+function formatDate(iso) {
+  if (!iso) return ''
+  return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+function Chip({ active, color = '#0a0a0a', children, onClick }) {
   return (
-    <div className="flex flex-wrap gap-2 mb-6">
-      {speakers.map((name, i) => (
-        <div key={`${name}-${i}`} className="flex items-center gap-2 border-[3px] border-ink px-3 py-1.5">
-          <span className="w-3 h-3 border-2 border-ink shrink-0" style={{ background: dotFor(i) }} />
-          <span className="font-mono text-[13px]">{name}</span>
+    <button
+      onClick={onClick}
+      className="cursor-pointer border-4 border-ink px-4 py-2 font-mono text-xs font-bold uppercase tracking-[1px] -ml-1 first:ml-0"
+      style={{ background: active ? color : '#ffffff', borderColor: active ? color : '#0a0a0a', color: active ? '#ffffff' : '#0a0a0a' }}
+    >
+      {children}
+    </button>
+  )
+}
+
+function StatTile({ label, value, color }) {
+  return (
+    <div className="border-4 border-ink border-l-[10px] px-4 py-3 bg-paper" style={{ borderLeftColor: color }}>
+      <div className="font-mono text-[10px] uppercase tracking-[1px] text-muted">{label}</div>
+      <div className="font-display text-[32px] leading-none mt-1" style={{ color }}>{value}</div>
+    </div>
+  )
+}
+
+const WEEKDAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
+
+function dateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function buildMonthCells(viewDate) {
+  const year = viewDate.getFullYear()
+  const month = viewDate.getMonth()
+  const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7 // lundi = 0
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+  const cells = Array(firstWeekday).fill(null)
+  for (let day = 1; day <= daysInMonth; day++) cells.push(new Date(year, month, day))
+  return cells
+}
+
+function Calendar({ recapDates, selected, onSelect }) {
+  const [viewDate, setViewDate] = useState(() => {
+    const now = new Date()
+    return new Date(now.getFullYear(), now.getMonth(), 1)
+  })
+
+  const cells = useMemo(() => buildMonthCells(viewDate), [viewDate])
+  const monthLabel = viewDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+  const today = dateKey(new Date())
+
+  return (
+    <div className="border-4 border-ink p-4 w-full max-w-[320px]">
+      <div className="flex items-center justify-between mb-3">
+        <button
+          onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))}
+          className="cursor-pointer font-mono text-sm w-7 h-7 border-2 border-ink bg-paper hover:bg-ink hover:text-white transition-none"
+        >
+          ←
+        </button>
+        <div className="font-mono text-xs uppercase tracking-[1px] font-bold">{monthLabel}</div>
+        <button
+          onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))}
+          className="cursor-pointer font-mono text-sm w-7 h-7 border-2 border-ink bg-paper hover:bg-ink hover:text-white transition-none"
+        >
+          →
+        </button>
+      </div>
+
+      <div className="grid grid-cols-7 gap-1 mb-1">
+        {WEEKDAYS.map((w, i) => (
+          <div key={i} className="font-mono text-[9px] uppercase text-muted text-center">{w}</div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-7 gap-1">
+        {cells.map((d, i) => {
+          if (!d) return <div key={i} />
+          const key = dateKey(d)
+          const hasRecap = recapDates.has(key)
+          const isSelected = selected === key
+          const isToday = key === today
+          return (
+            <button
+              key={i}
+              onClick={() => onSelect(isSelected ? null : key)}
+              className="cursor-pointer aspect-square flex flex-col items-center justify-center gap-0.5 font-mono text-[11px] border-2"
+              style={{
+                borderColor: isSelected ? '#0a0a0a' : isToday ? '#ff2e00' : 'transparent',
+                background: isSelected ? '#0a0a0a' : '#ffffff',
+                color: isSelected ? '#ffffff' : '#0a0a0a',
+              }}
+            >
+              {d.getDate()}
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ background: hasRecap ? (isSelected ? '#ffffff' : '#ff2e00') : 'transparent' }}
+              />
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function ThemeBadges({ themes }) {
+  if (!themes?.length) return null
+  return (
+    <div className="flex flex-wrap gap-1.5 mt-2">
+      {themes.map((t, i) => (
+        <span
+          key={i}
+          className="font-mono text-[10px] uppercase tracking-[1px] border-2 px-1.5 py-0.5"
+          style={{ borderColor: '#8a8a00', color: '#6b6b00', background: 'rgba(138,138,0,0.1)' }}
+        >
+          {t}
+        </span>
+      ))}
+    </div>
+  )
+}
+
+function RecapCard({ recap, onOpen }) {
+  const color = SOURCE_COLOR[displaySource(recap.source)] || '#0a0a0a'
+  return (
+    <div
+      onClick={onOpen}
+      className="cursor-pointer flex items-center justify-between gap-4 px-5 py-4 border-t-[3px] border-ink first:border-t-0 hover:bg-accent hover:text-white transition-none"
+    >
+      <div className="flex items-center gap-4 min-w-0">
+        <span className="font-display text-xl shrink-0" style={{ color }}>{SOURCE_ICON[displaySource(recap.source)] || '○'}</span>
+        <div className="min-w-0">
+          <div className="font-body font-extrabold text-[17px] truncate">{recap.name}</div>
+          <div className="font-mono text-xs text-muted">
+            {SOURCE_LABEL[displaySource(recap.source)] || recap.source} · {formatDate(recap.created_at)}
+            {recap.speaker_count ? ` · ${recap.speaker_count} participant${recap.speaker_count > 1 ? 's' : ''}` : ''}
+          </div>
+          {recap.summary && (
+            <div className="font-mono text-xs mt-1.5 line-clamp-1 opacity-80">{recap.summary}</div>
+          )}
+          <ThemeBadges themes={recap.themes} />
+        </div>
+      </div>
+      <div className="font-mono text-xs uppercase border-[3px] border-ink px-2.5 py-1 shrink-0">Ouvrir →</div>
+    </div>
+  )
+}
+
+function RecapListSkeleton() {
+  return (
+    <div className="border-4 border-ink">
+      {[0, 1, 2].map(i => (
+        <div key={i} className="px-5 py-4 border-t-[3px] border-ink first:border-t-0 flex flex-col gap-2">
+          <div className="h-3 w-2/5 bg-black/10 animate-pulse" />
+          <div className="h-3 w-1/4 bg-black/10 animate-pulse" />
         </div>
       ))}
     </div>
   )
 }
 
-function SummaryPanel({ summary }) {
-  return (
-    <div className="border-4 border-ink mb-5">
-      <div className="bg-ink text-white px-4 py-2.5 font-mono text-xs uppercase tracking-[1px]">Résumé</div>
-      <div className="px-4 py-4.5 font-mono text-sm leading-[1.7] whitespace-pre-line">
-        {summary || 'Aucun résumé disponible pour cette réunion.'}
-      </div>
-    </div>
-  )
-}
-
-function ActionsPanel({ actions }) {
-  return (
-    <div className="border-4 border-ink mb-5">
-      <div className="bg-accent text-white px-4 py-2.5 font-mono text-xs font-bold uppercase tracking-[1px]">Actions</div>
-      {actions?.length > 0 ? (
-        actions.map((action, i) => (
-          <div key={action.id ?? i} className="flex gap-3 px-4 py-3.5 border-t-[3px] border-ink font-mono text-sm">
-            <span className="font-display shrink-0">□</span>
-            <span>
-              <b>{action.assignee || 'Non assigné'}</b> — {action.label}
-            </span>
-          </div>
-        ))
-      ) : (
-        <div className="px-4 py-4 font-mono text-sm text-muted">Aucune action détectée.</div>
-      )}
-    </div>
-  )
-}
-
-function TranscriptPanel({ transcript, speakers = [] }) {
-  const colorFor = name => {
-    const i = speakers.indexOf(name)
-    return dotFor(i >= 0 ? i : 0)
-  }
-  return (
-    <div className="border-4 border-ink">
-      <div className="bg-ink text-white px-4 py-2.5 font-mono text-xs uppercase tracking-[1px]">Transcription</div>
-      {transcript?.length > 0 ? (
-        transcript.map((turn, i) => (
-          <div key={i} className="px-4 py-3 border-t-[3px] border-ink font-mono text-[13px] leading-[1.6]">
-            <span className="font-bold" style={{ color: colorFor(turn.speaker) }}>{turn.speaker || 'Inconnu'}</span>{' '}
-            {turn.time && <span className="text-[#999]">{turn.time}</span>}
-            <br />
-            {turn.text}
-          </div>
-        ))
-      ) : (
-        <div className="px-4 py-4 font-mono text-sm text-muted">Aucune transcription disponible.</div>
-      )}
-    </div>
-  )
-}
-
-function RecapContent({ recap }) {
-  return (
-    <>
-      <ParticipantChips speakers={recap.speakers} />
-      <SummaryPanel summary={recap.summary} />
-      <ActionsPanel actions={recap.actions} />
-      <TranscriptPanel transcript={recap.transcript} speakers={recap.speakers} />
-    </>
-  )
-}
-
-function EmptyRecap() {
-  return (
-    <div className="border-4 border-ink px-6 py-10 text-center font-mono text-sm text-muted">
-      Aucun compte-rendu pour le moment.
-    </div>
-  )
-}
-
 export default function Recap() {
-  const { recap } = useRecap()
+  const { token, user } = useAuth()
+  const navigate = useNavigate()
+
+  const [recaps, setRecaps] = useState(null)
+  const [error, setError] = useState(null)
+  const [search, setSearch] = useState('')
+  const [sourceFilter, setSourceFilter] = useState('all')
+  const [theme, setTheme] = useState('all')
+  const [selectedDay, setSelectedDay] = useState(null)
+
+  useEffect(() => {
+    setRecaps(null)
+    setError(null)
+    getMyRecaps(token)
+      .then(setRecaps)
+      .catch(err => setError(err.message))
+  }, [token])
+
+  // Thèmes disponibles pour la sélection source/date en cours — un thème n'a
+  // de sens à proposer que s'il existe une réunion qui y correspond compte
+  // tenu des autres filtres actifs, sinon on obtient silencieusement 0
+  // résultat (thème choisi avant de changer de date, par ex.).
+  const allThemes = useMemo(() => {
+    const scope = (recaps ?? []).filter(r => {
+      if (sourceFilter !== 'all' && displaySource(r.source) !== sourceFilter) return false
+      if (selectedDay && r.created_at?.slice(0, 10) !== selectedDay) return false
+      return true
+    })
+    return [...new Set(scope.flatMap(r => r.themes ?? []))].sort()
+  }, [recaps, sourceFilter, selectedDay])
+
+  // Le thème sélectionné peut devenir invalide quand la source ou la date
+  // changent (ex: thème choisi sur une autre journée) — on le réinitialise
+  // plutôt que de laisser la liste retomber silencieusement à zéro résultat.
+  useEffect(() => {
+    if (theme !== 'all' && !allThemes.includes(theme)) setTheme('all')
+  }, [allThemes, theme])
+
+  const recapDates = useMemo(
+    () => new Set((recaps ?? []).filter(r => r.created_at).map(r => r.created_at.slice(0, 10))),
+    [recaps],
+  )
+
+  const { monthCount, yearCount } = useMemo(() => {
+    const now = new Date()
+    let month = 0
+    let year = 0
+    for (const r of recaps ?? []) {
+      if (!r.created_at) continue
+      const d = new Date(r.created_at)
+      if (d.getFullYear() === now.getFullYear()) {
+        year += 1
+        if (d.getMonth() === now.getMonth()) month += 1
+      }
+    }
+    return { monthCount: month, yearCount: year }
+  }, [recaps])
+
+  const filtered = (recaps ?? []).filter(r => {
+    if (sourceFilter !== 'all' && displaySource(r.source) !== sourceFilter) return false
+    if (theme !== 'all' && !(r.themes ?? []).includes(theme)) return false
+    if (selectedDay) {
+      if (r.created_at?.slice(0, 10) !== selectedDay) return false
+    }
+    if (search.trim()) {
+      const haystack = [r.name, r.summary, ...(r.themes ?? [])].filter(Boolean).join(' ').toLowerCase()
+      if (!haystack.includes(search.trim().toLowerCase())) return false
+    }
+    return true
+  })
 
   return (
     <AppShell>
-      <div className="p-6 md:p-10 max-w-[820px] mx-auto">
-        <h2 className="font-display text-[34px] uppercase tracking-[-1px] m-0 mb-1.5 leading-none">
-          Comptes-rendus
+      <div className="p-6 md:p-10 max-w-[1240px]">
+        <h2 className="font-display text-[40px] uppercase tracking-[-2px] m-0 mb-1.5 leading-none">
+          Récaps
         </h2>
-        <div className="font-mono text-[13px] text-muted mb-6">
-          {recap ? 'Analyse terminée' : '0 compte-rendu'}
-        </div>
+        <p className="font-mono text-[13px] text-muted mb-6">
+          Bonjour {user?.username || ''}, voici les récaps de vos réunions.
+        </p>
 
-        {recap ? <RecapContent recap={recap} /> : <EmptyRecap />}
+        <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-8 items-start">
+          <div className="flex flex-col gap-7">
+            <div className="flex gap-4 flex-wrap">
+              <StatTile label="Ce mois-ci" value={monthCount} color="#ff2e00" />
+              <StatTile label="Cette année" value={yearCount} color="#1a56ff" />
+            </div>
+
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 font-display text-xl pointer-events-none text-muted">⌕</span>
+              <input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="Rechercher un mot-clé, un thème…"
+                className="block w-full pl-12 pr-4 py-4 font-mono text-base bg-paper border-4 border-ink shadow-[6px_6px_0_#ff2e00] focus:shadow-[2px_2px_0_#ff2e00] focus:translate-x-1 focus:translate-y-1 transition-none"
+              />
+            </div>
+
+            <div className="border-4 border-ink p-5 flex flex-col gap-4">
+              <div className="flex gap-2 flex-wrap">
+                {SOURCES.map(s => (
+                  <Chip key={s.value} active={sourceFilter === s.value} color={s.color} onClick={() => setSourceFilter(s.value)}>
+                    {s.icon ? `${s.icon} ` : ''}{s.label}
+                  </Chip>
+                ))}
+              </div>
+
+              <Calendar recapDates={recapDates} selected={selectedDay} onSelect={setSelectedDay} />
+
+              {selectedDay && (
+                <div className="flex items-center gap-2 font-mono text-xs flex-wrap">
+                  <span className="border-4 border-ink px-2.5 py-1.5">
+                    {new Date(selectedDay).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                  </span>
+                  <button
+                    onClick={() => setSelectedDay(null)}
+                    className="cursor-pointer font-mono text-[11px] uppercase underline bg-transparent border-none p-0"
+                  >
+                    Réinitialiser
+                  </button>
+                </div>
+              )}
+
+              {allThemes.length > 0 && (
+                <label className="flex items-center gap-2 font-mono text-xs uppercase tracking-[1px]">
+                  Thème
+                  <select
+                    value={theme}
+                    onChange={e => setTheme(e.target.value)}
+                    className="border-4 border-ink px-2.5 py-1.5 font-mono text-xs bg-paper w-full"
+                  >
+                    <option value="all">Tous les thèmes</option>
+                    {allThemes.map(t => (
+                      <option key={t} value={t}>{t}</option>
+                    ))}
+                  </select>
+                </label>
+              )}
+            </div>
+          </div>
+
+          <div>
+            {error ? (
+              <div className="border-4 border-ink px-6 py-10 text-center font-mono text-sm">
+                Impossible de charger les récaps.
+              </div>
+            ) : recaps === null ? (
+              <RecapListSkeleton />
+            ) : filtered.length > 0 ? (
+              <div className="border-4 border-ink">
+                {filtered.map(r => (
+                  <RecapCard key={r.id} recap={r} onOpen={() => navigate(`/recap/${r.id}`)} />
+                ))}
+              </div>
+            ) : (
+              <div className="border-4 border-ink px-6 py-10 text-center font-mono text-sm text-muted">
+                Aucun compte-rendu pour le moment.
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </AppShell>
   )
