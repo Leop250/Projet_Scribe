@@ -1,27 +1,26 @@
-import os
 import json
-from together import Together
+import os
+
 from dotenv import load_dotenv
+from together import Together
 
 load_dotenv("../.env")
 
 client = Together()
 
-with open("agent_context.txt", "r") as f:
-    context = f.read()
+with open("agent_context.txt", "r") as context_file:
+    context = context_file.read()
+
 
 def call_classifier(transcript):
     analyze = client.chat.completions.create(
         model=os.environ["CLASSIFIER_MODEL"],
-        messages=[
-            {"role": "system", "content": context},
-            {"role": "user", "content": transcript}
-        ],
+        messages=[{"role": "system", "content": context}, {"role": "user", "content": transcript}],
         temperature=0,
         max_tokens=4096,
         stream=True,
         response_format={"type": "json_object"},
-        reasoning={"enabled": False}
+        reasoning={"enabled": False},
     )
 
     full_content = ""

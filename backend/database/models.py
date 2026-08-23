@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.dialects.postgresql import JSONB
 
-from database import Base
+from database.database import Base
 
 
 class Recap(Base):
