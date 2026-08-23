@@ -41,18 +41,18 @@ class SignRequest(BaseModel):
 
     @field_validator("nom")
     @classmethod
-    def strip_nom(cls, v: str) -> str:
-        v = v.strip()
-        if not v:
+    def strip_nom(cls, value: str) -> str:
+        value = value.strip()
+        if not value:
             raise ValueError("Le nom ne peut pas être vide.")
-        return v
+        return value
 
     @field_validator("image")
     @classmethod
-    def validate_image(cls, v: str) -> str:
-        if not v.startswith(IMAGE_DATA_URL_PREFIX):
+    def validate_image(cls, value: str) -> str:
+        if not value.startswith(IMAGE_DATA_URL_PREFIX):
             raise ValueError("Format d'image invalide.")
-        payload = v[len(IMAGE_DATA_URL_PREFIX) :]
+        payload = value[len(IMAGE_DATA_URL_PREFIX) :]
         if len(payload) > MAX_IMAGE_BASE64_CHARS:
             raise ValueError("Image trop volumineuse.")
         try:
@@ -63,4 +63,4 @@ class SignRequest(BaseModel):
             Image.open(io.BytesIO(decoded)).verify()
         except Exception:
             raise ValueError("Image invalide.")
-        return v
+        return value

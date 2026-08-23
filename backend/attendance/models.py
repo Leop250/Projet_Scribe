@@ -1,6 +1,6 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, func
 
-from database import Base
+from database.database import Base
 
 
 class RecordingSession(Base):
@@ -10,7 +10,7 @@ class RecordingSession(Base):
     token = Column(String, unique=True, index=True, nullable=False)
     organizer_id = Column(Integer, ForeignKey("users.user_id"), nullable=False)
     headcount = Column(Integer, nullable=False)
-    status = Column(String, nullable=False, default="pending")  # "pending" | "started"
+    status = Column(String, nullable=False, default="pending")
     recap_id = Column(Integer, ForeignKey("recaps.recap_id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
