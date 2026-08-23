@@ -13,7 +13,6 @@ from sqlalchemy.dialects import postgresql
 
 from alembic import op
 
-# revision identifiers, used by Alembic.
 revision: str = "32a77d0481b9"
 down_revision: Union[str, Sequence[str], None] = "b92f95f2759e"
 branch_labels: Union[str, Sequence[str], None] = None
@@ -21,7 +20,6 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    """Upgrade schema."""
     op.create_table(
         "recaps",
         sa.Column("recap_id", sa.Integer(), primary_key=True),
@@ -44,6 +42,5 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Downgrade schema."""
     op.drop_column("users", "participants_list_of_recaps")
     op.drop_table("recaps")

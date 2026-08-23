@@ -11,7 +11,7 @@ class Recap(Base):
 
     recap_id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
-    source = Column(String, nullable=False)  # "dictaphone" | "visio" | "calendar"
+    source = Column(String, nullable=False)
     created_at = Column(
         String, nullable=False, default=lambda: datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     )

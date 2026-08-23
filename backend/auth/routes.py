@@ -1,16 +1,16 @@
 import secrets
-from collections import defaultdict
 from datetime import datetime, timedelta, timezone
-from time import time
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from database.database import get_db
+from rate_limit import RateLimiter
+
 from .authentification import create_access_token
 from .config import settings
-from database import get_db
 from .dependencies import get_current_user
 from .email_services import send_password_reset_email_async, send_verification_code_email_async
 from .schemas import (
@@ -24,49 +24,23 @@ from .schemas import (
 )
 from .users import UserModel, authenticate_user, get_by_email, get_password_hash
 
-_PURGE_THRESHOLD = 1000
-
-
-class _RateLimiter:
-    def __init__(self, window_seconds: int, max_attempts: int):
-        self.window_seconds = window_seconds
-        self.max_attempts = max_attempts
-        self._attempts: dict[str, list[float]] = defaultdict(list)
-
-    def check(self, key: str, detail: str) -> None:
-        now = time()
-        attempts = self._attempts[key]
-        attempts[:] = [t for t in attempts if now - t < self.window_seconds]
-        if len(attempts) >= self.max_attempts:
-            raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=detail)
-        attempts.append(now)
-
-        if len(self._attempts) > _PURGE_THRESHOLD:
-            self._purge_expired(now)
-
-    def _purge_expired(self, now: float) -> None:
-        expired = [k for k, v in self._attempts.items() if not v or now - v[-1] >= self.window_seconds]
-        for k in expired:
-            del self._attempts[k]
-
-
-_signup_rate_limiter = _RateLimiter(window_seconds=3600, max_attempts=5)
-_login_rate_limiter = _RateLimiter(window_seconds=900, max_attempts=10)
-_exists_rate_limiter = _RateLimiter(window_seconds=3600, max_attempts=20)
-_verify_code_rate_limiter = _RateLimiter(window_seconds=900, max_attempts=8)
-_resend_code_rate_limiter = _RateLimiter(window_seconds=3600, max_attempts=5)
-_forgot_password_rate_limiter = _RateLimiter(window_seconds=3600, max_attempts=5)
-_reset_password_rate_limiter = _RateLimiter(window_seconds=900, max_attempts=8)
+_signup_rate_limiter = RateLimiter(window_seconds=3600, max_attempts=5)
+_login_rate_limiter = RateLimiter(window_seconds=900, max_attempts=10)
+_exists_rate_limiter = RateLimiter(window_seconds=3600, max_attempts=20)
+_verify_code_rate_limiter = RateLimiter(window_seconds=900, max_attempts=8)
+_resend_code_rate_limiter = RateLimiter(window_seconds=3600, max_attempts=5)
+_forgot_password_rate_limiter = RateLimiter(window_seconds=3600, max_attempts=5)
+_reset_password_rate_limiter = RateLimiter(window_seconds=900, max_attempts=8)
 
 
 def _generate_code() -> str:
     return f"{secrets.randbelow(1_000_000):06d}"
 
 
-def _unique_username(db: Session, base: str) -> str:
+def _unique_username(db_session: Session, base: str) -> str:
     username = base
     suffix = 0
-    while db.query(UserModel).filter(UserModel.username == username).first():
+    while db_session.query(UserModel).filter(UserModel.username == username).first():
         suffix += 1
         username = f"{base}{suffix}"
     return username
@@ -94,12 +68,12 @@ router = APIRouter()
 
 @router.post("/token", response_model=Token)
 def login_for_access_token(
-    request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+    request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db_session: Session = Depends(get_db)
 ):
     _login_rate_limiter.check(
         request.client.host, "Trop de tentatives de connexion, réessaie dans quelques minutes."
     )
-    user = authenticate_user(db, form_data.username, form_data.password)
+    user = authenticate_user(db_session, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -120,18 +94,18 @@ def get_session(current_user: UserModel = Depends(get_current_user)):
 
 
 @router.get("/users/exists")
-def user_exists(email: str, request: Request, db: Session = Depends(get_db)):
+def user_exists(email: str, request: Request, db_session: Session = Depends(get_db)):
     _exists_rate_limiter.check(request.client.host, "Trop de vérifications, réessaie plus tard.")
-    return {"exists": get_by_email(db, email) is not None}
+    return {"exists": get_by_email(db_session, email) is not None}
 
 
 @router.post("/users/createUsers")
-async def create_user(user: UserRegister, request: Request, db: Session = Depends(get_db)):
+async def create_user(user: UserRegister, request: Request, db_session: Session = Depends(get_db)):
     _signup_rate_limiter.check(
         request.client.host, "Trop de tentatives d'inscription depuis cette adresse, réessaie plus tard."
     )
 
-    if get_by_email(db, user.email):
+    if get_by_email(db_session, user.email):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="L'email est déjà existante !",
@@ -141,7 +115,7 @@ async def create_user(user: UserRegister, request: Request, db: Session = Depend
     code = _generate_code()
 
     new_user = UserModel(
-        username=_unique_username(db, user.username),
+        username=_unique_username(db_session, user.username),
         email=user.email,
         hashed_password=hashed_password,
         verification_code=code,
@@ -149,11 +123,11 @@ async def create_user(user: UserRegister, request: Request, db: Session = Depend
         + timedelta(minutes=settings.EMAIL_VERIFICATION_EXPIRE_MINUTES),
     )
 
-    db.add(new_user)
+    db_session.add(new_user)
     try:
-        db.flush()
+        db_session.flush()
     except IntegrityError:
-        db.rollback()
+        db_session.rollback()
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Impossible de créer le compte, réessaie.",
@@ -162,38 +136,38 @@ async def create_user(user: UserRegister, request: Request, db: Session = Depend
     try:
         await send_verification_code_email_async(to=new_user.email, code=code)
     except Exception:
-        db.rollback()
+        db_session.rollback()
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Impossible d'envoyer l'e-mail de vérification, réessaie.",
         )
 
-    db.commit()
-    db.refresh(new_user)
+    db_session.commit()
+    db_session.refresh(new_user)
 
     return {"message": "Compte créé — entre le code reçu par e-mail pour l'activer.", "user_id": new_user.id}
 
 
 @router.post("/auth/verify-code", response_model=Token)
-def verify_code(body: VerifyCodeRequest, db: Session = Depends(get_db)):
+def verify_code(body: VerifyCodeRequest, db_session: Session = Depends(get_db)):
     _verify_code_rate_limiter.check(body.email, "Trop de tentatives, redemande un code.")
 
-    user = get_by_email(db, body.email)
+    user = get_by_email(db_session, body.email)
     _check_code(user, body.code, "verification_code", "verification_code_expires_at")
 
     user.is_verified = True
     user.verification_code = None
     user.verification_code_expires_at = None
-    db.commit()
+    db_session.commit()
 
     return _issue_token(user)
 
 
 @router.post("/auth/resend-code")
-async def resend_code(body: ResendCodeRequest, db: Session = Depends(get_db)):
+async def resend_code(body: ResendCodeRequest, db_session: Session = Depends(get_db)):
     _resend_code_rate_limiter.check(body.email, "Trop de renvois, réessaie plus tard.")
 
-    user = get_by_email(db, body.email)
+    user = get_by_email(db_session, body.email)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Compte introuvable.")
     if user.is_verified:
@@ -208,21 +182,23 @@ async def resend_code(body: ResendCodeRequest, db: Session = Depends(get_db)):
     try:
         await send_verification_code_email_async(to=user.email, code=code)
     except Exception:
-        db.rollback()
+        db_session.rollback()
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="Impossible d'envoyer l'e-mail, réessaie.",
         )
 
-    db.commit()
+    db_session.commit()
     return {"message": "Nouveau code envoyé."}
 
 
 @router.post("/auth/forgot-password")
-async def forgot_password(body: ForgotPasswordRequest, request: Request, db: Session = Depends(get_db)):
+async def forgot_password(
+    body: ForgotPasswordRequest, request: Request, db_session: Session = Depends(get_db)
+):
     _forgot_password_rate_limiter.check(request.client.host, "Trop de demandes, réessaie plus tard.")
 
-    user = get_by_email(db, body.email)
+    user = get_by_email(db_session, body.email)
     if user and user.is_verified:
         code = _generate_code()
         user.reset_code = code
@@ -233,27 +209,27 @@ async def forgot_password(body: ForgotPasswordRequest, request: Request, db: Ses
         try:
             await send_password_reset_email_async(to=user.email, code=code)
         except Exception:
-            db.rollback()
+            db_session.rollback()
             raise HTTPException(
                 status_code=status.HTTP_502_BAD_GATEWAY,
                 detail="Impossible d'envoyer l'e-mail, réessaie.",
             )
 
-        db.commit()
+        db_session.commit()
 
     return {"message": "Si un compte existe et est vérifié, un code de réinitialisation a été envoyé."}
 
 
 @router.post("/auth/reset-password", response_model=Token)
-def reset_password(body: ResetPasswordRequest, db: Session = Depends(get_db)):
+def reset_password(body: ResetPasswordRequest, db_session: Session = Depends(get_db)):
     _reset_password_rate_limiter.check(body.email, "Trop de tentatives, redemande un code.")
 
-    user = get_by_email(db, body.email)
+    user = get_by_email(db_session, body.email)
     _check_code(user, body.code, "reset_code", "reset_code_expires_at")
 
     user.hashed_password = get_password_hash(body.new_password)
     user.reset_code = None
     user.reset_code_expires_at = None
-    db.commit()
+    db_session.commit()
 
     return _issue_token(user)

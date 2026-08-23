@@ -4,8 +4,8 @@ from typing import Annotated, TypeAlias
 from pydantic import BaseModel, BeforeValidator, EmailStr, Field, field_validator
 
 
-def _normalize_email(v: str) -> str:
-    return v.strip().lower()
+def _normalize_email(email: str) -> str:
+    return email.strip().lower()
 
 
 NormalizedEmail: TypeAlias = Annotated[EmailStr, BeforeValidator(_normalize_email)]
@@ -30,14 +30,14 @@ class ForgotPasswordRequest(BaseModel):
     email: NormalizedEmail
 
 
-def _check_password_strength(v: str) -> str:
-    if len(v.encode("utf-8")) > 72:
+def _check_password_strength(password: str) -> str:
+    if len(password.encode("utf-8")) > 72:
         raise ValueError("Le mot de passe ne doit pas dépasser 72 caractères.")
-    if len(v) < 8 or not re.search(r"[A-Z]", v) or not re.search(r"[^A-Za-z0-9]", v):
+    if len(password) < 8 or not re.search(r"[A-Z]", password) or not re.search(r"[^A-Za-z0-9]", password):
         raise ValueError(
             "Le mot de passe doit contenir au moins 8 caractères, une majuscule et un caractère spécial."
         )
-    return v
+    return password
 
 
 class ResetPasswordRequest(BaseModel):
@@ -47,8 +47,8 @@ class ResetPasswordRequest(BaseModel):
 
     @field_validator("new_password")
     @classmethod
-    def password_strength(cls, v: str) -> str:
-        return _check_password_strength(v)
+    def password_strength(cls, password: str) -> str:
+        return _check_password_strength(password)
 
 
 class UserRegister(BaseModel):
@@ -58,8 +58,8 @@ class UserRegister(BaseModel):
 
     @field_validator("password")
     @classmethod
-    def password_strength(cls, v: str) -> str:
-        return _check_password_strength(v)
+    def password_strength(cls, password: str) -> str:
+        return _check_password_strength(password)
 
 
 class UserVerification(BaseModel):

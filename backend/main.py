@@ -10,15 +10,15 @@ from sqlalchemy.orm import Session
 
 load_dotenv()
 
-from Attendance.models import RecordingSession  # noqa: E402
-from Attendance.routes import router as attendance_router  # noqa: E402
-from Auth.dependencies import get_current_user  # noqa: E402
-from Auth.routes import router as auth_router  # noqa: E402
-from Auth.users import UserModel  # noqa: E402
-from classifier import call_classifier  # noqa: E402
-from database import get_db  # noqa: E402
-from models import Recap  # noqa: E402
-from speech_to_text import call_speech_to_text_agent  # noqa: E402
+from ai.classifier import call_classifier  # noqa: E402
+from ai.speech_to_text import call_speech_to_text_agent  # noqa: E402
+from attendance.models import RecordingSession  # noqa: E402
+from attendance.routes import router as attendance_router  # noqa: E402
+from auth.dependencies import get_current_user  # noqa: E402
+from auth.routes import router as auth_router  # noqa: E402
+from auth.users import UserModel, get_by_email  # noqa: E402
+from database.database import get_db  # noqa: E402
+from database.models import Recap  # noqa: E402
 
 app = FastAPI()
 
@@ -77,13 +77,13 @@ async def records(
     emails: str = Form(...),
     session_token: str | None = Form(None),
     current_user: UserModel = Depends(get_current_user),
-    db: Session = Depends(get_db),
+    db_session: Session = Depends(get_db),
 ):
     temp_path = Path("temp") / audio.filename
     temp_path.parent.mkdir(exist_ok=True)
 
-    with open(temp_path, "wb") as f:
-        shutil.copyfileobj(audio.file, f)
+    with open(temp_path, "wb") as recording_file:
+        shutil.copyfileobj(audio.file, recording_file)
     try:
         transcript = call_speech_to_text_agent(temp_path)
         report = call_classifier(transcript)
@@ -98,23 +98,23 @@ async def records(
         reporting=report,
     )
 
-    db.add(recap)
-    db.commit()
-    db.refresh(recap)
+    db_session.add(recap)
+    db_session.commit()
+    db_session.refresh(recap)
 
     for email in emails.split(","):
-        user = db.query(UserModel).filter(UserModel.email == email.strip()).first()
+        user = get_by_email(db_session, email)
         if user:
             add_recap_to_user(user, recap.recap_id)
 
-    db.commit()
+    db_session.commit()
 
     if session_token:
-        session = db.query(RecordingSession).filter(RecordingSession.token == session_token).first()
+        session = db_session.query(RecordingSession).filter(RecordingSession.token == session_token).first()
         if session and session.status == "pending":
             session.status = "started"
             session.recap_id = recap.recap_id
-            db.commit()
+            db_session.commit()
 
     print("Audio received successfully")
     return {
@@ -128,21 +128,23 @@ async def records(
 @app.get("/recaps/mine", response_model=list[RecapSummary])
 async def list_my_recaps(
     current_user: UserModel = Depends(get_current_user),
-    db: Session = Depends(get_db),
+    db_session: Session = Depends(get_db),
 ):
     recap_ids = current_user.participants_list_of_recaps or []
-    recaps = db.query(Recap).filter(Recap.recap_id.in_(recap_ids)).order_by(Recap.created_at.desc()).all()
+    recaps = (
+        db_session.query(Recap).filter(Recap.recap_id.in_(recap_ids)).order_by(Recap.created_at.desc()).all()
+    )
     return [
         RecapSummary(
-            id=r.recap_id,
-            name=r.name,
-            source=r.source,
-            created_at=r.created_at,
-            summary=(r.reporting or {}).get("summary"),
-            themes=(r.reporting or {}).get("themes") or [],
-            speaker_count=(r.reporting or {}).get("speaker_count"),
+            id=recap.recap_id,
+            name=recap.name,
+            source=recap.source,
+            created_at=recap.created_at,
+            summary=(recap.reporting or {}).get("summary"),
+            themes=(recap.reporting or {}).get("themes") or [],
+            speaker_count=(recap.reporting or {}).get("speaker_count"),
         )
-        for r in recaps
+        for recap in recaps
     ]
 
 
@@ -150,12 +152,12 @@ async def list_my_recaps(
 async def get_recap_detail(
     recap_id: int,
     current_user: UserModel = Depends(get_current_user),
-    db: Session = Depends(get_db),
+    db_session: Session = Depends(get_db),
 ):
     if recap_id not in (current_user.participants_list_of_recaps or []):
         raise HTTPException(status_code=404, detail="Compte-rendu introuvable.")
 
-    recap = db.query(Recap).filter(Recap.recap_id == recap_id).first()
+    recap = db_session.query(Recap).filter(Recap.recap_id == recap_id).first()
     if recap is None:
         raise HTTPException(status_code=404, detail="Compte-rendu introuvable.")
 

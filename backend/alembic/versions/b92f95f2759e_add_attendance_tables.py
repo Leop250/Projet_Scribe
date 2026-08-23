@@ -12,7 +12,6 @@ import sqlalchemy as sa
 
 from alembic import op
 
-# revision identifiers, used by Alembic.
 revision: str = "b92f95f2759e"
 down_revision: Union[str, Sequence[str], None] = "ac312b5f7d51"
 branch_labels: Union[str, Sequence[str], None] = None
@@ -20,7 +19,6 @@ depends_on: Union[str, Sequence[str], None] = None
 
 
 def upgrade() -> None:
-    """Upgrade schema."""
     op.create_table(
         "recording_sessions",
         sa.Column("session_id", sa.Integer(), primary_key=True, index=True),
@@ -47,6 +45,5 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Downgrade schema."""
     op.drop_table("attendance_signatures")
     op.drop_table("recording_sessions")
