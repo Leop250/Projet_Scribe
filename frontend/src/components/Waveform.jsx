@@ -8,7 +8,6 @@ export default function Waveform({ active, analyser }) {
   const t0Ref   = useRef(null)
 
   useEffect(() => {
-    // Real microphone data path
     if (analyser) {
       const data = new Uint8Array(analyser.frequencyBinCount)
       const step = Math.floor(data.length / BAR_COUNT)
@@ -28,7 +27,6 @@ export default function Waveform({ active, analyser }) {
       return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current) }
     }
 
-    // Fallback: simulated sine-wave animation
     const frame = (ts) => {
       if (!t0Ref.current) t0Ref.current = ts
       const t = (ts - t0Ref.current) / 1000

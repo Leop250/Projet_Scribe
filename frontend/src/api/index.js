@@ -5,10 +5,6 @@ function normalizeBaseUrl(url) {
 
 const BASE_URL = normalizeBaseUrl(import.meta.env.VITE_API_URL)
 
-// FastAPI renvoie `detail` en string pour une erreur métier (HTTPException),
-// mais en liste d'objets {msg, loc, ...} pour une erreur de validation
-// Pydantic (422) — sans ça, un message d'erreur de validation s'affiche
-// comme "[object Object]" dans l'UI.
 function extractErrorMessage(data, fallback) {
   if (typeof data?.detail === 'string') return data.detail
   if (Array.isArray(data?.detail)) {
@@ -17,10 +13,6 @@ function extractErrorMessage(data, fallback) {
   return fallback
 }
 
-// Centralise fetch + parsing JSON + gestion d'erreur pour les routes auth :
-// chaque appelant peut compter sur `err.status` pour distinguer les cas
-// (403 non vérifié, 429 rate limit, 409 conflit...) plutôt que de parser
-// le message d'erreur.
 async function requestJson(url, options, fallbackMessage) {
   const res = await fetch(url, options)
   const data = await res.json().catch(() => ({}))
@@ -62,8 +54,6 @@ export async function getMyRecaps(token) {
   )
 }
 
-// -- Auth (OAuth2 Password Grant + Bearer JWT) --
-// POST /token attend un formulaire OAuth2 classique (champ "username", pas "email").
 export async function login(email, password) {
   const body = new URLSearchParams()
   body.append('username', email)
@@ -74,12 +64,11 @@ export async function login(email, password) {
     { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body },
     'Connexion refusée',
   )
-  return data // { access_token, token_type }
+  return data
 }
 
 export async function getSession(token) {
   return requestJson(`${BASE_URL}/auth/session`, { headers: { Authorization: `Bearer ${token}` } }, 'Non authentifié')
-  // { id, username, email, is_verified }
 }
 
 export async function checkEmailExists(email) {
@@ -101,7 +90,7 @@ export async function verifyCode(email, code) {
     { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, code }) },
     'Vérification refusée',
   )
-  return data // { access_token, token_type }
+  return data
 }
 
 export async function resendCode(email) {
@@ -126,10 +115,9 @@ export async function resetPassword(email, code, newPassword) {
     { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, code, new_password: newPassword }) },
     'Réinitialisation refusée',
   )
-  return data // { access_token, token_type }
+  return data
 }
 
-// -- Présence par QR code --
 export async function createAttendanceSession(headcount, token) {
   return requestJson(
     `${BASE_URL}/attendance/sessions`,
@@ -140,7 +128,6 @@ export async function createAttendanceSession(headcount, token) {
     },
     'Création de la session impossible',
   )
-  // { session_token, sign_url, headcount }
 }
 
 export async function getAttendanceSessionStatus(sessionToken, token) {
@@ -149,7 +136,6 @@ export async function getAttendanceSessionStatus(sessionToken, token) {
     { headers: { Authorization: `Bearer ${token}` } },
     'Statut indisponible',
   )
-  // { headcount, confirmed_count, ready }
 }
 
 export async function startAttendanceSession(sessionToken, token) {
@@ -166,7 +152,6 @@ export async function getPublicAttendanceSession(sessionToken) {
     {},
     'Session introuvable',
   )
-  // { headcount, confirmed_count, status }
 }
 
 export async function signAttendance(sessionToken, nom, image) {

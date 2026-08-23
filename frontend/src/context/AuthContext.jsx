@@ -7,6 +7,7 @@ const STORAGE_KEY = 'scribe_token'
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem(STORAGE_KEY))
   const [user, setUser] = useState(null)
+  const [sessionError, setSessionError] = useState(false)
 
   useEffect(() => {
     if (token) localStorage.setItem(STORAGE_KEY, token)
@@ -14,25 +15,24 @@ export function AuthProvider({ children }) {
   }, [token])
 
   useEffect(() => {
-    // Se déclenche à chaque changement de token (login, ou restauration
-    // depuis localStorage au démarrage) : un token périmé pendant que l'app
-    // était fermée déclenche un vrai 401 ici plutôt que de laisser
-    // l'utilisateur le découvrir au milieu d'une action (upload, etc.), et
-    // ça peuple `user` au passage. Seul un vrai 401 doit déconnecter : une
-    // panne réseau ou un backend momentanément indisponible ne veut pas dire
-    // que le token est invalide.
-    if (!token) { setUser(null); return }
+    if (!token) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSessionError(false)
     getSession(token)
       .then(setUser)
-      .catch(err => { if (err.status === 401) setToken(null) })
+      .catch(err => {
+        if (err.status === 401) { setToken(null); setUser(null) }
+        else setSessionError(true)
+      })
   }, [token])
 
   function logout() {
     setToken(null)
+    setUser(null)
   }
 
   return (
-    <AuthContext.Provider value={{ token, setToken, user, logout, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ token, setToken, user, logout, isAuthenticated: !!token, sessionError }}>
       {children}
     </AuthContext.Provider>
   )

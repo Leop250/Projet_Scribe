@@ -17,18 +17,15 @@ function pwdValid(p) {
 
 function Field({ label, error, shakeKey, children }) {
   const wrapperRef = useRef(null)
-  // Lu de façon impérative dans l'effet plutôt que mis en dépendance : on ne
-  // veut réagir qu'à un vrai événement shakeKey (soumission échouée), jamais
-  // au fait que `error` devienne vrai pendant la frappe.
   const errorRef = useRef(error)
-  errorRef.current = error
+  useEffect(() => { errorRef.current = error })
 
   useEffect(() => {
     if (!shakeKey || !errorRef.current) return
     const el = wrapperRef.current
-    el.classList.remove('animate-glitch')
-    void el.offsetWidth // force le reflow pour pouvoir rejouer l'animation
-    el.classList.add('animate-glitch')
+    el.classList.remove('animate-nudge')
+    void el.offsetWidth
+    el.classList.add('animate-nudge')
   }, [shakeKey])
 
   return (
@@ -90,7 +87,7 @@ function SubmitButton({ loading, disabled, topMargin, children }) {
     <button
       type="submit"
       disabled={disabled}
-      className={`cursor-pointer w-full ${topMargin ? 'mt-3.5 ' : ''}text-center py-4 bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:enabled:bg-accent hover:enabled:text-ink transition-none disabled:opacity-50 disabled:cursor-wait`}
+      className={`cursor-pointer w-full ${topMargin ? 'mt-3.5 ' : ''}text-center py-4 bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:enabled:bg-accent hover:enabled:text-ink transition-none active:enabled:scale-[0.99] disabled:opacity-50 disabled:cursor-wait`}
     >
       {loading ? 'Un instant…' : children}
     </button>
@@ -99,9 +96,13 @@ function SubmitButton({ loading, disabled, topMargin, children }) {
 
 function ResendLink({ onClick }) {
   return (
-    <div onClick={onClick} className="cursor-pointer mt-[18px] font-mono text-[13px] text-center underline">
+    <button
+      type="button"
+      onClick={onClick}
+      className="cursor-pointer w-full bg-transparent border-none mt-[18px] font-mono text-[13px] text-center underline"
+    >
       Réessayer / renvoyer le code
-    </div>
+    </button>
   )
 }
 
@@ -131,14 +132,8 @@ function PasswordField({ label, error, shakeKey, value, onChange, showPwd, onTog
   )
 }
 
-// POST /token renvoie la même erreur générique pour "mot de passe faux" et
-// "compte inexistant" (volontairement, pour la sécurité) — donc on ne peut
-// pas s'appuyer dessus pour savoir si l'email existe. Après un échec, on
-// interroge GET /users/exists : si l'email est connu, on reste sur place
-// avec un message clair (mauvais mot de passe) ; sinon on bascule vers la
-// création de compte.
 export default function Auth() {
-  const [phase, setPhase] = useState('login') // 'login' | 'confirm' | 'code' | 'forgot' | 'reset'
+  const [phase, setPhase] = useState('login')
   const [email, setEmail]   = useState('')
   const [pwd, setPwd]       = useState('')
   const [pwd2, setPwd2]     = useState('')
@@ -157,22 +152,13 @@ export default function Auth() {
   const navigate = useNavigate()
   const { setToken, isAuthenticated } = useAuth()
 
-  // Un token valide existe déjà (ex: nouvel onglet, ou fenêtre rouverte) —
-  // inutile de repasser par le formulaire de connexion.
   if (isAuthenticated) return <Navigate to="/home" replace />
 
-  // Passe par un compteur pour forcer le remount du bandeau d'erreur (donc
-  // rejouer l'animation "glitch") même quand deux erreurs de suite ont le
-  // même message.
   function showError(msg) {
     setApiError(msg)
     setErrorKey(k => k + 1)
   }
 
-  // Même principe que showError, mais pour faire "glitcher" les champs eux-
-  // mêmes quand une tentative de soumission échoue à la validation côté
-  // client (email/mot de passe invalide). Sans effet sur un champ qui n'est
-  // pas en erreur au moment du clic.
   function shakeInvalidFields() {
     setShakeKey(k => k + 1)
   }
@@ -209,15 +195,10 @@ export default function Auth() {
           navigate('/home')
         } catch (err) {
           if (err.status === 403) {
-            // Compte connu, mot de passe correct, mais e-mail pas encore
-            // vérifié — on renvoie un code frais (l'ancien a pu expirer) et
-            // on bascule sur l'écran de vérification, plutôt que de laisser
-            // l'utilisateur bloqué sur le formulaire de connexion sans issue.
             try {
               await resendCode(email)
-            } catch {
-              // Le renvoi peut échouer (rate limit) ; l'utilisateur garde la
-              // main via le lien "Réessayer / renvoyer le code" sur l'écran.
+            } catch (err) {
+              void err
             }
             setCodeCells(['', '', '', '', '', ''])
             setPhase('code')
@@ -240,17 +221,12 @@ export default function Auth() {
           await registerUser({ username, email, password: pwd })
         } catch (err) {
           if (err.status === 409) {
-            // Le compte existe déjà (précheck ou conflit d'unicité en base) :
-            // l'échec de connexion initial venait donc bien d'un mauvais
-            // mot de passe.
             showError('Ce compte existe déjà — mot de passe incorrect.')
             setPhase('login')
             return
           }
           throw err
         }
-        // Le compte est créé mais pas encore vérifié : il faut entrer le
-        // code reçu par e-mail avant de pouvoir se connecter.
         setCodeCells(['', '', '', '', '', ''])
         setPhase('code')
       }
@@ -264,7 +240,6 @@ export default function Auth() {
   function onCodeInput(i, raw) {
     const digits = raw.replace(/\D/g, '')
     if (digits.length > 1) {
-      // Collage d'un code complet — on le répartit sur les cases à partir d'ici.
       setCodeCells(cs => {
         const next = [...cs]
         for (let j = 0; j < digits.length && i + j < 6; j++) next[i + j] = digits[j]
@@ -379,14 +354,15 @@ export default function Auth() {
   return (
     <div className="min-h-screen bg-paper text-ink font-body">
       <TopNav />
-      <div className="min-h-[calc(100dvh-4rem)] flex items-start justify-center px-5 pt-[8vh] pb-10">
+      <div id="main-content" tabIndex={-1} className="min-h-[calc(100dvh-4rem)] flex items-start justify-center px-5 pt-[8vh] pb-10">
       <div key={phase} className="w-full max-w-[560px] animate-slam">
-        <div
-          className="font-mono text-xs uppercase tracking-[2px] mb-3.5 cursor-pointer inline-block"
+        <button
+          type="button"
           onClick={() => navigate('/')}
+          className="cursor-pointer bg-transparent border-none p-0 font-mono text-xs uppercase tracking-[2px] mb-3.5 inline-block"
         >
           ← Retour
-        </div>
+        </button>
         <h1 className="font-display text-[40px] uppercase tracking-[-2px] m-0 mb-1 leading-none">
           {phase === 'confirm' ? 'Créer un compte'
             : phase === 'code' ? 'Vérification'
@@ -397,7 +373,7 @@ export default function Auth() {
         <p className="font-mono text-sm m-0 mb-7">
           {phase === 'confirm' && 'Connexion refusée — créer un compte avec cet e-mail ?'}
           {phase === 'code' && `Code à 6 chiffres envoyé à ${email}.`}
-          {phase === 'forgot' && "Indique ton e-mail, on t'envoie un code de réinitialisation."}
+          {phase === 'forgot' && "Indiquez votre e-mail, on vous envoie un code de réinitialisation."}
           {phase === 'reset' && `Code envoyé à ${email}. Choisis un nouveau mot de passe.`}
           {phase === 'login' && 'Content de vous revoir.'}
         </p>
@@ -498,12 +474,13 @@ export default function Auth() {
             )}
 
             {phase === 'login' && (
-              <div
+              <button
+                type="button"
                 onClick={goToForgotPassword}
-                className="cursor-pointer -mt-1.5 mb-3.5 font-mono text-[12px] text-right underline"
+                className="cursor-pointer w-full bg-transparent border-none p-0 -mt-1.5 mb-3.5 font-mono text-[12px] text-right underline"
               >
                 Mot de passe oublié ?
-              </div>
+              </button>
             )}
 
             <ErrorBanner error={apiError} errorKey={errorKey} />
@@ -515,12 +492,13 @@ export default function Auth() {
         )}
 
         {(phase === 'confirm' || phase === 'forgot' || phase === 'reset') && (
-          <div
+          <button
+            type="button"
             onClick={backToLogin}
-            className="cursor-pointer mt-5 font-mono text-[13px] text-center"
+            className="cursor-pointer w-full bg-transparent border-none mt-5 font-mono text-[13px] text-center"
           >
             {phase === 'confirm' ? "Ce n'est pas moi / mauvais e-mail — revenir à la connexion" : '← Revenir à la connexion'}
-          </div>
+          </button>
         )}
       </div>
       </div>

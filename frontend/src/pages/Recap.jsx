@@ -3,22 +3,13 @@ import { useNavigate } from 'react-router'
 import AppShell from '../components/AppShell'
 import { useAuth } from '../context/AuthContext'
 import { getMyRecaps } from '../api'
+import { SOURCE_ICON, SOURCE_LABEL, SOURCE_COLOR, displaySource } from '../utils/recapSource'
 
 const SOURCES = [
   { value: 'all', label: 'Tous', color: '#0a0a0a' },
   { value: 'dictaphone', label: 'Dictaphone', icon: '●', color: '#ff2e00' },
   { value: 'visio', label: 'Visio', icon: '◆', color: '#1a56ff' },
 ]
-
-const SOURCE_ICON = { dictaphone: '●', visio: '◆' }
-const SOURCE_LABEL = { dictaphone: 'Dictaphone', visio: 'Visio' }
-const SOURCE_COLOR = { dictaphone: '#ff2e00', visio: '#1a56ff' }
-
-// La visio programmée automatiquement par le bot calendrier (source "calendar")
-// reste de la visio du point de vue de l'utilisateur — une seule catégorie affichée.
-function displaySource(source) {
-  return source === 'calendar' ? 'visio' : source
-}
 
 function formatDate(iso) {
   if (!iso) return ''
@@ -29,7 +20,7 @@ function Chip({ active, color = '#0a0a0a', children, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="cursor-pointer border-4 border-ink px-4 py-2 font-mono text-xs font-bold uppercase tracking-[1px] -ml-1 first:ml-0"
+      className="cursor-pointer border-4 border-ink px-4 py-2 font-mono text-xs font-bold uppercase tracking-[1px] -ml-1 first:ml-0 active:scale-[0.96]"
       style={{ background: active ? color : '#ffffff', borderColor: active ? color : '#0a0a0a', color: active ? '#ffffff' : '#0a0a0a' }}
     >
       {children}
@@ -55,7 +46,7 @@ function dateKey(d) {
 function buildMonthCells(viewDate) {
   const year = viewDate.getFullYear()
   const month = viewDate.getMonth()
-  const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7 // lundi = 0
+  const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   const cells = Array(firstWeekday).fill(null)
   for (let day = 1; day <= daysInMonth; day++) cells.push(new Date(year, month, day))
@@ -77,14 +68,14 @@ function Calendar({ recapDates, selected, onSelect }) {
       <div className="flex items-center justify-between mb-3">
         <button
           onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() - 1, 1))}
-          className="cursor-pointer font-mono text-sm w-7 h-7 border-2 border-ink bg-paper hover:bg-ink hover:text-white transition-none"
+          className="cursor-pointer font-mono text-sm w-7 h-7 border-2 border-ink bg-paper hover:bg-ink hover:text-white transition-none active:scale-[0.97]"
         >
           ←
         </button>
         <div className="font-mono text-xs uppercase tracking-[1px] font-bold">{monthLabel}</div>
         <button
           onClick={() => setViewDate(d => new Date(d.getFullYear(), d.getMonth() + 1, 1))}
-          className="cursor-pointer font-mono text-sm w-7 h-7 border-2 border-ink bg-paper hover:bg-ink hover:text-white transition-none"
+          className="cursor-pointer font-mono text-sm w-7 h-7 border-2 border-ink bg-paper hover:bg-ink hover:text-white transition-none active:scale-[0.97]"
         >
           →
         </button>
@@ -107,7 +98,7 @@ function Calendar({ recapDates, selected, onSelect }) {
             <button
               key={i}
               onClick={() => onSelect(isSelected ? null : key)}
-              className="cursor-pointer aspect-square flex flex-col items-center justify-center gap-0.5 font-mono text-[11px] border-2"
+              className="cursor-pointer aspect-square flex flex-col items-center justify-center gap-0.5 font-mono text-[11px] border-2 active:scale-[0.9]"
               style={{
                 borderColor: isSelected ? '#0a0a0a' : isToday ? '#ff2e00' : 'transparent',
                 background: isSelected ? '#0a0a0a' : '#ffffff',
@@ -116,7 +107,7 @@ function Calendar({ recapDates, selected, onSelect }) {
             >
               {d.getDate()}
               <span
-                className="w-1.5 h-1.5 rounded-full"
+                className="w-1.5 h-1.5"
                 style={{ background: hasRecap ? (isSelected ? '#ffffff' : '#ff2e00') : 'transparent' }}
               />
             </button>
@@ -147,9 +138,10 @@ function ThemeBadges({ themes }) {
 function RecapCard({ recap, onOpen }) {
   const color = SOURCE_COLOR[displaySource(recap.source)] || '#0a0a0a'
   return (
-    <div
+    <button
+      type="button"
       onClick={onOpen}
-      className="cursor-pointer flex items-center justify-between gap-4 px-5 py-4 border-t-[3px] border-ink first:border-t-0 hover:bg-accent hover:text-white transition-none"
+      className="cursor-pointer w-full text-left bg-transparent border-none flex items-center justify-between gap-4 px-5 py-4 border-t-[3px] border-ink first:border-t-0 hover:bg-accent hover:text-white transition-none active:scale-[0.99]"
     >
       <div className="flex items-center gap-4 min-w-0">
         <span className="font-display text-xl shrink-0" style={{ color }}>{SOURCE_ICON[displaySource(recap.source)] || '○'}</span>
@@ -166,7 +158,7 @@ function RecapCard({ recap, onOpen }) {
         </div>
       </div>
       <div className="font-mono text-xs uppercase border-[3px] border-ink px-2.5 py-1 shrink-0">Ouvrir →</div>
-    </div>
+    </button>
   )
 }
 
@@ -195,17 +187,20 @@ export default function Recap() {
   const [selectedDay, setSelectedDay] = useState(null)
 
   useEffect(() => {
+    let cancelled = false
+
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRecaps(null)
     setError(null)
     getMyRecaps(token)
-      .then(setRecaps)
-      .catch(err => setError(err.message))
+      .then(data => { if (!cancelled) setRecaps(data) })
+      .catch(err => { if (!cancelled) setError(err.message) })
+
+    return () => {
+      cancelled = true
+    }
   }, [token])
 
-  // Thèmes disponibles pour la sélection source/date en cours — un thème n'a
-  // de sens à proposer que s'il existe une réunion qui y correspond compte
-  // tenu des autres filtres actifs, sinon on obtient silencieusement 0
-  // résultat (thème choisi avant de changer de date, par ex.).
   const allThemes = useMemo(() => {
     const scope = (recaps ?? []).filter(r => {
       if (sourceFilter !== 'all' && displaySource(r.source) !== sourceFilter) return false
@@ -215,12 +210,7 @@ export default function Recap() {
     return [...new Set(scope.flatMap(r => r.themes ?? []))].sort()
   }, [recaps, sourceFilter, selectedDay])
 
-  // Le thème sélectionné peut devenir invalide quand la source ou la date
-  // changent (ex: thème choisi sur une autre journée) — on le réinitialise
-  // plutôt que de laisser la liste retomber silencieusement à zéro résultat.
-  useEffect(() => {
-    if (theme !== 'all' && !allThemes.includes(theme)) setTheme('all')
-  }, [allThemes, theme])
+  const activeTheme = theme !== 'all' && !allThemes.includes(theme) ? 'all' : theme
 
   const recapDates = useMemo(
     () => new Set((recaps ?? []).filter(r => r.created_at).map(r => r.created_at.slice(0, 10))),
@@ -244,7 +234,7 @@ export default function Recap() {
 
   const filtered = (recaps ?? []).filter(r => {
     if (sourceFilter !== 'all' && displaySource(r.source) !== sourceFilter) return false
-    if (theme !== 'all' && !(r.themes ?? []).includes(theme)) return false
+    if (activeTheme !== 'all' && !(r.themes ?? []).includes(activeTheme)) return false
     if (selectedDay) {
       if (r.created_at?.slice(0, 10) !== selectedDay) return false
     }
@@ -262,7 +252,7 @@ export default function Recap() {
           Récaps
         </h2>
         <p className="font-mono text-[13px] text-muted mb-6">
-          Bonjour {user?.username || ''}, voici les récaps de vos réunions.
+          {user?.username ? `Bonjour ${user.username}, voici` : 'Voici'} les récaps de vos réunions.
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-[380px_1fr] gap-8 items-start">
@@ -311,7 +301,7 @@ export default function Recap() {
                 <label className="flex items-center gap-2 font-mono text-xs uppercase tracking-[1px]">
                   Thème
                   <select
-                    value={theme}
+                    value={activeTheme}
                     onChange={e => setTheme(e.target.value)}
                     className="border-4 border-ink px-2.5 py-1.5 font-mono text-xs bg-paper w-full"
                   >

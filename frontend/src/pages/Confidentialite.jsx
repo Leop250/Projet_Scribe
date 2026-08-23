@@ -17,13 +17,14 @@ export default function Confidentialite() {
         <Logo size={22} />
       </div>
 
-      <div className="flex-1 px-5 pb-14 max-w-[560px] w-full mx-auto animate-slam">
-        <div
-          className="font-mono text-xs uppercase tracking-[2px] mb-3.5 cursor-pointer inline-block"
+      <div id="main-content" tabIndex={-1} className="flex-1 px-5 pb-14 max-w-[560px] w-full mx-auto animate-slam">
+        <button
+          type="button"
           onClick={() => navigate(-1)}
+          className="cursor-pointer bg-transparent border-none p-0 font-mono text-xs uppercase tracking-[2px] mb-3.5 inline-block"
         >
           ← Retour
-        </div>
+        </button>
 
         <h1 className="font-display text-[34px] uppercase tracking-[-2px] m-0 mb-5 leading-none">
           Confidentialité

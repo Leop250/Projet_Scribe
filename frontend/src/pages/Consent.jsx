@@ -15,7 +15,7 @@ export default function Consent() {
   return (
     <div className="min-h-screen bg-paper text-ink font-body">
       <TopNav />
-      <div className="max-w-[620px] mx-auto px-5 py-14 animate-slam">
+      <div id="main-content" tabIndex={-1} className="max-w-[620px] mx-auto px-5 py-14 animate-slam">
         <h1 className="font-display text-[44px] uppercase tracking-[-2px] m-0 mb-5 leading-none">
           Consentement
         </h1>
@@ -33,12 +33,16 @@ export default function Consent() {
           ))}
         </div>
 
-        <label
-          onClick={() => setConsent(c => !c)}
-          className="flex items-start gap-3 mt-[22px] cursor-pointer font-mono text-sm"
-        >
+        <label className="flex items-start gap-3 mt-[22px] cursor-pointer font-mono text-sm">
+          <input
+            type="checkbox"
+            checked={consent}
+            onChange={e => setConsent(e.target.checked)}
+            className="peer sr-only"
+          />
           <span
-            className="shrink-0 w-[26px] h-[26px] border-4 border-ink flex items-center justify-center font-display text-base"
+            aria-hidden="true"
+            className="shrink-0 w-[26px] h-[26px] border-4 border-ink flex items-center justify-center font-display text-base peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#1a56ff]"
             style={{ background: consent ? '#ff2e00' : '#ffffff', color: '#ffffff' }}
           >
             {consent ? '✕' : ''}
@@ -50,7 +54,7 @@ export default function Consent() {
           disabled={!consent}
           onClick={() => consent && navigate('/home')}
           style={{ opacity: consent ? 1 : 0.4, cursor: consent ? 'pointer' : 'not-allowed' }}
-          className="w-full mt-[26px] text-center py-4 bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:enabled:bg-accent hover:enabled:text-ink transition-none"
+          className="w-full mt-[26px] text-center py-4 bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:enabled:bg-accent hover:enabled:text-ink transition-none active:enabled:scale-[0.99]"
         >
           Entrer dans What&apos;s On Meeting →
         </button>

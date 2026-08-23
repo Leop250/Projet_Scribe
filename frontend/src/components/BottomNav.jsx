@@ -21,7 +21,7 @@ export default function BottomNav() {
           <button
             key={path}
             onClick={() => navigate(path)}
-            className="cursor-pointer border-none flex-1 flex flex-col items-center gap-1 py-2.5"
+            className="cursor-pointer border-none flex-1 flex flex-col items-center gap-1 py-2.5 active:scale-[0.94]"
             style={{
               background: active ? (live ? '#ff2e00' : '#0a0a0a') : '#ffffff',
               color: active ? '#ffffff' : '#0a0a0a',

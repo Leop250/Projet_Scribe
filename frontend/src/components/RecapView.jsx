@@ -4,9 +4,6 @@ function dotFor(i) {
   return DOT_PALETTE[i % DOT_PALETTE.length]
 }
 
-// speakers vient soit de l'agent (liste de chaînes), soit de la diarisation
-// visio (liste d'objets { id, names, user_id } via build_speakers_list) : on
-// normalise vers une chaîne d'affichage dans les deux cas.
 function speakerName(speaker) {
   return typeof speaker === 'string' ? speaker : speaker?.names || 'Inconnu'
 }
@@ -73,7 +70,7 @@ function TranscriptPanel({ transcript, speakers = [] }) {
         transcript.map((turn, i) => (
           <div key={i} className="px-4 py-3 border-t-[3px] border-ink font-mono text-[13px] leading-[1.6]">
             <span className="font-bold" style={{ color: colorFor(turn.speaker) }}>{turn.speaker || 'Inconnu'}</span>{' '}
-            {turn.time && <span className="text-[#999]">{turn.time}</span>}
+            {turn.time && <time className="text-muted">{turn.time}</time>}
             <br />
             {turn.text}
           </div>

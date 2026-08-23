@@ -8,8 +8,8 @@ const POLL_INTERVAL_MS = 2500
 
 export default function Attendance() {
   const [headcount, setHeadcount] = useState('')
-  const [step, setStep]           = useState('setup') // 'setup' | 'waiting'
-  const [session, setSession]     = useState(null) // { sessionToken, signUrl, headcount }
+  const [step, setStep]           = useState('setup')
+  const [session, setSession]     = useState(null)
   const [confirmedCount, setConfirmedCount] = useState(0)
   const [error, setError]         = useState('')
   const [loading, setLoading]     = useState(false)
@@ -26,7 +26,7 @@ export default function Attendance() {
     e.preventDefault()
     const n = parseInt(headcount, 10)
     if (!Number.isInteger(n) || n < 1) {
-      setError('Indique un nombre de personnes valide.')
+      setError('Indiquez un nombre de personnes valide.')
       return
     }
 
@@ -42,9 +42,8 @@ export default function Attendance() {
         try {
           const status = await getAttendanceSessionStatus(data.session_token, token)
           setConfirmedCount(status.confirmed_count)
-        } catch {
-          // Un raté de poll isolé ne doit pas interrompre l'attente — on
-          // réessaiera au prochain tick plutôt que de casser l'écran.
+        } catch (err) {
+          void err
         }
       }, POLL_INTERVAL_MS)
     } catch (err) {
@@ -73,13 +72,13 @@ export default function Attendance() {
 
   return (
     <div className="h-[100dvh] flex flex-col bg-paper text-ink font-body">
-      <div className="w-full max-w-[560px] mx-auto flex flex-col flex-1 px-5 md:px-8 py-10 animate-slam">
+      <div id="main-content" tabIndex={-1} className="w-full max-w-[560px] mx-auto flex flex-col flex-1 px-5 md:px-8 py-10 animate-slam">
         <h2 className="font-display text-[32px] uppercase tracking-[-2px] m-0 mb-7 leading-none">
           Présence
         </h2>
 
         {step === 'setup' && (
-          <form onSubmit={handleCreateSession} className="border-4 border-ink shadow-[10px_10px_0_#ff2e00] px-6 py-7 bg-paper">
+          <form onSubmit={handleCreateSession} className="border-4 border-ink shadow-[10px_10px_0_#ff2e00] px-6 py-7 bg-paper animate-state-in">
             <label className="font-mono text-xs uppercase tracking-[1px] font-bold text-ink">
               Nombre de personnes présentes
             </label>
@@ -102,7 +101,7 @@ export default function Attendance() {
             <button
               type="submit"
               disabled={loading}
-              className="cursor-pointer w-full mt-3.5 text-center py-4 bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:enabled:bg-accent hover:enabled:text-ink transition-none disabled:opacity-50 disabled:cursor-wait"
+              className="cursor-pointer w-full mt-3.5 text-center py-4 bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:enabled:bg-accent hover:enabled:text-ink transition-none active:enabled:scale-[0.99] disabled:opacity-50 disabled:cursor-wait"
             >
               {loading ? 'Un instant…' : 'Générer le QR code →'}
             </button>
@@ -110,7 +109,7 @@ export default function Attendance() {
         )}
 
         {step === 'waiting' && session && (
-          <>
+          <div className="flex flex-col flex-1 animate-state-in">
             <div className="border-4 border-ink p-6 flex flex-col items-center gap-5">
               <QRCodeSVG value={session.sign_url} size={220} bgColor="#ffffff" fgColor="#0a0a0a" />
               <div className="w-full break-all font-mono text-[11px] text-muted text-center">
@@ -134,11 +133,11 @@ export default function Attendance() {
             <button
               onClick={handleStart}
               disabled={!ready || loading}
-              className="cursor-pointer w-full py-4 bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:enabled:bg-accent hover:enabled:text-ink transition-none disabled:opacity-40 disabled:cursor-not-allowed"
+              className="cursor-pointer w-full py-4 bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:enabled:bg-accent hover:enabled:text-ink transition-none active:enabled:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed"
             >
               {loading ? 'Un instant…' : ready ? "Démarrer l'enregistrement →" : 'En attente des signatures…'}
             </button>
-          </>
+          </div>
         )}
       </div>
     </div>

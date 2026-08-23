@@ -6,7 +6,7 @@ import { getPublicAttendanceSession, signAttendance } from '../api'
 export default function Sign() {
   const { sessionToken } = useParams()
   const navigate = useNavigate()
-  const [status, setStatus]   = useState('loading') // 'loading' | 'ready' | 'notfound' | 'done'
+  const [status, setStatus]   = useState('loading')
   const [session, setSession] = useState(null)
   const [nom, setNom]         = useState('')
   const [hasSignature, setHasSignature] = useState(false)
@@ -32,7 +32,6 @@ export default function Sign() {
     if (!canvas) return
     const ctx = canvas.getContext('2d')
 
-    // Idem : taille physique = taille CSS × devicePixelRatio, sinon flou.
     const rect = canvas.getBoundingClientRect()
     const dpr = window.devicePixelRatio || 1
     canvas.width  = rect.width * dpr
@@ -115,22 +114,22 @@ export default function Sign() {
         <Logo size={22} />
       </div>
 
-      <div className="flex-1 flex flex-col px-5 pb-10 max-w-[480px] w-full mx-auto animate-slam">
+      <div id="main-content" tabIndex={-1} className="flex-1 flex flex-col px-5 pb-10 max-w-[480px] w-full mx-auto animate-slam">
         {status === 'loading' && (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center animate-state-in">
             <div className="w-10 h-10 border-4 border-ink border-t-accent animate-spin" />
           </div>
         )}
 
         {status === 'notfound' && (
-          <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center">
+          <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center animate-state-in">
             <p className="font-mono text-sm font-bold uppercase tracking-[1px]">Session introuvable</p>
             <p className="font-mono text-[13px] text-muted">Ce lien n&apos;est plus valide.</p>
           </div>
         )}
 
         {status === 'closed' && (
-          <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center">
+          <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center animate-state-in">
             <p className="font-mono text-sm font-bold uppercase tracking-[1px]">Session clôturée</p>
             <p className="font-mono text-[13px] text-muted">
               L&apos;enregistrement a déjà démarré, la présence n&apos;est plus modifiable.
@@ -139,7 +138,7 @@ export default function Sign() {
         )}
 
         {status === 'ready' && session && (
-          <form onSubmit={handleSubmit} className="flex flex-col flex-1 pt-4">
+          <form onSubmit={handleSubmit} className="flex flex-col flex-1 pt-4 animate-state-in">
             <h1 className="font-display text-[30px] uppercase tracking-[-2px] m-0 mb-1 leading-none">
               Confirme ta présence
             </h1>
@@ -185,7 +184,7 @@ export default function Sign() {
             <button
               type="submit"
               disabled={loading}
-              className="cursor-pointer w-full py-4 text-center bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:enabled:bg-accent hover:enabled:text-ink transition-none disabled:opacity-50 disabled:cursor-wait"
+              className="cursor-pointer w-full py-4 text-center bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:enabled:bg-accent hover:enabled:text-ink transition-none active:enabled:scale-[0.99] disabled:opacity-50 disabled:cursor-wait"
             >
               {loading ? 'Un instant…' : 'Valider ma présence →'}
             </button>
@@ -193,13 +192,18 @@ export default function Sign() {
         )}
 
         {status === 'done' && (
-          <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center">
-            <p className="font-mono text-sm font-bold uppercase tracking-[1px]">Présence enregistrée</p>
+          <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center animate-state-in">
+            <div className="w-14 h-14 bg-[#00c853] border-4 border-ink flex items-center justify-center animate-check-in">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <p className="font-mono text-sm font-bold uppercase tracking-[1px] mt-1">Présence enregistrée</p>
             <p className="font-mono text-[13px] text-muted">Tu peux fermer cette page.</p>
             <button
               type="button"
               onClick={() => navigate('/')}
-              className="cursor-pointer mt-3 px-6 py-3 bg-[#00c853] text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:bg-ink transition-none"
+              className="cursor-pointer mt-3 px-6 py-3 bg-[#00c853] text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink hover:bg-ink transition-none active:scale-[0.98]"
             >
               Quitter
             </button>

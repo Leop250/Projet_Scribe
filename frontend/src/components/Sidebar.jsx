@@ -28,7 +28,7 @@ export default function Sidebar() {
           <button
             key={path}
             onClick={() => navigate(path)}
-            className="cursor-pointer border-none py-[22px] px-1.5 border-b-4 border-ink text-center"
+            className="cursor-pointer border-none py-[22px] px-1.5 border-b-4 border-ink text-center active:scale-[0.94]"
             style={{
               background: active ? (live ? '#ff2e00' : '#0a0a0a') : '#ffffff',
               color: active ? '#ffffff' : '#0a0a0a',
@@ -42,7 +42,7 @@ export default function Sidebar() {
 
       <button
         onClick={() => { logout(); navigate('/') }}
-        className="cursor-pointer border-none mt-auto py-5 px-1.5 text-center font-mono text-[9px] uppercase bg-transparent hover:bg-accent hover:text-white transition-none"
+        className="cursor-pointer border-none mt-auto py-5 px-1.5 text-center font-mono text-[9px] uppercase bg-transparent hover:bg-accent hover:text-white transition-none active:scale-[0.97]"
       >
         Quitter
       </button>

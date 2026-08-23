@@ -7,6 +7,7 @@ const browserGlobals = {
   console: "readonly", URLSearchParams: "readonly", FormData: "readonly", navigator: "readonly",
   AudioContext: "readonly", MediaRecorder: "readonly", Blob: "readonly", TextEncoder: "readonly",
   setInterval: "readonly", clearInterval: "readonly", setTimeout: "readonly", clearTimeout: "readonly",
+  requestAnimationFrame: "readonly", cancelAnimationFrame: "readonly",
 };
 
 export default [

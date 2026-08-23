@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import TopNav from '../components/TopNav'
 
@@ -13,7 +14,7 @@ function CtaButton({ children, onClick, className = '' }) {
   return (
     <button
       onClick={onClick}
-      className={`cursor-pointer px-[30px] py-[18px] bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink shadow-[8px_8px_0_#ff2e00] hover:shadow-[2px_2px_0_#ff2e00] hover:translate-x-1.5 hover:translate-y-1.5 transition-none ${className}`}
+      className={`cursor-pointer px-[30px] py-[18px] bg-ink text-white font-mono font-bold uppercase tracking-[1px] border-4 border-ink shadow-[8px_8px_0_#ff2e00] hover:shadow-[2px_2px_0_#ff2e00] hover:translate-x-1.5 hover:translate-y-1.5 transition-none active:scale-[0.98] ${className}`}
     >
       {children}
     </button>
@@ -24,12 +25,18 @@ export default function Landing() {
   const navigate = useNavigate()
   const go = () => navigate('/login')
 
+  const [tabHidden, setTabHidden] = useState(document.hidden)
+  useEffect(() => {
+    const onVisibility = () => setTabHidden(document.hidden)
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => document.removeEventListener('visibilitychange', onVisibility)
+  }, [])
+
   return (
     <div className="min-h-screen bg-paper text-ink font-body">
       <TopNav />
 
-      <div className="animate-slam">
-        {/* HERO */}
+      <div id="main-content" tabIndex={-1} className="animate-slam">
         <div className="pt-16 px-5 max-w-[1200px] mx-auto">
           <div className="font-mono text-[13px] uppercase tracking-[2px] border-[3px] border-ink inline-block px-3 py-1.5 mb-7">
             ● Assistant de réunion — audio → compte-rendu
@@ -45,20 +52,17 @@ export default function Landing() {
           </p>
           <div className="flex gap-4 mt-8 flex-wrap">
             <CtaButton onClick={go}>Démarrer</CtaButton>
-            <CtaButton onClick={go}>Voir une démo</CtaButton>
           </div>
         </div>
 
-        {/* MARQUEE */}
         <div className="mt-14 border-t-4 border-b-4 border-ink bg-ink overflow-hidden whitespace-nowrap">
-          <div className="inline-block animate-marq py-3">
+          <div className="inline-block animate-marq py-3" style={{ animationPlayState: tabHidden ? 'paused' : 'running' }}>
             <span className="font-display text-white text-[22px] uppercase tracking-[1px]">
               {MARQUEE_TEXT}{MARQUEE_TEXT}
             </span>
           </div>
         </div>
 
-        {/* FEATURES */}
         <div className="max-w-[1200px] mx-auto mt-20 px-5">
           <h2 className="font-display text-[clamp(32px,5vw,64px)] uppercase tracking-[-2px] m-0 mb-8 leading-[1]">
             Trois choses.<br />Rien de plus.
@@ -82,25 +86,20 @@ export default function Landing() {
           </div>
         </div>
 
-        {/* CTA STRIP */}
         <div className="max-w-[1200px] mx-auto mt-16 mb-20 px-5">
           <button
             onClick={go}
             className="cursor-pointer w-full text-left border-4 border-ink bg-ink text-white hover:bg-accent hover:text-ink px-8 py-12 flex items-center justify-between flex-wrap gap-5"
           >
             <div className="font-display text-[clamp(28px,4vw,48px)] uppercase tracking-[-1px]">
-              PRET A ENREGISTRER ?
+              PRÊT À ENREGISTRER ?
             </div>
-            <span
-              onClick={(e) => { e.stopPropagation(); go() }}
-              className="cursor-pointer font-mono font-bold text-lg bg-white text-ink border-4 border-ink shadow-[8px_8px_0_#ff2e00] hover:shadow-[2px_2px_0_#ff2e00] hover:translate-x-1.5 hover:translate-y-1.5 transition-none px-[22px] py-3.5 uppercase"
-            >
+            <span className="cursor-pointer font-mono font-bold text-lg bg-white text-ink border-4 border-ink shadow-[8px_8px_0_#ff2e00] hover:shadow-[2px_2px_0_#ff2e00] hover:translate-x-1.5 hover:translate-y-1.5 transition-none active:scale-[0.98] px-[22px] py-3.5 uppercase">
               Se connecter →
             </span>
           </button>
         </div>
 
-        {/* FOOTER */}
         <div className="border-t-4 border-ink px-5 py-6 flex justify-between font-mono text-xs uppercase tracking-[1px] flex-wrap gap-2">
           <span>What&apos;s On Meeting© 2026</span>
           <span>Chiffré · Privé · Sans bla-bla</span>

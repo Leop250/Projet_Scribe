@@ -5,14 +5,7 @@ import { RecapContent, RecapSkeleton } from '../components/RecapView'
 import { useRecap } from '../context/RecapContext'
 import { useAuth } from '../context/AuthContext'
 import { getRecap } from '../api'
-
-const SOURCE_LABEL = { dictaphone: 'Dictaphone', visio: 'Visio' }
-
-// La visio programmée automatiquement par le bot calendrier (source "calendar")
-// reste de la visio du point de vue de l'utilisateur — une seule catégorie affichée.
-function displaySource(source) {
-  return source === 'calendar' ? 'visio' : source
-}
+import { SOURCE_LABEL, displaySource } from '../utils/recapSource'
 
 function formatDate(iso) {
   if (!iso) return ''
@@ -26,47 +19,54 @@ export default function RecapDetail() {
   const { token } = useAuth()
 
   const [recap, setRecapState] = useState(lastRecap?.id === Number(id) ? lastRecap : null)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
+    let cancelled = false
+
     if (lastRecap?.id === Number(id)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setRecapState(lastRecap)
       return
     }
     setRecapState(null)
-    setError(null)
+    setError(false)
     getRecap(id, token)
-      .then(setRecapState)
-      .catch(err => setError(err.message))
-    // lastRecap ne doit déclencher cet effet que via id/token — le réévaluer
-    // à chaque changement de lastRecap relancerait un fetch inutile dès
-    // qu'un autre enregistrement est uploadé pendant la consultation.
+      .then(data => { if (!cancelled) setRecapState(data) })
+      .catch(() => { if (!cancelled) setError(true) })
+
+    return () => {
+      cancelled = true
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, token])
 
   return (
     <AppShell>
       <div className="p-6 md:p-10 max-w-[820px]">
-        <div
-          className="font-mono text-xs uppercase tracking-[2px] mb-3.5 cursor-pointer inline-block"
+        <button
+          type="button"
           onClick={() => navigate('/recap')}
+          className="cursor-pointer bg-transparent border-none p-0 font-mono text-xs uppercase tracking-[2px] mb-3.5 inline-block"
         >
           ← Retour aux récaps
-        </div>
+        </button>
 
         <h2 className="font-display text-[34px] uppercase tracking-[-1px] m-0 mb-1.5 leading-none">
           {recap?.name || 'Compte-rendu'}
         </h2>
-        <div className="font-mono text-[13px] text-muted mb-6">
-          {error
-            ? 'Impossible de charger ce compte-rendu.'
-            : recap
+        {!error && (
+          <div className="font-mono text-[13px] text-muted mb-6">
+            {recap
               ? `${SOURCE_LABEL[displaySource(recap.source)] || recap.source} · ${formatDate(recap.created_at)}`
               : "En attente de l'analyse…"}
-        </div>
+          </div>
+        )}
 
         {error ? (
-          <div className="border-4 border-ink px-6 py-10 text-center font-mono text-sm">{error}</div>
+          <div className="border-4 border-ink px-6 py-10 text-center font-mono text-sm text-muted mt-6">
+            Impossible de charger ce compte-rendu.
+          </div>
         ) : recap ? (
           <RecapContent recap={recap} />
         ) : (
