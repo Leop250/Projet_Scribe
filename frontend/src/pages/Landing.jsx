@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
+import ScrollSequence3D from '../components/ScrollSequence3D'
 import TopNav from '../components/TopNav'
 
 const FEATURES = [
@@ -37,21 +38,40 @@ export default function Landing() {
       <TopNav />
 
       <div id="main-content" tabIndex={-1} className="animate-slam">
-        <div className="pt-16 px-5 max-w-[1200px] mx-auto">
-          <div className="font-mono text-[13px] uppercase tracking-[2px] border-[3px] border-ink inline-block px-3 py-1.5 mb-7">
-            ● Assistant de réunion — audio → compte-rendu
+        <div
+          className="pt-16 px-5 max-w-[1200px] mx-auto grid gap-12 items-center"
+          style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))' }}
+        >
+          <div>
+            <div className="font-mono text-[13px] uppercase tracking-[2px] border-[3px] border-ink inline-block px-3 py-1.5 mb-7">
+              ● Assistant de réunion — audio → compte-rendu
+            </div>
+            <h1 className="font-display text-[clamp(48px,9vw,128px)] leading-[0.92] tracking-[-3px] uppercase m-0">
+              Parlez.<br />On écrit le<br />
+              <span className="bg-accent text-white px-2.5 border-4 border-ink [box-decoration-break:clone] [-webkit-box-decoration-break:clone]">
+                compte-rendu
+              </span>
+            </h1>
+            <p className="font-mono text-base max-w-[520px] mt-8 leading-[1.6]">
+              What&apos;s On Meeting enregistre, transcrit et rédige. Résumé, décisions, actions — livrés à la fin de chaque réunion. Chiffré. Privé. Brut.
+            </p>
+            <div className="flex gap-4 mt-8 flex-wrap">
+              <CtaButton onClick={go}>Démarrer</CtaButton>
+            </div>
           </div>
-          <h1 className="font-display text-[clamp(48px,9vw,128px)] leading-[0.92] tracking-[-3px] uppercase m-0">
-            Parlez.<br />On écrit le<br />
-            <span className="bg-accent text-white px-2.5 border-4 border-ink [box-decoration-break:clone] [-webkit-box-decoration-break:clone]">
-              compte-rendu
-            </span>
-          </h1>
-          <p className="font-mono text-base max-w-[520px] mt-8 leading-[1.6]">
-            What&apos;s On Meeting enregistre, transcrit et rédige. Résumé, décisions, actions — livrés à la fin de chaque réunion. Chiffré. Privé. Brut.
-          </p>
-          <div className="flex gap-4 mt-8 flex-wrap">
-            <CtaButton onClick={go}>Démarrer</CtaButton>
+
+          <div className="relative pr-2 pb-2">
+            <div className="absolute right-0 bottom-0 w-full h-full bg-accent border-4 border-ink" />
+            <div className="relative border-4 border-ink bg-paper overflow-hidden">
+              <img
+                src="/hero-comptes-rendus.jpg"
+                alt="Pile de comptes-rendus imprimés, une feuille en suspension, bloc d'encre rouge en fond"
+                className="block w-full h-auto contrast-[1.12] saturate-[1.05]"
+              />
+              <div className="absolute left-0 bottom-0 bg-ink text-white font-mono text-[11px] uppercase tracking-[2px] px-3 py-2">
+                Sortie · compte-rendu
+              </div>
+            </div>
           </div>
         </div>
 
@@ -62,6 +82,8 @@ export default function Landing() {
             </span>
           </div>
         </div>
+
+        <ScrollSequence3D />
 
         <div className="max-w-[1200px] mx-auto mt-20 px-5">
           <h2 className="font-display text-[clamp(32px,5vw,64px)] uppercase tracking-[-2px] m-0 mb-8 leading-[1]">

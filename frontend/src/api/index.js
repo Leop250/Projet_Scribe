@@ -161,3 +161,28 @@ export async function signAttendance(sessionToken, nom, image) {
     'Signature refusée',
   )
 }
+
+export async function getGoogleIntegrationStatus(token) {
+  return requestJson(
+    `${BASE_URL}/me/integrations/google`,
+    { headers: { Authorization: `Bearer ${token}` } },
+    'Statut Google Calendar indisponible',
+  )
+}
+
+export async function getGoogleAuthorizeUrl(token) {
+  const data = await requestJson(
+    `${BASE_URL}/auth/google/authorize`,
+    { headers: { Authorization: `Bearer ${token}` } },
+    'Autorisation Google indisponible',
+  )
+  return data.authorize_url
+}
+
+export async function disconnectGoogleIntegration(token) {
+  return requestJson(
+    `${BASE_URL}/me/integrations/google`,
+    { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } },
+    'Déconnexion refusée',
+  )
+}

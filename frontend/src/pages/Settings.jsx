@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router'
 import AppShell from '../components/AppShell'
+import GoogleCalendarIntegration from '../components/GoogleCalendarIntegration'
 import { useAuth } from '../context/AuthContext'
 
 function InfoRow({ label, value, badge }) {
@@ -68,6 +69,8 @@ export default function Settings() {
             </>
           )}
         </div>
+
+        <GoogleCalendarIntegration />
 
         <h3 className="font-display text-[22px] uppercase tracking-[-1px] mb-3.5">
           Confidentialité
