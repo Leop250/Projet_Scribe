@@ -20,18 +20,6 @@ from auth.users import UserModel, get_by_email  # noqa: E402
 from database.database import get_db  # noqa: E402
 from database.models import Recap  # noqa: E402
 
-app = FastAPI()
-
-
-def normalize_url(url: str) -> str:
-    if not url:
-        return url
-    return url if url.startswith(("http://", "https://")) else f"https://{url}"
-
-
-def add_recap_to_user(user: UserModel, recap_id: int) -> None:
-    user.participants_list_of_recaps = (user.participants_list_of_recaps or []) + [recap_id]
-
 
 class RecapSummary(BaseModel):
     id: int
@@ -56,7 +44,115 @@ class RecapDetailResponse(BaseModel):
     transcript: list = []
 
 
-origins = [normalize_url(os.environ.get("FRONTEND_URL", "http://localhost:5173"))]
+class RecapService:
+    """Regroupe la logique métier autour de la création et de la lecture des recaps."""
+
+    @staticmethod
+    def normalize_url(url: str) -> str:
+        if not url:
+            return url
+        return url if url.startswith(("http://", "https://")) else f"https://{url}"
+
+    @staticmethod
+    def add_recap_to_user(user: UserModel, recap_id: int) -> None:
+        user.participants_list_of_recaps = (user.participants_list_of_recaps or []) + [recap_id]
+
+    @staticmethod
+    def save_audio_to_temp(audio) -> Path:
+        temp_path = Path("temp") / audio.filename
+        temp_path.parent.mkdir(exist_ok=True)
+        with open(temp_path, "wb") as recording_file:
+            shutil.copyfileobj(audio.file, recording_file)
+        return temp_path
+
+    @staticmethod
+    def transcribe_and_classify(temp_path: Path) -> tuple[str, dict]:
+        try:
+            transcript = call_speech_to_text_agent(temp_path)
+            report = call_classifier(transcript)
+        finally:
+            temp_path.unlink()
+        return transcript, report
+
+    @staticmethod
+    def create_recap(db_session: Session, emails: str, name: str, transcript: str, report: dict) -> Recap:
+        recap = Recap(
+            emails=emails,
+            name=name,
+            source="dictaphone",
+            transcription=transcript,
+            reporting=report,
+        )
+        db_session.add(recap)
+        db_session.commit()
+        db_session.refresh(recap)
+        return recap
+
+    @staticmethod
+    def attach_participants(db_session: Session, emails: str, recap_id: int) -> None:
+        for email in emails.split(","):
+            user = get_by_email(db_session, email)
+            if user:
+                RecapService.add_recap_to_user(user, recap_id)
+        db_session.commit()
+
+    @staticmethod
+    def link_recording_session(db_session: Session, session_token: str | None, recap_id: int) -> None:
+        if not session_token:
+            return
+        session = db_session.query(RecordingSession).filter(RecordingSession.token == session_token).first()
+        if session and session.status == "pending":
+            session.status = "started"
+            session.recap_id = recap_id
+            db_session.commit()
+
+    @staticmethod
+    def list_summaries(db_session: Session, recap_ids: list[int]) -> list[RecapSummary]:
+        recaps = (
+            db_session.query(Recap).filter(Recap.recap_id.in_(recap_ids)).order_by(Recap.created_at.desc()).all()
+        )
+        return [
+            RecapSummary(
+                id=recap.recap_id,
+                name=recap.name,
+                source=recap.source,
+                created_at=recap.created_at,
+                summary=(recap.reporting or {}).get("summary"),
+                themes=(recap.reporting or {}).get("themes") or [],
+                speaker_count=(recap.reporting or {}).get("speaker_count"),
+            )
+            for recap in recaps
+        ]
+
+    @staticmethod
+    def get_detail(db_session: Session, recap_id: int, current_user: UserModel) -> RecapDetailResponse:
+        if recap_id not in (current_user.participants_list_of_recaps or []):
+            raise HTTPException(status_code=404, detail="Compte-rendu introuvable.")
+
+        recap = db_session.query(Recap).filter(Recap.recap_id == recap_id).first()
+        if recap is None:
+            raise HTTPException(status_code=404, detail="Compte-rendu introuvable.")
+
+        reporting = recap.reporting or {}
+        return RecapDetailResponse(
+            id=recap.recap_id,
+            name=recap.name,
+            source=recap.source,
+            created_at=recap.created_at,
+            summary=reporting.get("summary"),
+            speaker_count=reporting.get("speaker_count"),
+            speakers=reporting.get("speakers") or [],
+            themes=reporting.get("themes") or [],
+            actions=reporting.get("actions") or [],
+            transcript=reporting.get("transcript") or [],
+        )
+
+
+recap_service = RecapService()
+
+app = FastAPI()
+
+origins = [recap_service.normalize_url(os.environ.get("FRONTEND_URL", "http://localhost:5173"))]
 
 app.add_middleware(
     CORSMiddleware,
@@ -79,42 +175,12 @@ async def records(
     current_user: UserModel = Depends(get_current_user),
     db_session: Session = Depends(get_db),
 ):
-    temp_path = Path("temp") / audio.filename
-    temp_path.parent.mkdir(exist_ok=True)
+    temp_path = recap_service.save_audio_to_temp(audio)
+    transcript, report = recap_service.transcribe_and_classify(temp_path)
 
-    with open(temp_path, "wb") as recording_file:
-        shutil.copyfileobj(audio.file, recording_file)
-    try:
-        transcript = call_speech_to_text_agent(temp_path)
-        report = call_classifier(transcript)
-    finally:
-        temp_path.unlink()
-
-    recap = Recap(
-        emails=emails,
-        name=audio.filename,
-        source="dictaphone",
-        transcription=transcript,
-        reporting=report,
-    )
-
-    db_session.add(recap)
-    db_session.commit()
-    db_session.refresh(recap)
-
-    for email in emails.split(","):
-        user = get_by_email(db_session, email)
-        if user:
-            add_recap_to_user(user, recap.recap_id)
-
-    db_session.commit()
-
-    if session_token:
-        session = db_session.query(RecordingSession).filter(RecordingSession.token == session_token).first()
-        if session and session.status == "pending":
-            session.status = "started"
-            session.recap_id = recap.recap_id
-            db_session.commit()
+    recap = recap_service.create_recap(db_session, emails, audio.filename, transcript, report)
+    recap_service.attach_participants(db_session, emails, recap.recap_id)
+    recap_service.link_recording_session(db_session, session_token, recap.recap_id)
 
     print("Audio received successfully")
     return {
@@ -130,22 +196,7 @@ async def list_my_recaps(
     current_user: UserModel = Depends(get_current_user),
     db_session: Session = Depends(get_db),
 ):
-    recap_ids = current_user.participants_list_of_recaps or []
-    recaps = (
-        db_session.query(Recap).filter(Recap.recap_id.in_(recap_ids)).order_by(Recap.created_at.desc()).all()
-    )
-    return [
-        RecapSummary(
-            id=recap.recap_id,
-            name=recap.name,
-            source=recap.source,
-            created_at=recap.created_at,
-            summary=(recap.reporting or {}).get("summary"),
-            themes=(recap.reporting or {}).get("themes") or [],
-            speaker_count=(recap.reporting or {}).get("speaker_count"),
-        )
-        for recap in recaps
-    ]
+    return recap_service.list_summaries(db_session, current_user.participants_list_of_recaps or [])
 
 
 @app.get("/recaps/{recap_id}", response_model=RecapDetailResponse)
@@ -154,26 +205,7 @@ async def get_recap_detail(
     current_user: UserModel = Depends(get_current_user),
     db_session: Session = Depends(get_db),
 ):
-    if recap_id not in (current_user.participants_list_of_recaps or []):
-        raise HTTPException(status_code=404, detail="Compte-rendu introuvable.")
-
-    recap = db_session.query(Recap).filter(Recap.recap_id == recap_id).first()
-    if recap is None:
-        raise HTTPException(status_code=404, detail="Compte-rendu introuvable.")
-
-    reporting = recap.reporting or {}
-    return RecapDetailResponse(
-        id=recap.recap_id,
-        name=recap.name,
-        source=recap.source,
-        created_at=recap.created_at,
-        summary=reporting.get("summary"),
-        speaker_count=reporting.get("speaker_count"),
-        speakers=reporting.get("speakers") or [],
-        themes=reporting.get("themes") or [],
-        actions=reporting.get("actions") or [],
-        transcript=reporting.get("transcript") or [],
-    )
+    return recap_service.get_detail(db_session, recap_id, current_user)
 
 
 app.include_router(auth_router)
