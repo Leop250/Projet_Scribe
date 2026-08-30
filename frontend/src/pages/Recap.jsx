@@ -38,6 +38,10 @@ function StatTile({ label, value, color }) {
 }
 
 const WEEKDAYS = ['L', 'M', 'M', 'J', 'V', 'S', 'D']
+const MIXED_SOURCE_COLOR = '#7c3aed'
+const DOT_MIN_SIZE = 6
+const DOT_GROWTH_PER_RECAP = 3
+const DOT_MAX_SIZE = 16
 
 function dateKey(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -53,7 +57,16 @@ function buildMonthCells(viewDate) {
   return cells
 }
 
-function Calendar({ recapDates, selected, onSelect }) {
+function dayDotColor(sources) {
+  if (sources.size > 1) return MIXED_SOURCE_COLOR
+  return SOURCE_COLOR[[...sources][0]] || '#0a0a0a'
+}
+
+function dayDotSize(count) {
+  return Math.min(DOT_MIN_SIZE + (count - 1) * DOT_GROWTH_PER_RECAP, DOT_MAX_SIZE)
+}
+
+function Calendar({ dayStats, selected, onSelect }) {
   const [viewDate, setViewDate] = useState(() => {
     const now = new Date()
     return new Date(now.getFullYear(), now.getMonth(), 1)
@@ -91,9 +104,11 @@ function Calendar({ recapDates, selected, onSelect }) {
         {cells.map((d, i) => {
           if (!d) return <div key={i} />
           const key = dateKey(d)
-          const hasRecap = recapDates.has(key)
+          const stats = dayStats.get(key)
           const isSelected = selected === key
           const isToday = key === today
+          const dotSize = stats ? dayDotSize(stats.count) : 0
+          const dotColor = stats ? (isSelected ? '#ffffff' : dayDotColor(stats.sources)) : 'transparent'
           return (
             <button
               key={i}
@@ -106,10 +121,7 @@ function Calendar({ recapDates, selected, onSelect }) {
               }}
             >
               {d.getDate()}
-              <span
-                className="w-1.5 h-1.5"
-                style={{ background: hasRecap ? (isSelected ? '#ffffff' : '#ff2e00') : 'transparent' }}
-              />
+              <span style={{ width: dotSize, height: dotSize, background: dotColor, flexShrink: 0 }} />
             </button>
           )
         })}
@@ -212,10 +224,18 @@ export default function Recap() {
 
   const activeTheme = theme !== 'all' && !allThemes.includes(theme) ? 'all' : theme
 
-  const recapDates = useMemo(
-    () => new Set((recaps ?? []).filter(r => r.created_at).map(r => r.created_at.slice(0, 10))),
-    [recaps],
-  )
+  const dayStats = useMemo(() => {
+    const map = new Map()
+    for (const r of recaps ?? []) {
+      if (!r.created_at) continue
+      const key = r.created_at.slice(0, 10)
+      const entry = map.get(key) ?? { count: 0, sources: new Set() }
+      entry.count += 1
+      entry.sources.add(displaySource(r.source))
+      map.set(key, entry)
+    }
+    return map
+  }, [recaps])
 
   const { monthCount, yearCount } = useMemo(() => {
     const now = new Date()
@@ -281,7 +301,7 @@ export default function Recap() {
                 ))}
               </div>
 
-              <Calendar recapDates={recapDates} selected={selectedDay} onSelect={setSelectedDay} />
+              <Calendar dayStats={dayStats} selected={selectedDay} onSelect={setSelectedDay} />
 
               {selectedDay && (
                 <div className="flex items-center gap-2 font-mono text-xs flex-wrap">

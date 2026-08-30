@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { useNavigate } from 'react-router'
 import Waveform from '../components/Waveform'
 import { useRecap } from '../context/RecapContext'
 import { useAuth } from '../context/AuthContext'
@@ -9,11 +9,23 @@ function fmt(secs) {
   return `${String(Math.floor(secs / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`
 }
 
+function defaultRecordingName() {
+  const formatted = new Date().toLocaleString('fr-FR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+  return `Enregistrement du ${formatted}`
+}
+
 export default function Record() {
   const [seconds, setSeconds]       = useState(0)
   const [processing, setProcessing] = useState(false)
   const [error, setError]           = useState(null)
   const [analyser, setAnalyser]     = useState(null)
+  const [name, setName]             = useState(defaultRecordingName)
 
   const timerRef      = useRef(null)
   const recorderRef   = useRef(null)
@@ -24,13 +36,16 @@ export default function Record() {
   const { setRecap } = useRecap()
   const { token }    = useAuth()
   const navigate     = useNavigate()
-  const location     = useLocation()
-  const sessionToken = location.state?.sessionToken
 
   const tokenRef = useRef(token)
   useEffect(() => {
     tokenRef.current = token
   }, [token])
+
+  const nameRef = useRef(name)
+  useEffect(() => {
+    nameRef.current = name
+  }, [name])
 
   useEffect(() => {
     let cancelled = false
@@ -68,7 +83,8 @@ export default function Record() {
         try {
           const blob = new Blob(chunks, { type: recorder.mimeType })
           const { email } = await getSession(tokenRef.current)
-          const data = await uploadRecording(blob, tokenRef.current, sessionToken, email)
+          const recordingName = nameRef.current.trim() || defaultRecordingName()
+          const data = await uploadRecording(blob, tokenRef.current, email, recordingName)
           if (cancelled) return
           setRecap(data)
           navigate('/recap')
@@ -145,6 +161,19 @@ export default function Record() {
           <div className="font-mono font-bold text-white bg-accent border-4 border-ink px-4 py-2 uppercase animate-blink">
             ● REC <time>{fmt(seconds)}</time>
           </div>
+        </div>
+
+        <div className="mx-5 md:mx-8 mb-5 shrink-0">
+          <label className="font-mono text-xs uppercase tracking-[1px] font-bold text-ink block mb-1.5">
+            Nom de l&apos;enregistrement
+          </label>
+          <input
+            value={name}
+            onChange={e => setName(e.target.value)}
+            maxLength={200}
+            placeholder={defaultRecordingName()}
+            className="block w-full p-3.5 font-mono text-[15px] bg-paper border-4 border-ink"
+          />
         </div>
 
         <div className="mx-5 md:mx-8 border-4 border-ink p-5 shrink-0">
