@@ -10,7 +10,11 @@ from save_meeting import save_meeting
 
 router = APIRouter()
 
-DEFAULT_BOT_NAME = "Scribe Notetaker"
+DEFAULT_BOT_NAME = "WhatsON_meeting Notetaker"
+RGPD_ENTRY_MESSAGE = (
+    "⚠️ RGPD : cette réunion est enregistrée par WhatsON_meeting afin d'en générer un compte-rendu. "
+    "Si vous ne souhaitez pas être enregistré·e, merci de quitter la réunion."
+)
 
 
 def _process_completed_bot(bot_id: str, event_id: str | None = None) -> None:
@@ -89,7 +93,11 @@ async def webhook(request: Request, background_tasks: BackgroundTasks):
             should_bot_join = rules.should_join(calendar_event)
             print(f"[webhook] event {event_id} '{calendar_event.get('title')}' -> should_join={should_bot_join}")
             if should_bot_join:
-                client.schedule_bot(calendar_id, event_id, series_id, bot_name=DEFAULT_BOT_NAME)
+                client.schedule_bot(
+                    calendar_id, event_id, series_id,
+                    bot_name=DEFAULT_BOT_NAME,
+                    entry_message=RGPD_ENTRY_MESSAGE,
+                )
                 store.mark_event_scheduled(event_id)
 
                 attendees = calendar_event.get("attendees") or []

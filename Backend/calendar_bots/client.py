@@ -27,6 +27,17 @@ def _call(method, path, **kwargs):
     return body["data"] if isinstance(body, dict) and "data" in body else body
 
 
+def update_calendar_credentials(calendar_id, refresh_token):
+    """PATCH /v2/calendars/{id} : fait tourner les credentials OAuth d'une connexion
+    existante (ex: refresh_token expiré après 7j en mode Google "Testing"). MeetingBaaS
+    revalide la connexion et recrée l'abonnement push automatiquement."""
+    return _call("PATCH", f"/calendars/{calendar_id}", json={
+        "oauth_client_id": os.environ["GOOGLE_OAUTH_CLIENT_ID"],
+        "oauth_client_secret": os.environ["GOOGLE_OAUTH_CLIENT_SECRET"],
+        "oauth_refresh_token": refresh_token,
+    })
+
+
 def register_calendar(refresh_token, google_calendar_id="primary"):
     try:
         calendar_data = _call("POST", "/calendars", json={
@@ -40,8 +51,13 @@ def register_calendar(refresh_token, google_calendar_id="primary"):
         if "FST_ERR_CALENDAR_CONNECTION_ALREADY_EXISTS" not in str(exc):
             raise
         # Mono-utilisateur pour l'instant (voir store.py) : une seule connexion
-        # possible, donc on récupère celle qui existe déjà plutôt que d'échouer.
-        calendar_data = _call("GET", "/calendars")[0]
+        # possible. On la récupère, puis on lui repousse le refresh_token qu'on
+        # vient d'obtenir : sans ça, une connexion en erreur (refresh_token expiré)
+        # resterait cassée indéfiniment même après avoir refait l'autorisation Google.
+        existing = _call("GET", "/calendars")[0]
+        if not isinstance(existing, dict) or "calendar_id" not in existing:
+            raise RuntimeError(f"Réponse MeetingBaaS inattendue (pas de champ 'calendar_id'): {existing}")
+        calendar_data = update_calendar_credentials(existing["calendar_id"], refresh_token)
 
     if not isinstance(calendar_data, dict) or "calendar_id" not in calendar_data:
         raise RuntimeError(f"Réponse MeetingBaaS inattendue (pas de champ 'calendar_id'): {calendar_data}")
@@ -52,7 +68,7 @@ def get_event(calendar_id, event_id):
     return _call("GET", f"/calendars/{calendar_id}/events/{event_id}")
 
 
-def schedule_bot(calendar_id, event_id, series_id, bot_name="Scribe Notetaker"):
+def schedule_bot(calendar_id, event_id, series_id, bot_name="WhatsON_meeting Notetaker", entry_message=None):
     bot_data = _call("POST", f"/calendars/{calendar_id}/bots", json={
         "event_id": event_id,
         "series_id": series_id,
@@ -61,6 +77,8 @@ def schedule_bot(calendar_id, event_id, series_id, bot_name="Scribe Notetaker"):
         "recording_mode": "audio_only",
         "transcription_enabled": True,
         "transcription_config": {"provider": "gladia"},
+        # Posté dans le chat de la réunion dès que le bot rejoint (max 4096 caractères).
+        "entry_message": entry_message,
     })
     # MeetingBaaS renvoie une liste de bots (un par occurrence programmée),
     # même pour all_occurrences=False : on ne prend que le premier.
