@@ -4,11 +4,11 @@ from typing import Annotated, TypeAlias
 from pydantic import BaseModel, BeforeValidator, EmailStr, Field, field_validator
 
 
-def _normalize_email(email: str) -> str:
+def normalize_email(email: str) -> str:
     return email.strip().lower()
 
 
-NormalizedEmail: TypeAlias = Annotated[EmailStr, BeforeValidator(_normalize_email)]
+NormalizedEmail: TypeAlias = Annotated[EmailStr, BeforeValidator(normalize_email)]
 VerificationCode: TypeAlias = Annotated[str, Field(min_length=6, max_length=6, pattern=r"^\d{6}$")]
 
 
@@ -55,11 +55,19 @@ class UserRegister(BaseModel):
     username: Annotated[str, Field(min_length=1, max_length=50)]
     email: NormalizedEmail
     password: str
+    accepted_guidelines: bool
 
     @field_validator("password")
     @classmethod
     def password_strength(cls, password: str) -> str:
         return _check_password_strength(password)
+
+    @field_validator("accepted_guidelines")
+    @classmethod
+    def guidelines_must_be_accepted(cls, accepted_guidelines: bool) -> bool:
+        if not accepted_guidelines:
+            raise ValueError("Tu dois accepter les conditions d'utilisation pour créer un compte.")
+        return accepted_guidelines
 
 
 class UserVerification(BaseModel):

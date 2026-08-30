@@ -144,6 +144,8 @@ export default function Auth() {
   const [emailTouched, setEmailTouched] = useState(false)
   const [pwdTouched, setPwdTouched]     = useState(false)
   const [pwd2Touched, setPwd2Touched]   = useState(false)
+  const [guidelinesAccepted, setGuidelinesAccepted] = useState(false)
+  const [guidelinesTouched, setGuidelinesTouched]   = useState(false)
   const [apiError, setApiError] = useState('')
   const [errorKey, setErrorKey] = useState(0)
   const [shakeKey, setShakeKey] = useState(0)
@@ -169,6 +171,7 @@ export default function Auth() {
   const emailShowErr = emailTouched && !emailOk
   const pwdShowErr   = pwdTouched && !passOk
   const pwd2ShowErr  = (phase === 'confirm' || phase === 'reset') && pwd2Touched && !pwd2Ok
+  const guidelinesShowErr = phase === 'confirm' && guidelinesTouched && !guidelinesAccepted
 
   async function submit() {
     setEmailTouched(true)
@@ -180,7 +183,8 @@ export default function Auth() {
     }
     if (phase === 'confirm') {
       setPwd2Touched(true)
-      if (!pwd2Ok) {
+      setGuidelinesTouched(true)
+      if (!pwd2Ok || !guidelinesAccepted) {
         shakeInvalidFields()
         return
       }
@@ -218,7 +222,7 @@ export default function Auth() {
       } else {
         const username = email.split('@')[0]
         try {
-          await registerUser({ username, email, password: pwd })
+          await registerUser({ username, email, password: pwd, acceptedGuidelines: guidelinesAccepted })
         } catch (err) {
           if (err.status === 409) {
             showError('Ce compte existe déjà — mot de passe incorrect.')
@@ -339,6 +343,8 @@ export default function Auth() {
     setResendMsg('')
     setPwd2('')
     setPwd2Touched(false)
+    setGuidelinesAccepted(false)
+    setGuidelinesTouched(false)
   }
 
   function goToForgotPassword() {
@@ -463,14 +469,46 @@ export default function Auth() {
             />
 
             {phase === 'confirm' && (
-              <PasswordField
-                label="Confirmer le mot de passe"
-                error={pwd2ShowErr ? 'Les mots de passe ne correspondent pas.' : ''}
-                value={pwd2}
-                onChange={e => { setPwd2(e.target.value); setPwd2Touched(true) }}
-                showPwd={showPwd2}
-                onToggle={() => setShowPwd2(s => !s)}
-              />
+              <>
+                <PasswordField
+                  label="Confirmer le mot de passe"
+                  error={pwd2ShowErr ? 'Les mots de passe ne correspondent pas.' : ''}
+                  value={pwd2}
+                  onChange={e => { setPwd2(e.target.value); setPwd2Touched(true) }}
+                  showPwd={showPwd2}
+                  onToggle={() => setShowPwd2(s => !s)}
+                />
+
+                <Field label="" error={guidelinesShowErr ? "Tu dois accepter les conditions d'utilisation." : ''} shakeKey={shakeKey}>
+                  <label className="flex items-start gap-3 cursor-pointer font-mono text-sm">
+                    <input
+                      type="checkbox"
+                      checked={guidelinesAccepted}
+                      onChange={e => { setGuidelinesAccepted(e.target.checked); setGuidelinesTouched(true) }}
+                      className="peer sr-only"
+                    />
+                    <span
+                      aria-hidden="true"
+                      className="shrink-0 w-[22px] h-[22px] border-4 border-ink flex items-center justify-center font-display text-sm peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[#1a56ff]"
+                      style={{ background: guidelinesAccepted ? '#ff2e00' : '#ffffff', color: '#ffffff' }}
+                    >
+                      {guidelinesAccepted ? '✕' : ''}
+                    </span>
+                    <span>
+                      J&apos;accepte les{' '}
+                      <a
+                        href="/guidelines"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="underline font-bold"
+                      >
+                        conditions d&apos;utilisation
+                      </a>.
+                    </span>
+                  </label>
+                </Field>
+              </>
             )}
 
             {phase === 'login' && (

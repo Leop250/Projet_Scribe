@@ -7,7 +7,12 @@ VALID_PASSWORD = "Sup3r$ecret"
 
 
 def test_email_is_normalized_to_lowercase_and_stripped():
-    user = UserRegister(username="alice", email="  Alice@Example.COM ", password=VALID_PASSWORD)
+    user = UserRegister(
+        username="alice",
+        email="  Alice@Example.COM ",
+        password=VALID_PASSWORD,
+        accepted_guidelines=True,
+    )
     assert user.email == "alice@example.com"
 
 
@@ -32,7 +37,7 @@ def test_verification_code_rejects_invalid_formats(code):
 
 
 def test_password_strength_accepts_a_valid_password():
-    user = UserRegister(username="alice", email="a@b.com", password=VALID_PASSWORD)
+    user = UserRegister(username="alice", email="a@b.com", password=VALID_PASSWORD, accepted_guidelines=True)
     assert user.password == VALID_PASSWORD
 
 
@@ -47,7 +52,7 @@ def test_password_strength_accepts_a_valid_password():
 )
 def test_password_strength_rejects_weak_passwords(password):
     with pytest.raises(ValidationError):
-        UserRegister(username="alice", email="a@b.com", password=password)
+        UserRegister(username="alice", email="a@b.com", password=password, accepted_guidelines=True)
 
 
 def test_reset_password_request_reuses_the_same_password_strength_rule():
