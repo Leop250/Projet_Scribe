@@ -10,8 +10,8 @@ from alembic import context
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 load_dotenv(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"))
 
-from attendance import models as attendance_models  # noqa: E402,F401
 from auth import users  # noqa: E402,F401
+from database import models as database_models  # noqa: E402,F401
 from database.database import Base  # noqa: E402
 
 config = context.config

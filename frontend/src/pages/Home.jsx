@@ -3,9 +3,8 @@ import AppShell from '../components/AppShell'
 import { useRecap } from '../context/RecapContext'
 
 const STEPS = [
-  { n: '01', t: 'Présence', d: 'Générez un QR code, vos invités signent depuis leur téléphone.' },
-  { n: '02', t: 'Enregistre', d: 'Un clic sur Rec, la réunion tourne, le waveform confirme que ça capte.' },
-  { n: '03', t: 'Récupère', d: 'Résumé, actions et transcription arrivent dans Récaps à la fin.' },
+  { n: '01', t: 'Enregistre', d: 'Un clic sur Rec, la réunion tourne, le waveform confirme que ça capte.' },
+  { n: '02', t: 'Récupère', d: 'Résumé, actions et transcription arrivent dans Récaps à la fin.' },
 ]
 
 export default function Home() {
@@ -21,7 +20,7 @@ export default function Home() {
 
         <div className="flex items-center gap-8 flex-wrap">
           <button
-            onClick={() => navigate('/attendance')}
+            onClick={() => navigate('/record')}
             className="cursor-pointer w-[200px] h-[200px] border-[6px] border-ink bg-accent flex flex-col items-center justify-center shadow-[10px_10px_0_#0a0a0a] hover:shadow-[4px_4px_0_#0a0a0a] hover:translate-x-1.5 hover:translate-y-1.5 transition-none active:scale-[0.98]"
           >
             <div className="font-display text-[52px] text-ink leading-none">●</div>

@@ -86,49 +86,6 @@ def test_attach_participants_does_nothing_for_unknown_emails(monkeypatch):
     fake_db.commit.assert_called_once()  # toujours appelé, même sans rattachement
 
 
-# --- link_recording_session ----------------------------------------------------
-
-
-def test_link_recording_session_does_nothing_without_a_token():
-    fake_db = MagicMock()
-
-    RecapService.link_recording_session(fake_db, session_token=None, recap_id=1)
-
-    fake_db.query.assert_not_called()
-
-
-def test_link_recording_session_starts_a_pending_session():
-    fake_session = MagicMock(status="pending")
-    fake_db = MagicMock()
-    fake_db.query.return_value.filter.return_value.first.return_value = fake_session
-
-    RecapService.link_recording_session(fake_db, session_token="tok", recap_id=7)
-
-    assert fake_session.status == "started"
-    assert fake_session.recap_id == 7
-    fake_db.commit.assert_called_once()
-
-
-def test_link_recording_session_ignores_a_session_that_is_not_pending():
-    fake_session = MagicMock(status="started", recap_id=None)
-    fake_db = MagicMock()
-    fake_db.query.return_value.filter.return_value.first.return_value = fake_session
-
-    RecapService.link_recording_session(fake_db, session_token="tok", recap_id=7)
-
-    assert fake_session.recap_id is None
-    fake_db.commit.assert_not_called()
-
-
-def test_link_recording_session_ignores_an_unknown_token():
-    fake_db = MagicMock()
-    fake_db.query.return_value.filter.return_value.first.return_value = None
-
-    RecapService.link_recording_session(fake_db, session_token="unknown", recap_id=7)
-
-    fake_db.commit.assert_not_called()
-
-
 # --- list_summaries -------------------------------------------------------------
 
 

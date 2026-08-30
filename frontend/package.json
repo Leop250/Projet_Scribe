@@ -9,7 +9,6 @@
     "lint": "eslint -c eslint.config.audit.mjs src"
   },
   "dependencies": {
-    "qrcode.react": "^4.2.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router": "^7.18.0"
