@@ -1,9 +1,10 @@
 import os
 import shutil
 from pathlib import Path
+from uuid import uuid4
 
 from dotenv import load_dotenv
-from fastapi import Depends, FastAPI, File, Form, HTTPException
+from fastapi import Depends, FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -11,9 +12,8 @@ from sqlalchemy.orm import Session
 load_dotenv()
 
 from ai.classifier import call_classifier  # noqa: E402
+from ai.moderation import NoSpeechDetectedError, verify_report  # noqa: E402
 from ai.speech_to_text import call_speech_to_text_agent  # noqa: E402
-from attendance.models import RecordingSession  # noqa: E402
-from attendance.routes import router as attendance_router  # noqa: E402
 from auth.dependencies import get_current_user  # noqa: E402
 from auth.routes import router as auth_router  # noqa: E402
 from auth.users import UserModel, get_by_email  # noqa: E402
@@ -58,9 +58,11 @@ class RecapService:
         user.participants_list_of_recaps = (user.participants_list_of_recaps or []) + [recap_id]
 
     @staticmethod
-    def save_audio_to_temp(audio) -> Path:
-        temp_path = Path("temp") / audio.filename
-        temp_path.parent.mkdir(exist_ok=True)
+    def save_audio_to_temp(audio: UploadFile) -> Path:
+        safe_name = Path(audio.filename or "upload").name or "upload"
+        temp_dir = Path("temp")
+        temp_dir.mkdir(exist_ok=True)
+        temp_path = temp_dir / f"{uuid4().hex}_{safe_name}"
         with open(temp_path, "wb") as recording_file:
             shutil.copyfileobj(audio.file, recording_file)
         return temp_path
@@ -97,19 +99,12 @@ class RecapService:
         db_session.commit()
 
     @staticmethod
-    def link_recording_session(db_session: Session, session_token: str | None, recap_id: int) -> None:
-        if not session_token:
-            return
-        session = db_session.query(RecordingSession).filter(RecordingSession.token == session_token).first()
-        if session and session.status == "pending":
-            session.status = "started"
-            session.recap_id = recap_id
-            db_session.commit()
-
-    @staticmethod
     def list_summaries(db_session: Session, recap_ids: list[int]) -> list[RecapSummary]:
         recaps = (
-            db_session.query(Recap).filter(Recap.recap_id.in_(recap_ids)).order_by(Recap.created_at.desc()).all()
+            db_session.query(Recap)
+            .filter(Recap.recap_id.in_(recap_ids))
+            .order_by(Recap.created_at.desc())
+            .all()
         )
         return [
             RecapSummary(
@@ -169,20 +164,23 @@ async def root():
 
 @app.post("/recordings")
 async def records(
-    audio=File(...),
+    audio: UploadFile = File(...),
     emails: str = Form(...),
-    session_token: str | None = Form(None),
+    name: str = Form(..., min_length=1, max_length=200),
     current_user: UserModel = Depends(get_current_user),
     db_session: Session = Depends(get_db),
 ):
     temp_path = recap_service.save_audio_to_temp(audio)
-    transcript, report = recap_service.transcribe_and_classify(temp_path)
+    try:
+        transcript, report = recap_service.transcribe_and_classify(temp_path)
+    except NoSpeechDetectedError as error:
+        raise HTTPException(status_code=422, detail=str(error))
 
-    recap = recap_service.create_recap(db_session, emails, audio.filename, transcript, report)
+    report = verify_report(transcript, report)
+
+    recap = recap_service.create_recap(db_session, emails, name, transcript, report)
     recap_service.attach_participants(db_session, emails, recap.recap_id)
-    recap_service.link_recording_session(db_session, session_token, recap.recap_id)
 
-    print("Audio received successfully")
     return {
         "status": "ok",
         "id": str(recap.recap_id),
@@ -209,4 +207,3 @@ async def get_recap_detail(
 
 
 app.include_router(auth_router)
-app.include_router(attendance_router)

@@ -24,11 +24,11 @@ async function requestJson(url, options, fallbackMessage) {
   return data
 }
 
-export async function uploadRecording(blob, token, sessionToken, emails) {
+export async function uploadRecording(blob, token, emails, name) {
   const body = new FormData()
   body.append('audio', blob, 'recording.webm')
   body.append('emails', emails)
-  if (sessionToken) body.append('session_token', sessionToken)
+  body.append('name', name)
 
   const data = await requestJson(
     `${BASE_URL}/recordings`,
@@ -76,10 +76,14 @@ export async function checkEmailExists(email) {
   return data.exists
 }
 
-export async function registerUser({ username, email, password }) {
+export async function registerUser({ username, email, password, acceptedGuidelines }) {
   return requestJson(
     `${BASE_URL}/users/createUsers`,
-    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, email, password }) },
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password, accepted_guidelines: acceptedGuidelines }),
+    },
     'Inscription refusée',
   )
 }
@@ -116,50 +120,6 @@ export async function resetPassword(email, code, newPassword) {
     'Réinitialisation refusée',
   )
   return data
-}
-
-export async function createAttendanceSession(headcount, token) {
-  return requestJson(
-    `${BASE_URL}/attendance/sessions`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ headcount }),
-    },
-    'Création de la session impossible',
-  )
-}
-
-export async function getAttendanceSessionStatus(sessionToken, token) {
-  return requestJson(
-    `${BASE_URL}/attendance/sessions/${sessionToken}`,
-    { headers: { Authorization: `Bearer ${token}` } },
-    'Statut indisponible',
-  )
-}
-
-export async function startAttendanceSession(sessionToken, token) {
-  return requestJson(
-    `${BASE_URL}/attendance/sessions/${sessionToken}/start`,
-    { method: 'POST', headers: { Authorization: `Bearer ${token}` } },
-    "Démarrage refusé",
-  )
-}
-
-export async function getPublicAttendanceSession(sessionToken) {
-  return requestJson(
-    `${BASE_URL}/attendance/sessions/${sessionToken}/public`,
-    {},
-    'Session introuvable',
-  )
-}
-
-export async function signAttendance(sessionToken, nom, image) {
-  return requestJson(
-    `${BASE_URL}/attendance/sessions/${sessionToken}/sign`,
-    { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ nom, image }) },
-    'Signature refusée',
-  )
 }
 
 export async function getGoogleIntegrationStatus(token) {
