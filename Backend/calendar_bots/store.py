@@ -9,7 +9,14 @@ from pathlib import Path
 
 STORE_PATH = Path(__file__).parent / "calendar_store.json"
 
-_DEFAULT_STORE_DATA = {"connection": None, "scheduled_events": [], "saved_bots": [], "processing_bots": [], "event_emails": {}}
+_DEFAULT_STORE_DATA = {
+    "connection": None,
+    "scheduled_events": [],
+    "saved_bots": [],
+    "processing_bots": [],
+    "event_emails": {},
+    "delayed_bots": [],
+}
 
 
 class CalendarStore:
@@ -66,6 +73,16 @@ class CalendarStore:
             store_data["processing_bots"].append(bot_id)
             self._save(store_data)
 
+    def is_recording_delay_started(self, bot_id):
+        return bot_id in self._load().get("delayed_bots", [])
+
+    def mark_recording_delay_started(self, bot_id):
+        store_data = self._load()
+        store_data.setdefault("delayed_bots", [])
+        if bot_id not in store_data["delayed_bots"]:
+            store_data["delayed_bots"].append(bot_id)
+            self._save(store_data)
+
     def save_event_emails(self, event_id, emails):
         """Associe les emails des attendees Google Calendar à l'event programmé (connus
         seulement à la programmation, à réutiliser plus tard pour peupler Recap.emails).
@@ -118,6 +135,14 @@ def is_bot_processing(bot_id):
 
 def mark_bot_processing(bot_id):
     return _default_calendar_store.mark_bot_processing(bot_id)
+
+
+def is_recording_delay_started(bot_id):
+    return _default_calendar_store.is_recording_delay_started(bot_id)
+
+
+def mark_recording_delay_started(bot_id):
+    return _default_calendar_store.mark_recording_delay_started(bot_id)
 
 
 def save_event_emails(event_id, emails):

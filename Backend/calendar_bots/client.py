@@ -95,6 +95,18 @@ def get_bot_status(bot_id):
     return _call("GET", f"/bots/{bot_id}")
 
 
+def pause_bot_recording(bot_id, chat_message=None):
+    """POST /bots/{id}/pause-recording : le bot reste dans l'appel mais la portion en
+    pause est exclue de l'enregistrement/transcript/diarisation final."""
+    return _call("POST", f"/bots/{bot_id}/pause-recording", json={"chat_message": chat_message})
+
+
+def resume_bot_recording(bot_id, chat_message=None):
+    """POST /bots/{id}/resume-recording : reprend un enregistrement mis en pause
+    (les timestamps du rendu final restent continus, le trou de pause est retiré)."""
+    return _call("POST", f"/bots/{bot_id}/resume-recording", json={"chat_message": chat_message})
+
+
 # Statuts terminaux (enum "status" de GET /bots/{id}) qui signifient que le bot
 # ne produira jamais de transcription : pas seulement "failed" (valeur qui
 # n'existe même pas dans l'enum réel, "transcription_failed" si).
