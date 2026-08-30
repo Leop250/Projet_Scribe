@@ -1,14 +1,17 @@
 import json
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 from together import Together
 
-load_dotenv("../.env")
+_BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(_BASE_DIR / ".env")
 
 client = Together()
 
-with open("agent_context.txt", "r") as context_file:
+with open(_BASE_DIR / "agent_context.txt", "r") as context_file:
     context = context_file.read()
 
 

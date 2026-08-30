@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 
 from database.database import Base
 
+from .schemas import normalize_email
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 _DUMMY_HASH = pwd_context.hash("dummy-password-for-timing-safety")
@@ -40,4 +42,4 @@ def authenticate_user(db_session: Session, email: str, password: str) -> UserMod
 
 
 def get_by_email(db_session: Session, email: str) -> UserModel | None:
-    return db_session.query(UserModel).filter(UserModel.email == email.strip().lower()).first()
+    return db_session.query(UserModel).filter(UserModel.email == normalize_email(email)).first()

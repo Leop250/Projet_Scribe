@@ -7,7 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from database.database import get_db
-from rate_limit import RateLimiter
+from rate_limit import RateLimiter, client_ip
 
 from .authentification import create_access_token
 from .config import settings
@@ -71,7 +71,7 @@ def login_for_access_token(
     request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db_session: Session = Depends(get_db)
 ):
     _login_rate_limiter.check(
-        request.client.host, "Trop de tentatives de connexion, réessaie dans quelques minutes."
+        client_ip(request), "Trop de tentatives de connexion, réessaie dans quelques minutes."
     )
     user = authenticate_user(db_session, form_data.username, form_data.password)
     if not user:
@@ -95,14 +95,14 @@ def get_session(current_user: UserModel = Depends(get_current_user)):
 
 @router.get("/users/exists")
 def user_exists(email: str, request: Request, db_session: Session = Depends(get_db)):
-    _exists_rate_limiter.check(request.client.host, "Trop de vérifications, réessaie plus tard.")
+    _exists_rate_limiter.check(client_ip(request), "Trop de vérifications, réessaie plus tard.")
     return {"exists": get_by_email(db_session, email) is not None}
 
 
 @router.post("/users/createUsers")
 async def create_user(user: UserRegister, request: Request, db_session: Session = Depends(get_db)):
     _signup_rate_limiter.check(
-        request.client.host, "Trop de tentatives d'inscription depuis cette adresse, réessaie plus tard."
+        client_ip(request), "Trop de tentatives d'inscription depuis cette adresse, réessaie plus tard."
     )
 
     if get_by_email(db_session, user.email):
@@ -196,7 +196,7 @@ async def resend_code(body: ResendCodeRequest, db_session: Session = Depends(get
 async def forgot_password(
     body: ForgotPasswordRequest, request: Request, db_session: Session = Depends(get_db)
 ):
-    _forgot_password_rate_limiter.check(request.client.host, "Trop de demandes, réessaie plus tard.")
+    _forgot_password_rate_limiter.check(client_ip(request), "Trop de demandes, réessaie plus tard.")
 
     user = get_by_email(db_session, body.email)
     if user and user.is_verified:

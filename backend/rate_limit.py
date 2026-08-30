@@ -1,9 +1,13 @@
 from collections import defaultdict
 from time import time
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException, Request, status
 
 _PURGE_THRESHOLD = 1000
+
+
+def client_ip(request: Request) -> str:
+    return request.client.host if request.client else "unknown"
 
 
 class RateLimiter:
