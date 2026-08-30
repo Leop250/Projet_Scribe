@@ -3,9 +3,8 @@ import Landing from "./pages/Landing"
 import Auth from "./pages/Auth"
 import Consent from "./pages/Consent"
 import Home from "./pages/Home"
-import Attendance from "./pages/Attendance"
-import Sign from "./pages/Sign"
-import Confidentialite from "./pages/Confidentialite"
+import Guidelines from "./pages/Guidelines"
+import MentionsLegales from "./pages/MentionsLegales"
 import Record from "./pages/Record"
 import Recap from "./pages/Recap"
 import RecapDetail from "./pages/RecapDetail"
@@ -28,9 +27,8 @@ export default function App() {
         <Route path="/login" element={<Auth />} />
         <Route path="/consent" element={<RequireAuth><Consent /></RequireAuth>} />
         <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
-        <Route path="/attendance" element={<RequireAuth><Attendance /></RequireAuth>} />
-        <Route path="/sign/:sessionToken" element={<Sign />} />
-        <Route path="/confidentialite" element={<Confidentialite />} />
+        <Route path="/guidelines" element={<Guidelines />} />
+        <Route path="/mentions-legales" element={<MentionsLegales />} />
         <Route path="/record" element={<RequireAuth><Record /></RequireAuth>} />
         <Route path="/recap" element={<RequireAuth><Recap /></RequireAuth>} />
         <Route path="/recap/:id" element={<RequireAuth><RecapDetail /></RequireAuth>} />

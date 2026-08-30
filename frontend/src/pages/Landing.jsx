@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import ScrollSequence3D from '../components/ScrollSequence3D'
 import TopNav from '../components/TopNav'
 
@@ -122,8 +122,12 @@ export default function Landing() {
           </button>
         </div>
 
-        <div className="border-t-4 border-ink px-5 py-6 flex justify-between font-mono text-xs uppercase tracking-[1px] flex-wrap gap-2">
+        <div className="border-t-4 border-ink px-5 py-6 flex justify-between items-center font-mono text-xs uppercase tracking-[1px] flex-wrap gap-4">
           <span>What&apos;s On Meeting© 2026</span>
+          <div className="flex gap-4 flex-wrap">
+            <Link to="/guidelines" className="underline">CGU</Link>
+            <Link to="/mentions-legales" className="underline">Mentions légales</Link>
+          </div>
           <span>Chiffré · Privé · Sans bla-bla</span>
         </div>
       </div>

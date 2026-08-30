@@ -78,10 +78,10 @@ export default function Settings() {
         <div className="border-4 border-ink mb-10">
           <button
             type="button"
-            onClick={() => navigate('/confidentialite')}
+            onClick={() => navigate('/guidelines')}
             className="cursor-pointer w-full text-left bg-transparent border-none flex items-center justify-between px-5 py-4 hover:bg-accent hover:text-white transition-none active:scale-[0.99]"
           >
-            <span className="font-body font-extrabold text-[15px]">Politique de confidentialité</span>
+            <span className="font-body font-extrabold text-[15px]">Conditions d&apos;utilisation</span>
             <span className="font-mono text-xs uppercase border-[3px] border-ink px-2.5 py-1">Ouvrir →</span>
           </button>
         </div>
