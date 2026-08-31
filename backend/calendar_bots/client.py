@@ -27,34 +27,38 @@ def _call(method: str, path: str, **kwargs):
     return body["data"] if isinstance(body, dict) and "data" in body else body
 
 
+def _webhook_url() -> str | None:
+    return os.environ.get("MEETING_BAAS_WEBHOOK_URL") or None
+
+
 def update_calendar_credentials(calendar_id: str, refresh_token: str):
     """PATCH /v2/calendars/{id} : fait tourner les credentials OAuth d'une connexion
     existante (ex: refresh_token expiré après 7j en mode Google "Testing"). MeetingBaaS
     revalide la connexion et recrée l'abonnement push automatiquement."""
-    return _call(
-        "PATCH",
-        f"/calendars/{calendar_id}",
-        json={
-            "oauth_client_id": os.environ["GOOGLE_OAUTH_CLIENT_ID"],
-            "oauth_client_secret": os.environ["GOOGLE_OAUTH_CLIENT_SECRET"],
-            "oauth_refresh_token": refresh_token,
-        },
-    )
+    payload = {
+        "oauth_client_id": os.environ["GOOGLE_OAUTH_CLIENT_ID"],
+        "oauth_client_secret": os.environ["GOOGLE_OAUTH_CLIENT_SECRET"],
+        "oauth_refresh_token": refresh_token,
+    }
+    webhook_url = _webhook_url()
+    if webhook_url:
+        payload["webhook_url"] = webhook_url
+    return _call("PATCH", f"/calendars/{calendar_id}", json=payload)
 
 
 def register_calendar(refresh_token: str, google_calendar_id: str = "primary") -> str:
+    payload = {
+        "calendar_platform": "google",
+        "oauth_client_id": os.environ["GOOGLE_OAUTH_CLIENT_ID"],
+        "oauth_client_secret": os.environ["GOOGLE_OAUTH_CLIENT_SECRET"],
+        "oauth_refresh_token": refresh_token,
+        "raw_calendar_id": google_calendar_id,
+    }
+    webhook_url = _webhook_url()
+    if webhook_url:
+        payload["webhook_url"] = webhook_url
     try:
-        calendar_data = _call(
-            "POST",
-            "/calendars",
-            json={
-                "calendar_platform": "google",
-                "oauth_client_id": os.environ["GOOGLE_OAUTH_CLIENT_ID"],
-                "oauth_client_secret": os.environ["GOOGLE_OAUTH_CLIENT_SECRET"],
-                "oauth_refresh_token": refresh_token,
-                "raw_calendar_id": google_calendar_id,
-            },
-        )
+        calendar_data = _call("POST", "/calendars", json=payload)
     except RuntimeError as exc:
         if "FST_ERR_CALENDAR_CONNECTION_ALREADY_EXISTS" not in str(exc):
             raise
@@ -77,6 +81,14 @@ def delete_calendar(calendar_id: str) -> None:
 
 def get_event(calendar_id: str, event_id: str):
     return _call("GET", f"/calendars/{calendar_id}/events/{event_id}")
+
+
+def list_events(calendar_id: str, start_iso: str, end_iso: str):
+    return _call(
+        "GET",
+        f"/calendars/{calendar_id}/events",
+        params={"start_date_gte": start_iso, "start_date_lte": end_iso},
+    )
 
 
 def schedule_bot(

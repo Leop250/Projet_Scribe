@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import AppShell from '../components/AppShell'
 import { useAuth } from '../context/AuthContext'
-import { getMyRecaps } from '../api'
-import { SOURCE_ICON, SOURCE_LABEL, SOURCE_COLOR, displaySource } from '../utils/recapSource'
+import { getCalendarEvents, getMyRecaps } from '../api'
+import { SOURCE_LABEL, SOURCE_COLOR, displaySource } from '../utils/recapSource'
 
 const SOURCES = [
   { value: 'all', label: 'Tous', color: '#0a0a0a' },
@@ -14,6 +14,17 @@ const SOURCES = [
 function formatDate(iso) {
   if (!iso) return ''
   return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+function formatDateTime(iso) {
+  if (!iso) return ''
+  if (iso.length === 10) {
+    return new Date(iso).toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' })
+  }
+  const d = new Date(iso)
+  const day = d.toLocaleDateString('fr-FR', { weekday: 'short', day: '2-digit', month: 'short' })
+  const time = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+  return `${day} · ${time}`
 }
 
 function Chip({ active, color = '#0a0a0a', children, onClick }) {
@@ -156,7 +167,7 @@ function RecapCard({ recap, onOpen }) {
       className="cursor-pointer w-full text-left bg-transparent border-none flex items-center justify-between gap-4 px-5 py-4 border-t-[3px] border-ink first:border-t-0 hover:bg-accent hover:text-white transition-none active:scale-[0.99]"
     >
       <div className="flex items-center gap-4 min-w-0">
-        <span className="font-display text-xl shrink-0" style={{ color }}>{SOURCE_ICON[displaySource(recap.source)] || '○'}</span>
+        <span className="shrink-0 w-3.5 h-3.5 border-[3px] border-ink" style={{ background: color }} />
         <div className="min-w-0">
           <div className="font-body font-extrabold text-[17px] truncate">{recap.name}</div>
           <div className="font-mono text-xs text-muted">
@@ -187,11 +198,90 @@ function RecapListSkeleton() {
   )
 }
 
+function UpcomingCard({ event }) {
+  const color = event.will_record ? '#1a56ff' : '#0a0a0a'
+  const attendeeCount = event.attendees?.length || 0
+  const inner = (
+    <>
+      <div className="flex items-center gap-4 min-w-0">
+        <span
+          className="shrink-0 w-3.5 h-3.5 border-[3px] border-ink rounded-full"
+          style={{ background: event.will_record ? color : '#ffffff' }}
+        />
+        <div className="min-w-0">
+          <div className="font-body font-extrabold text-[17px] truncate">{event.title}</div>
+          <div className="font-mono text-xs text-muted">
+            {formatDateTime(event.start)}
+            {attendeeCount ? ` · ${attendeeCount} participant${attendeeCount > 1 ? 's' : ''}` : ''}
+          </div>
+          {event.will_record && (
+            <div
+              className="font-mono text-[10px] uppercase tracking-[1px] border-2 px-1.5 py-0.5 mt-1.5 inline-block"
+              style={{ borderColor: color, color }}
+            >
+              Sera enregistrée
+            </div>
+          )}
+        </div>
+      </div>
+      {event.meeting_url && (
+        <div className="font-mono text-xs uppercase border-[3px] border-ink px-2.5 py-1 shrink-0">Rejoindre →</div>
+      )}
+    </>
+  )
+  const cls =
+    'w-full text-left flex items-center justify-between gap-4 px-5 py-4 border-t-[3px] border-ink first:border-t-0'
+  return event.meeting_url ? (
+    <a href={event.meeting_url} target="_blank" rel="noreferrer" className={`${cls} hover:bg-accent hover:text-white transition-none`}>
+      {inner}
+    </a>
+  ) : (
+    <div className={cls}>{inner}</div>
+  )
+}
+
+function UpcomingSection({ events, connected, search }) {
+  if (events === null) return <RecapListSkeleton />
+
+  if (!connected) {
+    return (
+      <div className="border-4 border-dashed border-ink px-5 py-6 font-mono text-xs text-muted">
+        Connecte ton agenda Google dans les réglages pour voir les réunions à venir.
+      </div>
+    )
+  }
+
+  const query = search.trim().toLowerCase()
+  const list = query ? events.filter(e => (e.title || '').toLowerCase().includes(query)) : events
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-2">
+        <div className="font-mono text-[11px] uppercase tracking-[1px] text-muted">À venir</div>
+        <div className="font-mono text-[11px] text-muted">{list.length}</div>
+      </div>
+      {list.length > 0 ? (
+        <div className="border-4 border-ink">
+          {list.map(e => (
+            <UpcomingCard key={e.id} event={e} />
+          ))}
+        </div>
+      ) : (
+        <div className="border-4 border-ink px-5 py-6 text-center font-mono text-xs text-muted">
+          Aucune réunion planifiée.
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function Recap() {
   const { token, user } = useAuth()
   const navigate = useNavigate()
 
   const [recaps, setRecaps] = useState(null)
+  const [events, setEvents] = useState(null)
+  const [eventsConnected, setEventsConnected] = useState(false)
   const [error, setError] = useState(null)
   const [search, setSearch] = useState('')
   const [sourceFilter, setSourceFilter] = useState('all')
@@ -203,10 +293,24 @@ export default function Recap() {
 
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setRecaps(null)
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setEvents(null)
     setError(null)
     getMyRecaps(token)
       .then(data => { if (!cancelled) setRecaps(data) })
       .catch(err => { if (!cancelled) setError(err.message) })
+
+    getCalendarEvents(token)
+      .then(data => {
+        if (cancelled) return
+        setEvents(data.events || [])
+        setEventsConnected(Boolean(data.connected))
+      })
+      .catch(() => {
+        if (cancelled) return
+        setEvents([])
+        setEventsConnected(false)
+      })
 
     return () => {
       cancelled = true
@@ -335,24 +439,29 @@ export default function Recap() {
             </div>
           </div>
 
-          <div>
-            {error ? (
-              <div className="border-4 border-ink px-6 py-10 text-center font-mono text-sm">
-                Impossible de charger les récaps.
-              </div>
-            ) : recaps === null ? (
-              <RecapListSkeleton />
-            ) : filtered.length > 0 ? (
-              <div className="border-4 border-ink">
-                {filtered.map(r => (
-                  <RecapCard key={r.id} recap={r} onOpen={() => navigate(`/recap/${r.id}`)} />
-                ))}
-              </div>
-            ) : (
-              <div className="border-4 border-ink px-6 py-10 text-center font-mono text-sm text-muted">
-                Aucun compte-rendu pour le moment.
-              </div>
-            )}
+          <div className="flex flex-col gap-8">
+            <UpcomingSection events={events} connected={eventsConnected} search={search} />
+
+            <div>
+              <div className="font-mono text-[11px] uppercase tracking-[1px] text-muted mb-2">Passées</div>
+              {error ? (
+                <div className="border-4 border-ink px-6 py-10 text-center font-mono text-sm">
+                  Impossible de charger les récaps.
+                </div>
+              ) : recaps === null ? (
+                <RecapListSkeleton />
+              ) : filtered.length > 0 ? (
+                <div className="border-4 border-ink">
+                  {filtered.map(r => (
+                    <RecapCard key={r.id} recap={r} onOpen={() => navigate(`/recap/${r.id}`)} />
+                  ))}
+                </div>
+              ) : (
+                <div className="border-4 border-ink px-6 py-10 text-center font-mono text-sm text-muted">
+                  Aucun compte-rendu pour le moment.
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -139,6 +139,14 @@ export async function getGoogleAuthorizeUrl(token) {
   return data.authorize_url
 }
 
+export async function getCalendarEvents(token) {
+  return requestJson(
+    `${BASE_URL}/calendar/events`,
+    { headers: { Authorization: `Bearer ${token}` } },
+    'Réunions à venir indisponibles',
+  )
+}
+
 export async function disconnectGoogleIntegration(token) {
   return requestJson(
     `${BASE_URL}/calendar`,

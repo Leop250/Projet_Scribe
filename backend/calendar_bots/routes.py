@@ -1,5 +1,6 @@
 import os
 import time
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse
@@ -37,6 +38,9 @@ RECORDING_PAUSE_MESSAGE = (
 RECORDING_RESUME_MESSAGE = "L'enregistrement commence maintenant dans la réunion."
 
 _OAUTH_PURPOSE = "calendar_oauth"
+
+UPCOMING_WINDOW_DAYS = 30
+UPCOMING_MAX = 50
 
 
 def _frontend_url() -> str:
@@ -135,6 +139,44 @@ def status(current_user: UserModel = Depends(get_current_user)):
     }
 
 
+def _serialize_event(event: dict) -> dict:
+    start = event.get("start") or {}
+    end = event.get("end") or {}
+    attendees = event.get("attendees") or []
+    return {
+        "id": event.get("event_id") or event.get("id") or event.get("uuid"),
+        "title": event.get("name") or event.get("summary") or event.get("title") or "Sans titre",
+        "start": event.get("start_time") or start.get("dateTime") or start.get("date"),
+        "end": event.get("end_time") or end.get("dateTime") or end.get("date"),
+        "attendees": [a.get("email") for a in attendees if a.get("email")],
+        "meeting_url": event.get("meeting_url") or event.get("meetingUrl") or event.get("conference_url"),
+        "will_record": rules.should_join(event),
+    }
+
+
+@router.get("/events")
+def upcoming_events(current_user: UserModel = Depends(get_current_user)):
+    connection = store.get_connection(current_user.id)
+    if connection is None:
+        return {"connected": False, "events": []}
+
+    now = datetime.now(timezone.utc)
+    try:
+        raw = client.list_events(
+            connection["meetingbaas_calendar_uuid"],
+            now.isoformat(),
+            (now + timedelta(days=UPCOMING_WINDOW_DAYS)).isoformat(),
+        )
+    except Exception as exc:  # noqa: BLE001 - on renvoie une liste vide plutôt qu'un 500
+        print(f"[calendar_bots] échec de la récupération des events : {exc}")
+        return {"connected": True, "events": [], "error": "fetch_failed"}
+
+    events = [_serialize_event(event) for event in (raw or [])]
+    events = [event for event in events if event["start"]]
+    events.sort(key=lambda event: event["start"])
+    return {"connected": True, "events": events[:UPCOMING_MAX]}
+
+
 @router.delete("")
 def disconnect(current_user: UserModel = Depends(get_current_user)):
     calendar_uuid = store.delete_connection(current_user.id)
@@ -158,7 +200,13 @@ async def webhook(request: Request, background_tasks: BackgroundTasks):
         except Exception:
             raise HTTPException(status_code=401, detail="Signature de webhook invalide.")
 
-    payload = await request.json()
+    try:
+        payload = await request.json()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Corps de webhook invalide.")
+    if not isinstance(payload, dict):
+        raise HTTPException(status_code=400, detail="Corps de webhook invalide.")
+
     event = payload.get("event")
     event_data = payload.get("data", {})
     print(f"[calendar_bots] webhook reçu: {event}")
