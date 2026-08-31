@@ -1,5 +1,6 @@
 import os
 import shutil
+from datetime import datetime
 from pathlib import Path
 from uuid import uuid4
 
@@ -26,7 +27,7 @@ class RecapSummary(BaseModel):
     id: int
     name: str
     source: str
-    created_at: str
+    created_at: datetime
     summary: str | None = None
     themes: list[str] = []
     speaker_count: int | None = None
@@ -36,7 +37,7 @@ class RecapDetailResponse(BaseModel):
     id: int
     name: str
     source: str
-    created_at: str
+    created_at: datetime
     summary: str | None = None
     speaker_count: int | None = None
     speakers: list = []
