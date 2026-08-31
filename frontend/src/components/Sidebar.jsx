@@ -19,7 +19,13 @@ export default function Sidebar() {
   return (
     <aside className="hidden md:flex flex-col w-[88px] shrink-0 h-[100dvh] sticky top-0 border-r-4 border-ink bg-paper">
       <div className="flex items-center justify-center py-5 border-b-4 border-ink">
-        <Logo size={14} />
+        <button
+          onClick={() => navigate('/home')}
+          aria-label="Accueil"
+          className="cursor-pointer bg-transparent border-none p-[5px] active:scale-[0.94]"
+        >
+          <Logo size={14} />
+        </button>
       </div>
 
       {tabs(pathname).map(({ path, label, icon, live }) => {
