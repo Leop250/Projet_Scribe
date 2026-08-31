@@ -124,7 +124,7 @@ export async function resetPassword(email, code, newPassword) {
 
 export async function getGoogleIntegrationStatus(token) {
   return requestJson(
-    `${BASE_URL}/me/integrations/google`,
+    `${BASE_URL}/calendar/status`,
     { headers: { Authorization: `Bearer ${token}` } },
     'Statut Google Calendar indisponible',
   )
@@ -132,7 +132,7 @@ export async function getGoogleIntegrationStatus(token) {
 
 export async function getGoogleAuthorizeUrl(token) {
   const data = await requestJson(
-    `${BASE_URL}/auth/google/authorize`,
+    `${BASE_URL}/calendar/oauth/authorize`,
     { headers: { Authorization: `Bearer ${token}` } },
     'Autorisation Google indisponible',
   )
@@ -141,7 +141,7 @@ export async function getGoogleAuthorizeUrl(token) {
 
 export async function disconnectGoogleIntegration(token) {
   return requestJson(
-    `${BASE_URL}/me/integrations/google`,
+    `${BASE_URL}/calendar`,
     { method: 'DELETE', headers: { Authorization: `Bearer ${token}` } },
     'Déconnexion refusée',
   )

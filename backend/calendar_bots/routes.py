@@ -1,0 +1,210 @@
+import os
+import time
+
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
+from fastapi.responses import RedirectResponse
+
+from auth.authentification import create_access_token, verify_token
+from auth.dependencies import get_current_user
+from auth.users import UserModel
+
+from . import client, oauth, rules, store
+from .save_meeting import save_meeting
+
+try:  # vérification de signature du webhook — optionnelle tant que svix n'est pas requis
+    from svix.webhooks import Webhook
+except ImportError:  # pragma: no cover
+    Webhook = None
+
+router = APIRouter()
+
+DEFAULT_BOT_NAME = "WhatsON_meeting Notetaker"
+
+# Délai (en secondes) pendant lequel l'enregistrement est mis en pause dès qu'il démarre,
+# pour laisser le temps aux participants qui ne veulent pas être enregistrés de partir.
+RECORDING_DELAY_SECONDS = 3 * 60
+RECORDING_DELAY_MINUTES = RECORDING_DELAY_SECONDS // 60
+
+RGPD_ENTRY_MESSAGE = (
+    "RGPD : cette réunion est enregistrée par WhatsON_meeting afin d'en générer un compte-rendu. "
+    f"Vous disposez de {RECORDING_DELAY_MINUTES} minutes avant le début de l'enregistrement : "
+    "si vous ne souhaitez pas être enregistré·e, merci de quitter la réunion avant la fin de ce délai."
+)
+RECORDING_PAUSE_MESSAGE = (
+    f"⏸ Enregistrement en pause pendant {RECORDING_DELAY_MINUTES} minutes pour vous laisser le temps "
+    "de rejoindre. Si vous ne souhaitez pas être enregistré·e, c'est le moment de quitter."
+)
+RECORDING_RESUME_MESSAGE = "L'enregistrement commence maintenant dans la réunion."
+
+_OAUTH_PURPOSE = "calendar_oauth"
+
+
+def _frontend_url() -> str:
+    url = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+    if url and not url.startswith(("http://", "https://")):
+        url = f"https://{url}"
+    return url.rstrip("/")
+
+
+def _redirect_uri(request: Request) -> str:
+    return os.environ.get("GOOGLE_OAUTH_REDIRECT_URI") or str(request.url_for("calendar_oauth_callback"))
+
+
+def _process_completed_bot(bot_id: str, event_id: str | None = None) -> None:
+    """Attend la transcription puis enregistre le recap en base (tâche de fond,
+    déclenchée dès que le bot a quitté l'appel)."""
+    if not bot_id or store.is_bot_saved(bot_id) or store.is_bot_processing(bot_id):
+        print(f"[calendar_bots] bot {bot_id} ignoré (déjà traité/en cours, ou sans id)")
+        return
+    store.mark_bot_processing(bot_id)
+    try:
+        result = client.wait_for_transcription(bot_id)
+        emails = store.get_event_emails(event_id)
+        saved = save_meeting(result, bot_name=DEFAULT_BOT_NAME, source="visio", emails=emails)
+        store.mark_bot_saved(bot_id)
+        print(f"[calendar_bots] recap enregistré pour bot {bot_id} (id={saved['id']}).")
+    except Exception as exc:  # noqa: BLE001 - tâche de fond, on log et on abandonne
+        print(f"[calendar_bots] échec de l'enregistrement du recap pour bot {bot_id} : {exc}")
+
+
+def _delay_recording_start(bot_id: str) -> None:
+    """Coupe l'enregistrement dès qu'il démarre, attend RECORDING_DELAY_SECONDS, puis le
+    reprend (tâche de fond ; time.sleep bloque un worker du threadpool le temps du délai)."""
+    try:
+        client.pause_bot_recording(bot_id, chat_message=RECORDING_PAUSE_MESSAGE)
+        print(f"[calendar_bots] enregistrement en pause pour bot {bot_id} ({RECORDING_DELAY_SECONDS}s)")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[calendar_bots] échec de la mise en pause pour bot {bot_id} : {exc}")
+        return
+
+    time.sleep(RECORDING_DELAY_SECONDS)
+
+    try:
+        client.resume_bot_recording(bot_id, chat_message=RECORDING_RESUME_MESSAGE)
+        print(f"[calendar_bots] enregistrement repris pour bot {bot_id}")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[calendar_bots] échec de la reprise d'enregistrement pour bot {bot_id} : {exc}")
+
+
+@router.get("/oauth/authorize")
+def authorize(request: Request, current_user: UserModel = Depends(get_current_user)):
+    state = create_access_token(data={"sub": str(current_user.id), "purpose": _OAUTH_PURPOSE})
+    return {"authorize_url": oauth.build_authorize_url(_redirect_uri(request), state)}
+
+
+@router.get("/oauth/callback", name="calendar_oauth_callback")
+def oauth_callback(
+    request: Request,
+    code: str | None = None,
+    state: str | None = None,
+    error: str | None = None,
+):
+    frontend = _frontend_url()
+    if error or not code or not state:
+        return RedirectResponse(f"{frontend}/settings?google=error")
+
+    try:
+        payload = verify_token(state)
+        if payload.get("purpose") != _OAUTH_PURPOSE:
+            raise ValueError("purpose invalide")
+        user_id = int(payload["sub"])
+    except (HTTPException, ValueError, KeyError, TypeError):
+        return RedirectResponse(f"{frontend}/settings?google=error")
+
+    try:
+        tokens = oauth.exchange_code_for_tokens(code, _redirect_uri(request))
+        google_email = oauth.fetch_google_email(tokens.get("access_token", ""))
+        calendar_uuid = client.register_calendar(tokens["refresh_token"])
+    except Exception as exc:  # noqa: BLE001
+        print(f"[calendar_bots] échec de la connexion calendrier : {exc}")
+        return RedirectResponse(f"{frontend}/settings?google=error")
+
+    store.save_connection(user_id, calendar_uuid, google_calendar_id="primary", google_email=google_email)
+    return RedirectResponse(f"{frontend}/settings?google=connected")
+
+
+@router.get("/status")
+def status(current_user: UserModel = Depends(get_current_user)):
+    connection = store.get_connection(current_user.id)
+    if connection is None:
+        return {"connected": False}
+    return {
+        "connected": True,
+        "email": connection["google_email"] or connection["google_calendar_id"],
+        "last_sync_at": connection["connected_at"],
+    }
+
+
+@router.delete("")
+def disconnect(current_user: UserModel = Depends(get_current_user)):
+    calendar_uuid = store.delete_connection(current_user.id)
+    if calendar_uuid is None:
+        return {"message": "Aucune connexion calendrier à supprimer."}
+    try:
+        client.delete_calendar(calendar_uuid)
+    except Exception as exc:  # noqa: BLE001 - la connexion locale est déjà supprimée
+        print(f"[calendar_bots] suppression MeetingBaaS ignorée : {exc}")
+    return {"message": "Connexion calendrier supprimée."}
+
+
+@router.post("/webhook")
+async def webhook(request: Request, background_tasks: BackgroundTasks):
+    body = await request.body()
+
+    webhook_secret = os.environ.get("MEETING_BAAS_WEBHOOK_SECRET")
+    if webhook_secret and Webhook is not None:
+        try:
+            Webhook(webhook_secret).verify(body, dict(request.headers))
+        except Exception:
+            raise HTTPException(status_code=401, detail="Signature de webhook invalide.")
+
+    payload = await request.json()
+    event = payload.get("event")
+    event_data = payload.get("data", {})
+    print(f"[calendar_bots] webhook reçu: {event}")
+
+    if event in ("calendar.event_created", "calendar.event_updated"):
+        calendar_id = event_data.get("calendar_id")
+        series_id = event_data.get("series_id")
+
+        for instance in event_data.get("instances", []):
+            event_id = instance.get("event_id")
+            if not event_id or store.is_event_scheduled(event_id):
+                continue
+
+            calendar_event = client.get_event(calendar_id, event_id)
+            if not rules.should_join(calendar_event):
+                continue
+
+            client.schedule_bot(
+                calendar_id,
+                event_id,
+                series_id,
+                bot_name=DEFAULT_BOT_NAME,
+                entry_message=RGPD_ENTRY_MESSAGE,
+            )
+            store.mark_event_scheduled(event_id)
+
+            attendees = calendar_event.get("attendees") or []
+            emails = [attendee.get("email") for attendee in attendees if attendee.get("email")]
+            store.save_event_emails(event_id, emails)
+            print(f"[calendar_bots] bot programmé pour event {event_id}")
+
+        return {"status": "ok"}
+
+    if event == "bot.status_change":
+        bot_id = event_data.get("bot_id")
+        event_id = event_data.get("event_id")
+        status_code = (event_data.get("status") or {}).get("code")
+        print(f"[calendar_bots] bot {bot_id} -> status={status_code}")
+
+        if status_code == "in_call_recording" and bot_id and not store.is_recording_delay_started(bot_id):
+            store.mark_recording_delay_started(bot_id)
+            background_tasks.add_task(_delay_recording_start, bot_id)
+
+        if status_code == "call_ended":
+            background_tasks.add_task(_process_completed_bot, bot_id, event_id)
+
+        return {"status": "ok"}
+
+    return {"status": "ignored"}

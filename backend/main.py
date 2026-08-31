@@ -17,6 +17,7 @@ from ai.speech_to_text import call_speech_to_text_agent  # noqa: E402
 from auth.dependencies import get_current_user  # noqa: E402
 from auth.routes import router as auth_router  # noqa: E402
 from auth.users import UserModel, get_by_email  # noqa: E402
+from calendar_bots.routes import router as calendar_router  # noqa: E402
 from database.database import get_db  # noqa: E402
 from database.models import Recap  # noqa: E402
 
@@ -207,3 +208,4 @@ async def get_recap_detail(
 
 
 app.include_router(auth_router)
+app.include_router(calendar_router, prefix="/calendar")
