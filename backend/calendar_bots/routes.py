@@ -118,7 +118,7 @@ def oauth_callback(
     try:
         tokens = oauth.exchange_code_for_tokens(code, _redirect_uri(request))
         google_email = oauth.fetch_google_email(tokens.get("access_token", ""))
-        calendar_uuid = client.register_calendar(tokens["refresh_token"])
+        calendar_uuid = client.register_calendar(tokens["refresh_token"], google_email=google_email)
     except Exception as exc:  # noqa: BLE001
         print(f"[calendar_bots] échec de la connexion calendrier : {exc}")
         return RedirectResponse(f"{frontend}/settings?google=error")
@@ -140,17 +140,15 @@ def status(current_user: UserModel = Depends(get_current_user)):
 
 
 def _serialize_event(event: dict) -> dict:
-    start = event.get("start") or {}
-    end = event.get("end") or {}
     attendees = event.get("attendees") or []
     return {
-        "id": event.get("event_id") or event.get("id") or event.get("uuid"),
-        "title": event.get("name") or event.get("summary") or event.get("title") or "Sans titre",
-        "start": event.get("start_time") or start.get("dateTime") or start.get("date"),
-        "end": event.get("end_time") or end.get("dateTime") or end.get("date"),
-        "attendees": [a.get("email") for a in attendees if a.get("email")],
-        "meeting_url": event.get("meeting_url") or event.get("meetingUrl") or event.get("conference_url"),
-        "will_record": rules.should_join(event),
+        "id": event.get("event_id") or event.get("id"),
+        "title": (event.get("title") or "").strip() or "Sans titre",
+        "start": event.get("start_time"),
+        "end": event.get("end_time"),
+        "attendees": [a.get("email") for a in attendees if isinstance(a, dict) and a.get("email")],
+        "meeting_url": event.get("meeting_url"),
+        "will_record": bool(event.get("bot_scheduled")) or rules.should_join(event),
     }
 
 

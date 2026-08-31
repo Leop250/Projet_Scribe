@@ -46,7 +46,39 @@ def update_calendar_credentials(calendar_id: str, refresh_token: str):
     return _call("PATCH", f"/calendars/{calendar_id}", json=payload)
 
 
-def register_calendar(refresh_token: str, google_calendar_id: str = "primary") -> str:
+_REUSE_ERROR_CODES = (
+    "FST_ERR_CALENDAR_CONNECTION_ALREADY_EXISTS",
+    "FST_ERR_CALENDAR_CONNECTION_LIMIT_EXCEEDED",
+)
+
+
+def _find_existing_calendar(google_email: str | None, require_match: bool) -> dict:
+    calendars = _call("GET", "/calendars")
+    if not isinstance(calendars, list) or not calendars:
+        raise RuntimeError(f"Réponse MeetingBaaS inattendue (aucune connexion existante): {calendars}")
+
+    chosen = None
+    if google_email:
+        chosen = next(
+            (c for c in calendars if (c.get("account_email") or "").lower() == google_email.lower()),
+            None,
+        )
+    if chosen is None:
+        if require_match:
+            raise RuntimeError(
+                "Limite de connexions calendrier MeetingBaaS atteinte et aucune connexion existante "
+                f"ne correspond à {google_email}. Supprime une connexion inutilisée sur MeetingBaaS."
+            )
+        chosen = calendars[0]
+
+    if not isinstance(chosen, dict) or "calendar_id" not in chosen:
+        raise RuntimeError(f"Réponse MeetingBaaS inattendue (pas de champ 'calendar_id'): {chosen}")
+    return chosen
+
+
+def register_calendar(
+    refresh_token: str, google_email: str | None = None, google_calendar_id: str = "primary"
+) -> str:
     payload = {
         "calendar_platform": "google",
         "oauth_client_id": os.environ["GOOGLE_OAUTH_CLIENT_ID"],
@@ -60,14 +92,10 @@ def register_calendar(refresh_token: str, google_calendar_id: str = "primary") -
     try:
         calendar_data = _call("POST", "/calendars", json=payload)
     except RuntimeError as exc:
-        if "FST_ERR_CALENDAR_CONNECTION_ALREADY_EXISTS" not in str(exc):
+        limit_exceeded = "FST_ERR_CALENDAR_CONNECTION_LIMIT_EXCEEDED" in str(exc)
+        if not any(code in str(exc) for code in _REUSE_ERROR_CODES):
             raise
-        # Mono-connexion côté MeetingBaaS : on récupère la connexion existante puis on
-        # lui repousse le refresh_token qu'on vient d'obtenir — sans ça, une connexion
-        # en erreur (refresh_token expiré) resterait cassée même après réautorisation.
-        existing = _call("GET", "/calendars")[0]
-        if not isinstance(existing, dict) or "calendar_id" not in existing:
-            raise RuntimeError(f"Réponse MeetingBaaS inattendue (pas de champ 'calendar_id'): {existing}")
+        existing = _find_existing_calendar(google_email, require_match=limit_exceeded)
         calendar_data = update_calendar_credentials(existing["calendar_id"], refresh_token)
 
     if not isinstance(calendar_data, dict) or "calendar_id" not in calendar_data:

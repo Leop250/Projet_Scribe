@@ -141,23 +141,6 @@ function Calendar({ dayStats, selected, onSelect }) {
   )
 }
 
-function ThemeBadges({ themes }) {
-  if (!themes?.length) return null
-  return (
-    <div className="flex flex-wrap gap-1.5 mt-2">
-      {themes.map((t, i) => (
-        <span
-          key={i}
-          className="font-mono text-[10px] uppercase tracking-[1px] border-2 px-1.5 py-0.5"
-          style={{ borderColor: '#8a8a00', color: '#6b6b00', background: 'rgba(138,138,0,0.1)' }}
-        >
-          {t}
-        </span>
-      ))}
-    </div>
-  )
-}
-
 function RecapCard({ recap, onOpen }) {
   const color = SOURCE_COLOR[displaySource(recap.source)] || '#0a0a0a'
   return (
@@ -177,7 +160,6 @@ function RecapCard({ recap, onOpen }) {
           {recap.summary && (
             <div className="font-mono text-xs mt-1.5 line-clamp-1 opacity-80">{recap.summary}</div>
           )}
-          <ThemeBadges themes={recap.themes} />
         </div>
       </div>
       <div className="font-mono text-xs uppercase border-[3px] border-ink px-2.5 py-1 shrink-0">Ouvrir →</div>
@@ -285,7 +267,6 @@ export default function Recap() {
   const [error, setError] = useState(null)
   const [search, setSearch] = useState('')
   const [sourceFilter, setSourceFilter] = useState('all')
-  const [theme, setTheme] = useState('all')
   const [selectedDay, setSelectedDay] = useState(null)
 
   useEffect(() => {
@@ -317,17 +298,6 @@ export default function Recap() {
     }
   }, [token])
 
-  const allThemes = useMemo(() => {
-    const scope = (recaps ?? []).filter(r => {
-      if (sourceFilter !== 'all' && displaySource(r.source) !== sourceFilter) return false
-      if (selectedDay && r.created_at?.slice(0, 10) !== selectedDay) return false
-      return true
-    })
-    return [...new Set(scope.flatMap(r => r.themes ?? []))].sort()
-  }, [recaps, sourceFilter, selectedDay])
-
-  const activeTheme = theme !== 'all' && !allThemes.includes(theme) ? 'all' : theme
-
   const dayStats = useMemo(() => {
     const map = new Map()
     for (const r of recaps ?? []) {
@@ -358,12 +328,11 @@ export default function Recap() {
 
   const filtered = (recaps ?? []).filter(r => {
     if (sourceFilter !== 'all' && displaySource(r.source) !== sourceFilter) return false
-    if (activeTheme !== 'all' && !(r.themes ?? []).includes(activeTheme)) return false
     if (selectedDay) {
       if (r.created_at?.slice(0, 10) !== selectedDay) return false
     }
     if (search.trim()) {
-      const haystack = [r.name, r.summary, ...(r.themes ?? [])].filter(Boolean).join(' ').toLowerCase()
+      const haystack = [r.name, r.summary].filter(Boolean).join(' ').toLowerCase()
       if (!haystack.includes(search.trim().toLowerCase())) return false
     }
     return true
@@ -391,7 +360,7 @@ export default function Recap() {
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                placeholder="Rechercher un mot-clé, un thème…"
+                placeholder="Rechercher un mot-clé…"
                 className="block w-full pl-12 pr-4 py-4 font-mono text-base bg-paper border-4 border-ink shadow-[6px_6px_0_#ff2e00] focus:shadow-[2px_2px_0_#ff2e00] focus:translate-x-1 focus:translate-y-1 transition-none"
               />
             </div>
@@ -419,22 +388,6 @@ export default function Recap() {
                     Réinitialiser
                   </button>
                 </div>
-              )}
-
-              {allThemes.length > 0 && (
-                <label className="flex items-center gap-2 font-mono text-xs uppercase tracking-[1px]">
-                  Thème
-                  <select
-                    value={activeTheme}
-                    onChange={e => setTheme(e.target.value)}
-                    className="border-4 border-ink px-2.5 py-1.5 font-mono text-xs bg-paper w-full"
-                  >
-                    <option value="all">Tous les thèmes</option>
-                    {allThemes.map(t => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </label>
               )}
             </div>
           </div>
