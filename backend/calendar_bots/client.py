@@ -10,15 +10,18 @@ POLL_INTERVAL_SECONDS = 15
 POLL_TIMEOUT_SECONDS = 20 * 60
 
 
-def _headers() -> dict:
-    return {
-        "Content-Type": "application/json",
-        "x-meeting-baas-api-key": os.environ["MEETING_BAAS_API_KEY"],
-    }
+def _headers(with_body: bool) -> dict:
+    headers = {"x-meeting-baas-api-key": os.environ["MEETING_BAAS_API_KEY"]}
+    if with_body:
+        headers["Content-Type"] = "application/json"
+    return headers
 
 
 def _call(method: str, path: str, **kwargs):
-    response = httpx.request(method, f"{BASE_URL}{path}", headers=_headers(), timeout=30, **kwargs)
+    with_body = any(key in kwargs for key in ("json", "data", "content"))
+    response = httpx.request(
+        method, f"{BASE_URL}{path}", headers=_headers(with_body), timeout=30, **kwargs
+    )
     if not response.is_success:
         raise RuntimeError(f"MeetingBaaS {method} {path} -> {response.status_code}: {response.text}")
     body = response.json()
