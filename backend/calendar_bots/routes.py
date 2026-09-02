@@ -12,6 +12,13 @@ from auth.users import UserModel
 
 from . import client, oauth, rules, store
 from .save_meeting import save_meeting
+from .scheduling import (
+    DEFAULT_BOT_NAME,
+    RECORDING_DELAY_SECONDS,
+    RECORDING_PAUSE_MESSAGE,
+    RECORDING_RESUME_MESSAGE,
+    schedule_bot_for_event,
+)
 
 try:  # vérification de signature du webhook — optionnelle tant que svix n'est pas requis
     from svix.webhooks import Webhook
@@ -19,24 +26,6 @@ except ImportError:  # pragma: no cover
     Webhook = None
 
 router = APIRouter()
-
-DEFAULT_BOT_NAME = "WhatsON_meeting Notetaker"
-
-# Délai (en secondes) pendant lequel l'enregistrement est mis en pause dès qu'il démarre,
-# pour laisser le temps aux participants qui ne veulent pas être enregistrés de partir.
-RECORDING_DELAY_SECONDS = 3 * 60
-RECORDING_DELAY_MINUTES = RECORDING_DELAY_SECONDS // 60
-
-RGPD_ENTRY_MESSAGE = (
-    "RGPD : cette réunion est enregistrée par WhatsON_meeting afin d'en générer un compte-rendu. "
-    f"Vous disposez de {RECORDING_DELAY_MINUTES} minutes avant le début de l'enregistrement : "
-    "si vous ne souhaitez pas être enregistré·e, merci de quitter la réunion avant la fin de ce délai."
-)
-RECORDING_PAUSE_MESSAGE = (
-    f"⏸ Enregistrement en pause pendant {RECORDING_DELAY_MINUTES} minutes pour vous laisser le temps "
-    "de rejoindre. Si vous ne souhaitez pas être enregistré·e, c'est le moment de quitter."
-)
-RECORDING_RESUME_MESSAGE = "L'enregistrement commence maintenant dans la réunion."
 
 _OAUTH_PURPOSE = "calendar_oauth"
 
@@ -251,19 +240,15 @@ async def webhook(request: Request):
             if not rules.should_join(calendar_event):
                 continue
 
-            client.schedule_bot(
-                calendar_id,
-                event_id,
-                series_id,
-                bot_name=DEFAULT_BOT_NAME,
-                entry_message=RGPD_ENTRY_MESSAGE,
-            )
-            store.mark_event_scheduled(event_id)
-
-            attendees = calendar_event.get("attendees") or []
-            emails = [attendee.get("email") for attendee in attendees if attendee.get("email")]
-            store.save_event_emails(event_id, emails)
-            print(f"[calendar_bots] bot programmé pour event {event_id}")
+            try:
+                scheduled = schedule_bot_for_event(
+                    calendar_id, event_id, series_id, calendar_event.get("attendees")
+                )
+            except Exception as exc:  # noqa: BLE001
+                print(f"[calendar_bots] échec de programmation pour event {event_id} : {exc}")
+                continue
+            if scheduled:
+                print(f"[calendar_bots] bot programmé pour event {event_id}")
 
         return {"status": "ok"}
 

@@ -7,6 +7,8 @@
 
 from contextlib import contextmanager
 
+from sqlalchemy.exc import IntegrityError
+
 from database.database import SessionLocal
 
 from .models import CalendarBot, CalendarConnection, CalendarEvent
@@ -77,10 +79,39 @@ def is_event_scheduled(event_id):
         return session.get(CalendarEvent, event_id) is not None
 
 
-def mark_event_scheduled(event_id):
-    with _session() as session:
-        if session.get(CalendarEvent, event_id) is None:
+def claim_event(event_id):
+    """Réserve un event via un INSERT atomique. Renvoie False si un autre passage
+    (webhook ou job de synchro, worker concurrent) l'a déjà réservé."""
+    if not event_id:
+        return False
+    try:
+        with _session() as session:
+            if session.get(CalendarEvent, event_id) is not None:
+                return False
             session.add(CalendarEvent(event_id=event_id))
+        return True
+    except IntegrityError:
+        return False
+
+
+def unclaim_event(event_id):
+    with _session() as session:
+        event = session.get(CalendarEvent, event_id)
+        if event is not None:
+            session.delete(event)
+
+
+def all_connections():
+    with _session() as session:
+        return [
+            {
+                "user_id": connection.user_id,
+                "meetingbaas_calendar_uuid": connection.meetingbaas_calendar_uuid,
+                "google_calendar_id": connection.google_calendar_id,
+                "google_email": connection.google_email,
+            }
+            for connection in session.query(CalendarConnection).all()
+        ]
 
 
 def save_event_emails(event_id, emails):

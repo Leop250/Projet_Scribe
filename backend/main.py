@@ -1,5 +1,6 @@
 import os
 import shutil
+from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
 from uuid import uuid4
@@ -19,6 +20,7 @@ from auth.dependencies import get_current_user  # noqa: E402
 from auth.routes import router as auth_router  # noqa: E402
 from auth.users import UserModel, get_by_email  # noqa: E402
 from calendar_bots.routes import router as calendar_router  # noqa: E402
+from calendar_bots.sync import start_scheduler  # noqa: E402
 from database.database import get_db  # noqa: E402
 from database.models import Recap  # noqa: E402
 
@@ -152,7 +154,14 @@ class RecapService:
 
 recap_service = RecapService()
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    start_scheduler()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 def _cors_origins() -> list[str]:
