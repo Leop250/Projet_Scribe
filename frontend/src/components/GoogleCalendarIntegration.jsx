@@ -9,6 +9,16 @@ const SCOPES = [
   "Rafraîchir ces infos automatiquement à chaque changement d'agenda.",
 ]
 
+const GOOGLE_ERROR_MESSAGES = {
+  oauth_denied: "Tu as refusé l'autorisation Google.",
+  missing_params: 'Réponse Google incomplète, réessaie.',
+  bad_state: 'Session expirée, reconnecte-toi puis réessaie.',
+  no_refresh_token:
+    "Google n'a pas renvoyé d'autorisation durable. Révoque l'accès sur myaccount.google.com/permissions puis réessaie.",
+  mb_limit: 'Limite de connexions calendrier atteinte côté MeetingBaaS. Supprime une connexion inutilisée.',
+  connect_failed: 'La connexion au calendrier a échoué côté serveur, réessaie.',
+}
+
 function formatLastSync(iso) {
   if (!iso) return ''
   const minutes = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 60000))
@@ -121,8 +131,9 @@ export default function GoogleCalendarIntegration() {
     }
 
     if (googleParam === 'error') {
-      setError("La connexion à Google Calendar a échoué, réessaie.")
-      setSearchParams(params => { params.delete('google'); return params }, { replace: true })
+      const reason = searchParams.get('reason')
+      setError(GOOGLE_ERROR_MESSAGES[reason] || 'La connexion à Google Calendar a échoué, réessaie.')
+      setSearchParams(params => { params.delete('google'); params.delete('reason'); return params }, { replace: true })
       setStep('idle')
       return () => { cancelled = true }
     }

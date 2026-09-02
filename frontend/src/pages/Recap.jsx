@@ -222,8 +222,16 @@ function UpcomingCard({ event }) {
   )
 }
 
-function UpcomingSection({ events, connected, search }) {
+function UpcomingSection({ events, connected, failed, search }) {
   if (events === null) return <RecapListSkeleton />
+
+  if (failed) {
+    return (
+      <div className="border-4 border-ink px-5 py-6 font-mono text-xs text-muted">
+        Réunions à venir momentanément indisponibles, réessaie plus tard.
+      </div>
+    )
+  }
 
   if (!connected) {
     return (
@@ -244,8 +252,8 @@ function UpcomingSection({ events, connected, search }) {
       </div>
       {list.length > 0 ? (
         <div className="border-4 border-ink">
-          {list.map(e => (
-            <UpcomingCard key={e.id} event={e} />
+          {list.map((e, i) => (
+            <UpcomingCard key={e.id || `${e.start}-${i}`} event={e} />
           ))}
         </div>
       ) : (
@@ -264,6 +272,7 @@ export default function Recap() {
   const [recaps, setRecaps] = useState(null)
   const [events, setEvents] = useState(null)
   const [eventsConnected, setEventsConnected] = useState(false)
+  const [eventsFailed, setEventsFailed] = useState(false)
   const [error, setError] = useState(null)
   const [search, setSearch] = useState('')
   const [sourceFilter, setSourceFilter] = useState('all')
@@ -276,6 +285,7 @@ export default function Recap() {
     setRecaps(null)
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setEvents(null)
+    setEventsFailed(false)
     setError(null)
     getMyRecaps(token)
       .then(data => { if (!cancelled) setRecaps(data) })
@@ -286,11 +296,13 @@ export default function Recap() {
         if (cancelled) return
         setEvents(data.events || [])
         setEventsConnected(Boolean(data.connected))
+        setEventsFailed(data.error === 'fetch_failed')
       })
       .catch(() => {
         if (cancelled) return
         setEvents([])
         setEventsConnected(false)
+        setEventsFailed(true)
       })
 
     return () => {
@@ -393,7 +405,7 @@ export default function Recap() {
           </div>
 
           <div className="flex flex-col gap-8">
-            <UpcomingSection events={events} connected={eventsConnected} search={search} />
+            <UpcomingSection events={events} connected={eventsConnected} failed={eventsFailed} search={search} />
 
             <div>
               <div className="font-mono text-[11px] uppercase tracking-[1px] text-muted mb-2">Passées</div>
