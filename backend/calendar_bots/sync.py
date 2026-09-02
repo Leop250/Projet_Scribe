@@ -51,10 +51,11 @@ def sync_all_calendars():
             try:
                 if not event_id or event.get("bot_scheduled") or store.is_event_scheduled(event_id):
                     continue
-                if not rules.should_join(event):
+                detail = client.get_event(calendar_id, event_id)
+                if not rules.should_join(detail):
                     continue
                 if schedule_bot_for_event(
-                    calendar_id, event_id, event.get("series_id"), event.get("attendees")
+                    calendar_id, event_id, detail.get("series_id"), detail.get("attendees")
                 ):
                     print(f"[calendar_bots] sync: bot programmé pour event {event_id}")
                     report["scheduled"].append(event_id)

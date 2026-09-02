@@ -219,18 +219,30 @@ def debug(run: int = 0, current_user: UserModel = Depends(get_current_user)):
         report["list_events_error"] = str(exc)
         return report
 
+    calendar_id = connection["meetingbaas_calendar_uuid"]
     for event in raw or []:
         event_id = event.get("event_id") or event.get("id")
-        attendees = event.get("attendees") or []
+        detail = event
+        detail_error = None
+        if event_id:
+            try:
+                detail = client.get_event(calendar_id, event_id)
+            except Exception as exc:  # noqa: BLE001
+                detail_error = str(exc)
+        attendees = detail.get("attendees") or []
         report["events"].append(
             {
                 "id": event_id,
-                "title": (event.get("title") or "").strip() or "Sans titre",
-                "start": event.get("start_time"),
-                "attendees_raw": attendees,
-                "has_meeting_url": bool(event.get("meeting_url")),
-                "bot_scheduled": bool(event.get("bot_scheduled")),
-                "should_join": rules.should_join(event),
+                "title": (detail.get("title") or "").strip() or "Sans titre",
+                "start": detail.get("start_time"),
+                "attendees": [
+                    a.get("email") for a in attendees if isinstance(a, dict) and a.get("email")
+                ],
+                "attendees_from_list": event.get("attendees") or [],
+                "detail_error": detail_error,
+                "has_meeting_url": bool(detail.get("meeting_url")),
+                "bot_scheduled": bool(event.get("bot_scheduled") or detail.get("bot_scheduled")),
+                "should_join": rules.should_join(detail),
                 "locally_claimed": store.is_event_scheduled(event_id) if event_id else False,
             }
         )
