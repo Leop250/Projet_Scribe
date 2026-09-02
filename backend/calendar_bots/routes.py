@@ -10,7 +10,7 @@ from auth.authentification import create_access_token, verify_token
 from auth.dependencies import get_current_user
 from auth.users import UserModel
 
-from . import client, oauth, rules, store
+from . import client, oauth, rules, store, sync
 from .save_meeting import save_meeting
 from .scheduling import (
     DEFAULT_BOT_NAME,
@@ -188,6 +188,56 @@ def upcoming_events(current_user: UserModel = Depends(get_current_user)):
     events = [event for event in events if event["start"] and event["start"] >= cutoff]
     events.sort(key=lambda event: event["start"])
     return {"connected": True, "events": events[:UPCOMING_MAX]}
+
+
+@router.get("/debug")
+def debug(run: int = 0, current_user: UserModel = Depends(get_current_user)):
+    bot_email = os.environ.get("BOT_ATTENDEE_EMAIL", "")
+    connection = store.get_connection(current_user.id)
+
+    report = {
+        "bot_attendee_email": bot_email or None,
+        "bot_attendee_email_configured": bool(bot_email),
+        "webhook_url_configured": bool(os.environ.get("MEETING_BAAS_WEBHOOK_URL")),
+        "webhook_secret_configured": bool(os.environ.get("MEETING_BAAS_WEBHOOK_SECRET")),
+        "allow_unsigned_webhook": os.environ.get("ALLOW_UNSIGNED_WEBHOOK") == "1",
+        "scheduler_started": sync.is_started(),
+        "connected": connection is not None,
+        "events": [],
+    }
+    if connection is None:
+        return report
+
+    now = datetime.now(timezone.utc)
+    try:
+        raw = client.list_events(
+            connection["meetingbaas_calendar_uuid"],
+            now.isoformat(),
+            (now + timedelta(days=UPCOMING_WINDOW_DAYS)).isoformat(),
+        )
+    except Exception as exc:  # noqa: BLE001
+        report["list_events_error"] = str(exc)
+        return report
+
+    for event in raw or []:
+        event_id = event.get("event_id") or event.get("id")
+        attendees = event.get("attendees") or []
+        report["events"].append(
+            {
+                "id": event_id,
+                "title": (event.get("title") or "").strip() or "Sans titre",
+                "start": event.get("start_time"),
+                "attendees_raw": attendees,
+                "has_meeting_url": bool(event.get("meeting_url")),
+                "bot_scheduled": bool(event.get("bot_scheduled")),
+                "should_join": rules.should_join(event),
+                "locally_claimed": store.is_event_scheduled(event_id) if event_id else False,
+            }
+        )
+
+    if run:
+        report["sync_run"] = sync.sync_all_calendars()
+    return report
 
 
 @router.delete("")

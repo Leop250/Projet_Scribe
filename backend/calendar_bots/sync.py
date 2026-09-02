@@ -17,14 +17,20 @@ INITIAL_DELAY_SECONDS = 30
 _started = False
 
 
+def is_started():
+    return _started
+
+
 def _event_id(event):
     return event.get("event_id") or event.get("id")
 
 
 def sync_all_calendars():
+    report = {"connections": 0, "events_seen": 0, "scheduled": [], "errors": []}
     connections = store.all_connections()
+    report["connections"] = len(connections)
     if not connections:
-        return
+        return report
 
     now = datetime.now(timezone.utc)
     window_end = (now + timedelta(days=SYNC_WINDOW_DAYS)).isoformat()
@@ -34,22 +40,30 @@ def sync_all_calendars():
         try:
             events = client.list_events(calendar_id, now.isoformat(), window_end)
         except Exception as exc:  # noqa: BLE001
-            print(f"[calendar_bots] sync: list_events a échoué pour {calendar_id} : {exc}")
+            message = f"list_events a échoué pour {calendar_id} : {exc}"
+            print(f"[calendar_bots] sync: {message}")
+            report["errors"].append(message)
             continue
 
         for event in events or []:
+            report["events_seen"] += 1
             event_id = _event_id(event)
-            if not event_id or event.get("bot_scheduled") or store.is_event_scheduled(event_id):
-                continue
-            if not rules.should_join(event):
-                continue
             try:
+                if not event_id or event.get("bot_scheduled") or store.is_event_scheduled(event_id):
+                    continue
+                if not rules.should_join(event):
+                    continue
                 if schedule_bot_for_event(
                     calendar_id, event_id, event.get("series_id"), event.get("attendees")
                 ):
                     print(f"[calendar_bots] sync: bot programmé pour event {event_id}")
+                    report["scheduled"].append(event_id)
             except Exception as exc:  # noqa: BLE001
-                print(f"[calendar_bots] sync: échec de programmation pour {event_id} : {exc}")
+                message = f"échec de programmation pour {event_id} : {exc}"
+                print(f"[calendar_bots] sync: {message}")
+                report["errors"].append(message)
+
+    return report
 
 
 def _loop():
