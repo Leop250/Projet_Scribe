@@ -134,6 +134,13 @@ def mark_bot_processing(bot_id):
             bot.state = "processing"
 
 
+def clear_bot_processing(bot_id):
+    with _session() as session:
+        bot = session.get(CalendarBot, bot_id)
+        if bot is not None and bot.state == "processing":
+            bot.state = None
+
+
 def is_recording_delay_started(bot_id):
     with _session() as session:
         bot = session.get(CalendarBot, bot_id)

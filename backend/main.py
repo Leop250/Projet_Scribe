@@ -57,7 +57,9 @@ class RecapService:
 
     @staticmethod
     def add_recap_to_user(user: UserModel, recap_id: int) -> None:
-        user.participants_list_of_recaps = (user.participants_list_of_recaps or []) + [recap_id]
+        current = user.participants_list_of_recaps or []
+        if recap_id not in current:
+            user.participants_list_of_recaps = current + [recap_id]
 
     @staticmethod
     def save_audio_to_temp(audio: UploadFile) -> Path:
@@ -94,7 +96,10 @@ class RecapService:
 
     @staticmethod
     def attach_participants(db_session: Session, emails: str, recap_id: int) -> None:
-        for email in emails.split(","):
+        for raw_email in emails.split(","):
+            email = raw_email.strip()
+            if not email:
+                continue
             user = get_by_email(db_session, email)
             if user:
                 RecapService.add_recap_to_user(user, recap_id)
@@ -149,11 +154,15 @@ recap_service = RecapService()
 
 app = FastAPI()
 
-origins = [recap_service.normalize_url(os.environ.get("FRONTEND_URL", "http://localhost:5173"))]
+
+def _cors_origins() -> list[str]:
+    raw = os.environ.get("CORS_ORIGINS") or os.environ.get("FRONTEND_URL", "http://localhost:5173")
+    return [recap_service.normalize_url(origin.strip()) for origin in raw.split(",") if origin.strip()]
+
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=_cors_origins(),
     allow_methods=["*"],
     allow_headers=["*"],
 )

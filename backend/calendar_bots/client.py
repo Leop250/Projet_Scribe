@@ -92,10 +92,13 @@ def register_calendar(
     try:
         calendar_data = _call("POST", "/calendars", json=payload)
     except RuntimeError as exc:
-        limit_exceeded = "FST_ERR_CALENDAR_CONNECTION_LIMIT_EXCEEDED" in str(exc)
-        if not any(code in str(exc) for code in _REUSE_ERROR_CODES):
+        message = str(exc)
+        if not any(code in message for code in _REUSE_ERROR_CODES):
             raise
-        existing = _find_existing_calendar(google_email, require_match=limit_exceeded)
+        limit_exceeded = "FST_ERR_CALENDAR_CONNECTION_LIMIT_EXCEEDED" in message
+        existing = _find_existing_calendar(
+            google_email, require_match=limit_exceeded or google_email is not None
+        )
         calendar_data = update_calendar_credentials(existing["calendar_id"], refresh_token)
 
     if not isinstance(calendar_data, dict) or "calendar_id" not in calendar_data:

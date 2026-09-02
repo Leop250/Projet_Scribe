@@ -43,7 +43,9 @@ def _build_transcript(bot_result: dict):
 def _link_participants(session, recap_id: int, emails: list[str]) -> None:
     if not emails:
         return
-    lowered = [email.lower() for email in emails if email]
+    lowered = [email.strip().lower() for email in emails if email and email.strip()]
+    if not lowered:
+        return
     matched_users = session.query(UserModel).filter(func.lower(UserModel.email).in_(lowered)).all()
     for user in matched_users:
         current = user.participants_list_of_recaps or []

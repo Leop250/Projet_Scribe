@@ -1,8 +1,9 @@
 import os
+import threading
 import time
 from datetime import datetime, timedelta, timezone
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import RedirectResponse
 
 from auth.authentification import create_access_token, verify_token
@@ -42,6 +43,16 @@ _OAUTH_PURPOSE = "calendar_oauth"
 UPCOMING_WINDOW_DAYS = 30
 UPCOMING_MAX = 50
 
+if not os.environ.get("GOOGLE_OAUTH_REDIRECT_URI"):
+    print(
+        "[calendar_bots] GOOGLE_OAUTH_REDIRECT_URI non défini : l'URI de redirection est "
+        "déduite de chaque requête, risque de redirect_uri_mismatch derrière un proxy."
+    )
+
+
+def _run_in_background(func, *args) -> None:
+    threading.Thread(target=func, args=args, daemon=True).start()
+
 
 def _frontend_url() -> str:
     url = os.environ.get("FRONTEND_URL", "http://localhost:5173")
@@ -52,6 +63,10 @@ def _frontend_url() -> str:
 
 def _redirect_uri(request: Request) -> str:
     return os.environ.get("GOOGLE_OAUTH_REDIRECT_URI") or str(request.url_for("calendar_oauth_callback"))
+
+
+def _error_redirect(frontend: str, reason: str) -> RedirectResponse:
+    return RedirectResponse(f"{frontend}/settings?google=error&reason={reason}")
 
 
 def _process_completed_bot(bot_id: str, event_id: str | None = None) -> None:
@@ -69,6 +84,7 @@ def _process_completed_bot(bot_id: str, event_id: str | None = None) -> None:
         print(f"[calendar_bots] recap enregistré pour bot {bot_id} (id={saved['id']}).")
     except Exception as exc:  # noqa: BLE001 - tâche de fond, on log et on abandonne
         print(f"[calendar_bots] échec de l'enregistrement du recap pour bot {bot_id} : {exc}")
+        store.clear_bot_processing(bot_id)
 
 
 def _delay_recording_start(bot_id: str) -> None:
@@ -104,8 +120,10 @@ def oauth_callback(
     error: str | None = None,
 ):
     frontend = _frontend_url()
-    if error or not code or not state:
-        return RedirectResponse(f"{frontend}/settings?google=error")
+    if error:
+        return _error_redirect(frontend, "oauth_denied")
+    if not code or not state:
+        return _error_redirect(frontend, "missing_params")
 
     try:
         payload = verify_token(state)
@@ -113,7 +131,7 @@ def oauth_callback(
             raise ValueError("purpose invalide")
         user_id = int(payload["sub"])
     except (HTTPException, ValueError, KeyError, TypeError):
-        return RedirectResponse(f"{frontend}/settings?google=error")
+        return _error_redirect(frontend, "bad_state")
 
     try:
         tokens = oauth.exchange_code_for_tokens(code, _redirect_uri(request))
@@ -121,7 +139,14 @@ def oauth_callback(
         calendar_uuid = client.register_calendar(tokens["refresh_token"], google_email=google_email)
     except Exception as exc:  # noqa: BLE001
         print(f"[calendar_bots] échec de la connexion calendrier : {exc}")
-        return RedirectResponse(f"{frontend}/settings?google=error")
+        message = str(exc)
+        if "FST_ERR_CALENDAR_CONNECTION_LIMIT_EXCEEDED" in message:
+            reason = "mb_limit"
+        elif "refresh_token" in message:
+            reason = "no_refresh_token"
+        else:
+            reason = "connect_failed"
+        return _error_redirect(frontend, reason)
 
     store.save_connection(user_id, calendar_uuid, google_calendar_id="primary", google_email=google_email)
     return RedirectResponse(f"{frontend}/settings?google=connected")
@@ -169,8 +194,9 @@ def upcoming_events(current_user: UserModel = Depends(get_current_user)):
         print(f"[calendar_bots] échec de la récupération des events : {exc}")
         return {"connected": True, "events": [], "error": "fetch_failed"}
 
+    cutoff = now.isoformat()
     events = [_serialize_event(event) for event in (raw or [])]
-    events = [event for event in events if event["start"]]
+    events = [event for event in events if event["start"] and event["start"] >= cutoff]
     events.sort(key=lambda event: event["start"])
     return {"connected": True, "events": events[:UPCOMING_MAX]}
 
@@ -188,15 +214,18 @@ def disconnect(current_user: UserModel = Depends(get_current_user)):
 
 
 @router.post("/webhook")
-async def webhook(request: Request, background_tasks: BackgroundTasks):
+async def webhook(request: Request):
     body = await request.body()
 
     webhook_secret = os.environ.get("MEETING_BAAS_WEBHOOK_SECRET")
+    allow_unsigned = os.environ.get("ALLOW_UNSIGNED_WEBHOOK") == "1"
     if webhook_secret and Webhook is not None:
         try:
             Webhook(webhook_secret).verify(body, dict(request.headers))
         except Exception:
             raise HTTPException(status_code=401, detail="Signature de webhook invalide.")
+    elif not allow_unsigned:
+        raise HTTPException(status_code=503, detail="Webhook non configuré : signature requise.")
 
     try:
         payload = await request.json()
@@ -246,10 +275,10 @@ async def webhook(request: Request, background_tasks: BackgroundTasks):
 
         if status_code == "in_call_recording" and bot_id and not store.is_recording_delay_started(bot_id):
             store.mark_recording_delay_started(bot_id)
-            background_tasks.add_task(_delay_recording_start, bot_id)
+            _run_in_background(_delay_recording_start, bot_id)
 
         if status_code == "call_ended":
-            background_tasks.add_task(_process_completed_bot, bot_id, event_id)
+            _run_in_background(_process_completed_bot, bot_id, event_id)
 
         return {"status": "ok"}
 
