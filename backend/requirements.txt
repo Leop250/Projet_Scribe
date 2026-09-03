@@ -93,3 +93,5 @@ webencodings==0.5.1
 webrtcvad-wheels==2.0.14
 websockets==16.1
 zipp==4.1.0
+pytest==8.3.4
+pytest-cov==6.0.0
